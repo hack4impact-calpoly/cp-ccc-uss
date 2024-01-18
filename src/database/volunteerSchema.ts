@@ -5,12 +5,14 @@ export type IVolunteer = {
   _id: string;
   name: string;
   email: string;
+  languages?: string[];
   roles: IVolunteerRole[];
 };
 
 const volunteerSchema = new Schema<IVolunteer>({
   name: { type: String, required: true },
   email: { type: String, required: true },
+  languages: { type: [String], required: false, default: [] },
   roles: [
     {
       type: Schema.Types.ObjectId,
