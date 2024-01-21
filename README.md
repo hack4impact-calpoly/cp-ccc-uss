@@ -19,11 +19,11 @@ The Central Coast Coalition for Undocumented Student Success (CCC-USS) is a coll
 
 The CCC-USS team consists of 15 Cal Poly students. Over the course of about 9 months, we worked as a team to deploy this web application. The team members are listed below:
 
-- [Sai Erram](https://www.linkedin.com/) - Project Manager
-- [Cassia Gray](https://www.linkedin.com/) - Designer
-- [Jasmine Sayed](https://www.linkedin.com/) - Designer
-- [Reva Moolky](https://www.linkedin.com/) - Designer
-- [Adrian Nguyen](https://www.linkedin.com/) - Tech Lead
+- [Sai Erram](https://www.linkedin.com/in/sai-erram/) - Project Manager
+- [Cassia Gray](https://www.linkedin.com/in/cassiagray) - Designer
+- [Jasmine Sayed](https://www.linkedin.com/in/sayedjasmine/) - Designer
+- [Reva Moolky](https://www.linkedin.com/in/reva-moolky/) - Designer
+- [Adrian Nguyen](https://www.linkedin.com/in/hnadrian/) - Tech Lead
 - [Andrew Chan](https://www.linkedin.com/in/andrewtchan9/) - Tech Lead
 - [Xavier Garcia](https://www.linkedin.com/in/xavier-a-garcia/) - Software Developer
 - [Grace Boye-Williams](https://www.linkedin.com/in/graceboyewilliams/) - Software Developer
