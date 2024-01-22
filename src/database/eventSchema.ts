@@ -1,12 +1,10 @@
 import mongoose, { Schema } from "mongoose";
-import { IVolunteer } from "./volunteerSchema";
-import { IVolunteerRole } from "./volunteerRoleSchema";
 
 export type IEvent = {
   _id: string;
   name: string;
   date: Date;
-  roles: IVolunteerRole[];
+  roles: string[];
   description: string;
   location: string;
 };
@@ -14,12 +12,7 @@ export type IEvent = {
 const eventSchema = new Schema<IEvent>({
   name: { type: String, required: true },
   date: { type: Date, required: true },
-  roles: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "VolunteerRoles",
-    },
-  ],
+  roles: [ { type: String, ref: "VolunteerRoles" } ],
   description: { type: String, required: true },
   location: { type: String, required: true },
 });

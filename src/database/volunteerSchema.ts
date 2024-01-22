@@ -1,24 +1,18 @@
 import mongoose, { Schema } from "mongoose";
-import { IVolunteerRole } from "./volunteerRoleSchema";
 
 export type IVolunteer = {
   _id: string;
   name: string;
   email: string;
   languages?: string[];
-  roles: IVolunteerRole[];
+  roles: string[];
 };
 
 const volunteerSchema = new Schema<IVolunteer>({
   name: { type: String, required: true },
   email: { type: String, required: true },
   languages: { type: [String], required: false, default: [] },
-  roles: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "VolunteerRoles",
-    },
-  ],
+  roles: [ { type: String, ref: "VolunteerRoles" } ],
 });
 
 const Volunteers =
