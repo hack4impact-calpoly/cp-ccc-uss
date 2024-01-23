@@ -7,14 +7,16 @@ export type IEvent = {
   roles: string[];
   description: string;
   location: string;
+  form: string;
 };
 
 const eventSchema = new Schema<IEvent>({
   name: { type: String, required: true },
   date: { type: Date, required: true },
-  roles: [ { type: String, ref: "VolunteerRoles" } ],
+  roles: [{ type: String, ref: "VolunteerRoles" }],
   description: { type: String, required: true },
   location: { type: String, required: true },
+  form: { type: String, ref: "VolunteerForms" },
 });
 
 const Events =
