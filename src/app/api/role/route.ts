@@ -41,7 +41,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json("Event Roles not updated", { status: 404 });
     }
   } catch (err) {
-    console.error("Error creating volunteer role: ", err);
+    console.log("Error creating volunteer role: ", err);
+    return NextResponse.json("New VolunteerRole not created", { status: 404 });
   }
   return NextResponse.json("New VolunteerRole successfully created.");
+}
+
+export async function GET() {
+  await connectDB();
+  try {
+    const volunteerRoles = await VolunteerRoles.find();
+    return NextResponse.json(volunteerRoles);
+  } catch (err) {
+    console.error("Error getting volunteer roles: ", err);
+    return NextResponse.json("Volunteer Roles not retrieved.", {
+      status: 404,
+    });
+  }
 }
