@@ -10,9 +10,16 @@
     "lint:fix": "next lint --fix"
   },
   "dependencies": {
+    "@babel/preset-react": "^7.23.3",
+    "@fullcalendar/common": "^5.11.5",
+    "@fullcalendar/daygrid": "^6.1.10",
+    "@fullcalendar/interaction": "^6.1.10",
+    "@fullcalendar/react": "^6.1.10",
+    "@fullcalendar/timegrid": "^6.1.10",
     "mongoose": "^7.6.3",
     "next": "14.0.0",
     "next-auth": "^4.24.5",
+    "next-transpile-modules": "^10.0.1",
     "react": "^18",
     "react-dom": "^18"
   },
