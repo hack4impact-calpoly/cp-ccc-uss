@@ -26,6 +26,6 @@ const volunteerEntrySchema = new Schema<IVolunteerEntry>({
 
 const VolunteerEntries =
   mongoose.models["VolunteerEntries"] ||
-  mongoose.model("VolunteerEntries", volunteerEntrySchema);
+  mongoose.model("VolunteerEntries", volunteerEntrySchema, "VolunteerEntries");
 
 export default VolunteerEntries;
