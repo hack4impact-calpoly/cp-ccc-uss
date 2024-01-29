@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { SessionProvider } from 'next-auth/react';
+
 
 //! Update metadata to match your project
 export const metadata: Metadata = {
@@ -11,10 +13,15 @@ export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
-}) {
+} ) {
   return (
+    <SessionProvider>
+
+
     <html lang="en">
       <body>{children}</body>
     </html>
+
+    </SessionProvider>
   );
 }
