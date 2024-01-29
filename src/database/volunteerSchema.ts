@@ -17,6 +17,6 @@ const volunteerSchema = new Schema<IVolunteer>({
 
 const Volunteers =
   mongoose.models["Volunteers"] ||
-  mongoose.model("Volunteers", volunteerSchema);
+  mongoose.model("Volunteers", volunteerSchema, "Volunteers");
 
 export default Volunteers;

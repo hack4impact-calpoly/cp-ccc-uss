@@ -14,6 +14,6 @@ const adminSchema = new Schema<IAdmin>({
 });
 
 const Admins =
-  mongoose.models["Admins"] || mongoose.model("Admins", adminSchema);
+  mongoose.models["Admins"] || mongoose.model("Admins", adminSchema, "Admins");
 
 export default Admins;
