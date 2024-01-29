@@ -25,26 +25,17 @@ export async function POST(req: NextRequest) {
       timeslots,
       event,
     });
-    if (!newVolunteerRole) {
-      return NextResponse.json("New Volunteer Role not created", {
-        status: 404,
-      });
-    }
+    
 
     const savedVolunteerRole = await newVolunteerRole.save();
     console.log("Saved Volunteer Role:", savedVolunteerRole);
 
-    // Check if saved volunteer role matches the information from new volunteer role
-    if (
-      savedVolunteerRole.roleName === newVolunteerRole.roleName &&
-      savedVolunteerRole.description === newVolunteerRole.description &&
-      savedVolunteerRole.timeslots === newVolunteerRole.timeslots &&
-      savedVolunteerRole.event === newVolunteerRole.event
-    ) {
-      console.log("Saved Volunteer Role matches New Volunteer Role.");
-    } else {
-      console.log("Saved Volunteer Role does not match New Volunteer Role.");
-    }
+    if (!savedVolunteerRole) {
+        return NextResponse.json("New Volunteer Role not created", {
+          status: 404,
+        });
+      }
+   
 
     try {
       await Events.findByIdAndUpdate(eventid, {
