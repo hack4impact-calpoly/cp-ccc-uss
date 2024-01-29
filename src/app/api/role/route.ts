@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     const { roleName, description, timeslots, event }: IVolunteerRole =
       await req.json();
 
-    const eventObj = await Events.findOne({ name: event });
+    const eventObj = await Events.findOne({ _id: event });
 
     if (!eventObj) {
       return NextResponse.json("Event not found.", { status: 404 });
@@ -32,19 +32,33 @@ export async function POST(req: NextRequest) {
     }
 
     const savedVolunteerRole = await newVolunteerRole.save();
+    console.log("Saved Volunteer Role:", savedVolunteerRole);
+
+    // Check if saved volunteer role matches the information from new volunteer role
+    if (
+      savedVolunteerRole.roleName === newVolunteerRole.roleName &&
+      savedVolunteerRole.description === newVolunteerRole.description &&
+      savedVolunteerRole.timeslots === newVolunteerRole.timeslots &&
+      savedVolunteerRole.event === newVolunteerRole.event
+    ) {
+      console.log("Saved Volunteer Role matches New Volunteer Role.");
+    } else {
+      console.log("Saved Volunteer Role does not match New Volunteer Role.");
+    }
+
     try {
       await Events.findByIdAndUpdate(eventid, {
-        $push: { roles: savedVolunteerRole._id },
+        $push: { roles: savedVolunteerRole._id.toString() },
       });
     } catch (err) {
       console.log("Error updating Event Roles. ", err);
       return NextResponse.json("Event Roles not updated", { status: 404 });
     }
+    return savedVolunteerRole;
   } catch (err) {
     console.log("Error creating volunteer role: ", err);
     return NextResponse.json("New VolunteerRole not created", { status: 404 });
   }
-  return NextResponse.json("New VolunteerRole successfully created.");
 }
 
 export async function GET() {
