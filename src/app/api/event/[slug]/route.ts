@@ -31,7 +31,7 @@ export async function GET(req: NextRequest, { params }: IParams) {
 }
 
 /**
- * PUT API for editing an event 
+ * PUT API for editing an event
  * @returns None
  */
 export async function PUT(req: NextRequest, { params }: IParams) {
