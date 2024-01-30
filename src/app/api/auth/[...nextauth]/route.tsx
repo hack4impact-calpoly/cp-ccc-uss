@@ -7,8 +7,8 @@ const googleClientId = process.env.GOOGLE_ID;
 const googleClientSecret = process.env.GOOGLE_SECRET;
 
 if (!googleClientId || !googleClientSecret) {
-    console.log("sad");
-  throw new Error('Google client ID or client secret is missing.');
+  console.log("sad");
+  throw new Error("Google client ID or client secret is missing.");
 }
 
 const authOptions = {

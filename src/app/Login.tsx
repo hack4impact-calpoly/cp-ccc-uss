@@ -7,11 +7,17 @@ export default function Login() {
     console.log(session);
     if(session) { //if user logged in, show signout
         return (
-            <>
-                <button onClick={() => signOut()} type="button" className="btn btn-primary">Sign Out of Google</button>
-                <UserCard user={session?.user}/>
-            </>
-        )
+          <>
+            <button
+              onClick={() => signOut()}
+              type="button"
+              className="btn btn-primary"
+            >
+              Sign Out of Google
+            </button>
+            <UserCard user={session?.user} />
+          </>
+        );
     } else { //if not logged in, sign in
         return (
             <>

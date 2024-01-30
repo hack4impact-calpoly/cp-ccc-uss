@@ -15,11 +15,9 @@ export default function RootLayout({
 } ) {
   return (
     <NextAuthProvider>
-
       <html lang="en">
         <body>{children}</body>
       </html>
-
     </NextAuthProvider>
   );
 }

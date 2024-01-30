@@ -8,7 +8,6 @@ export default function Home() {
   const [apiResponse, setApiResponse] = useState('');
   const { data, status } = useSession();
 
-
   const handleApiCall = async () => {
     try {
       const response = await fetch('/api/example/');
@@ -20,17 +19,16 @@ export default function Home() {
     }
   };
 
-return (
-  <main>
-    <Navbar />
-    <h1>Home</h1>
-    <button onClick={handleApiCall}>Test Database Connection</button>
-    <p>API Response: {apiResponse}</p>
-    <div style={{width: "500px", margin: "0 auto", paddingTop: "30px"}}>
-      <h3>Login Website</h3>
-      <Login />
-    </div>
-  </main>
-
-);
+  return (
+    <main>
+      <Navbar />
+      <h1>Home</h1>
+      <button onClick={handleApiCall}>Test Database Connection</button>
+      <p>API Response: {apiResponse}</p>
+      <div style={{ width: "500px", margin: "0 auto", paddingTop: "30px" }}>
+        <h3>Login Website</h3>
+        <Login />
+      </div>
+    </main>
+  );
 }
