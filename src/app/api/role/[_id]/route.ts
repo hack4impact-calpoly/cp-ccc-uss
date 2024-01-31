@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
 import volunteerRoleSchema from "@database/volunteerRoleSchema";
 import Events from "@database/eventSchema";
+import VolunteerRoles from "@database/volunteerRoleSchema";
 
 type IParams = {
   params: {
     _id: string;
-    event: string;
   };
 };
 
@@ -27,18 +27,15 @@ export async function GET(req: NextRequest, { params }: IParams) {
 export async function DELETE(req: NextRequest, { params }: IParams) {
   await connectDB();
   const { _id } = params; //destructure
-  const { event } = params;
-  try {
-    const eventObj = await Events.findOne({ _id: event });
 
-    if (!eventObj) {
-      return NextResponse.json("Event not found.", { status: 404 });
-    }
-    const eventid = eventObj._id;
+  try {
+	const event = await VolunteerRoles.findOne({ _id }).select("event").orFail();
+	console.log("EVENT: " + event)
+    const eventid = event._id;
 
     await Events.findByIdAndUpdate(
       eventid,
-      { $pull: { roles: { _id }.toString() } },
+      { $pull: { roles: _id } },
       { new: true }
     );
 
