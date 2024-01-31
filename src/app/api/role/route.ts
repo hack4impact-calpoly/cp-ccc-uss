@@ -9,9 +9,7 @@ export async function POST(req: NextRequest) {
   try {
     const { roleName, description, timeslots, event }: IVolunteerRole =
       await req.json();
-
     const eventObj = await Events.findOne({ _id: event });
-
     if (!eventObj) {
       return NextResponse.json("Event not found.", { status: 404 });
     }
@@ -43,7 +41,7 @@ export async function POST(req: NextRequest) {
       console.log("Error updating Event Roles. ", err);
       return NextResponse.json("Event Roles not updated", { status: 404 });
     }
-    return savedVolunteerRole;
+    return NextResponse.json(savedVolunteerRole);
   } catch (err) {
     console.log("Error creating volunteer role: ", err);
     return NextResponse.json("New VolunteerRole not created", { status: 404 });
