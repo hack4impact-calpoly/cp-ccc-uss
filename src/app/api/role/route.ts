@@ -3,8 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { IVolunteerRole } from "@database/volunteerRoleSchema";
 import VolunteerRoles from "@database/volunteerRoleSchema";
 import Events from "@database/eventSchema";
-// Create a VolunteerRole (../api/role) POST *get the associated eventid from the request body, update event object w/ roleid
-// Get all VolunteerRoles (../api/role) GET
 
 export async function POST(req: NextRequest) {
   await connectDB();
