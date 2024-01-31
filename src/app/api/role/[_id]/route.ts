@@ -29,8 +29,10 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
   const { _id } = params; //destructure
 
   try {
-	const event = await VolunteerRoles.findOne({ _id }).select("event").orFail();
-	console.log("EVENT: " + event)
+    const event = await VolunteerRoles.findOne({ _id })
+      .select("event")
+      .orFail();
+    console.log("EVENT: " + event);
     const eventid = event._id;
 
     await Events.findByIdAndUpdate(
@@ -54,7 +56,28 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
   }
 }
 
-// export async function PUT(req: NextRequest, { params }: IParams) {
-//   await connectDB();
-//   const { _id } = params; //destructure
-// }
+export async function PUT(req: NextRequest, { params }: IParams) {
+  await connectDB();
+  const { _id } = params; //destructure
+  const { fieldToUpdate, value } = await req.json();
+  try {
+    await volunteerRoleSchema.findOne({ _id }).select(fieldToUpdate).orFail();
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json("Could not find the field to update.", {
+      status: 404,
+    });
+  }
+
+  try {
+    const updatedVolunteerRole = await volunteerRoleSchema
+      .findByIdAndUpdate(_id, { [fieldToUpdate]: value }, { new: true })
+      .orFail();
+    return NextResponse.json(updatedVolunteerRole);
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json("Could not update the Volunteer Role.", {
+      status: 500,
+    });
+  }
+}
