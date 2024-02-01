@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
-import eventSchema from "@database/eventSchema";
+import eventSchema, { IEvent } from "@database/eventSchema";
 
 export async function GET(req: NextRequest) {
   await connectDB(); // function from db.ts
@@ -21,7 +21,8 @@ export async function POST(req: NextRequest) {
   await connectDB();
 
   try {
-    const event = req.body;
+    const { name, date, description, location }: IEvent = await req.json();
+    const event = { name, date, description, location };
 
     if (event) {
       const createdEvent = await eventSchema.create(event);

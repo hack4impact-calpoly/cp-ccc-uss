@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
-import eventSchema from "@database/volunteerRoleSchema";
+import eventSchema, { IEvent } from "@database/eventSchema";
 
 type IParams = {
   params: {
@@ -39,7 +39,9 @@ export async function PUT(req: NextRequest, { params }: IParams) {
   const { slug } = params;
 
   try {
-    const event = req.body;
+    const { name, date, description, location }: IEvent = await req.json();
+    const event = { name, date, description, location };
+
     if (event) {
       const updatedEvent = await eventSchema.findByIdAndUpdate({ slug }, event);
       return NextResponse.json(updatedEvent, { status: 201 });
