@@ -34,6 +34,7 @@ The CCC-USS team consists of 15 Cal Poly students. Over the course of about 9 mo
 - [Charles Moreno](https://www.linkedin.com/in/charlesmoreno7/) - Software Developer
 - [Ivan Alvarez](https://www.linkedin.com/in/ivanalvarez04/) - Software Developer
 - [Brandon Eng](https://www.linkedin.com/in/brandon-eng801/) - Software Developer
+- [Emanuel Gonzalez](https://www.linkedin.com/in/emanuel-gonzalez-943699166/) - Software Developer
 
 ## Getting Started And Contributing
 

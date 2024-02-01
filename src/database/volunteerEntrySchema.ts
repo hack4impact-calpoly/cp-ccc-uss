@@ -7,25 +7,25 @@ export type IFormAnswer = {
 
 export type IVolunteerEntry = {
   eventId: string;
-  signedUpRoles: string[];
+  roles: string[];
   volunteerId: string;
   answers: IFormAnswer[];
 };
 
-const formAnswerSchema = new Schema<IFormAnswer>({
+const formResponseSchema = new Schema<IFormAnswer>({
   question: { type: String, required: true },
   answer: { type: String, required: true },
 });
 
 const volunteerEntrySchema = new Schema<IVolunteerEntry>({
   eventId: { type: String, ref: "Events", required: true },
-  signedUpRoles: [ { type: String, ref: "VolunteerRoles"} ],
+  roles: [ { type: String, ref: "VolunteerRoles"} ],
   volunteerId: { type: String, ref: "Volunteers", required: true },
-  answers: [formAnswerSchema],
+  responses: [formResponseSchema],
 });
 
 const VolunteerEntries =
   mongoose.models["VolunteerEntries"] ||
-  mongoose.model("VolunteerEntries", volunteerEntrySchema);
+  mongoose.model("VolunteerEntries", volunteerEntrySchema, "VolunteerEntries");
 
 export default VolunteerEntries;
