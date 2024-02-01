@@ -1,6 +1,7 @@
 "use client"
 import { useSession, signIn, signOut } from "next-auth/react";
 import { UserCard } from "./userCard";
+import Google from "next-auth/providers/google";
 
 export default function Login() {
     const { data: session } = useSession();
@@ -21,7 +22,7 @@ export default function Login() {
     } else { //if not logged in, sign in
         return (
             <>
-                <button onClick={() => signIn()} type="button" className="btn btn-primary">Sign In with Google</button>
+                <button onClick={() => signIn('google')} type="button" className="btn btn-primary">Sign In with Google</button>
             </>
         )
     }
