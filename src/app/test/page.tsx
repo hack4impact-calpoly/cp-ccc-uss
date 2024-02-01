@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Navbar from "@components/Navbar";
 import Link from 'next/link';
-import Calender from "@components/Calender";
+import Calender from "@components/Calendar";
 
 export default function Page() {
   const [apiResponse, setApiResponse] = useState('');

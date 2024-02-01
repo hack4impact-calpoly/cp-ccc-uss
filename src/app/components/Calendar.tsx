@@ -15,10 +15,10 @@ const Calendar = () => {
       plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
       editable
       selectable
-      initialView='timeGridWeek'
-      events={[
+      initialView='dayGridMonth'
+      events= {[
         { title: 'Test 1', allDay: false, date: '2024-01-25T08:33:33', url: "/test" },
-        { title: 'event 2', date: '2019-04-02' }
+        { title: 'Test 2', date: '2024-01-24T06:33:33' }
       ]}
     />
   );

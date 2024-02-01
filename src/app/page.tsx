@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from 'react';
-import Navbar from "@components/Navbar";
-import Calender from "@components/Calender";
+import Navbar from "@components/Navbar"; 
+import Calendar from "@components/Calendar";
+import FullCalendar from "@fullcalendar/core";
 
 export default function Home() {
   const [apiResponse, setApiResponse] = useState('');
   const [eventTitle, setEventTitle] = useState('');
   const eventDate = new Date();
-  const cal = <Calender/>;
   
 
   const handleApiCall = async () => {
@@ -21,14 +21,13 @@ export default function Home() {
     }
   };
 
-
   return (
     <main>
       <Navbar />
       <h1>Home</h1>
       <button onClick={handleApiCall}>Test Database Connection</button>
       <p>API Response: {apiResponse}</p>
-      <Calender />
+      <Calendar />
     </main>
   );
 }
