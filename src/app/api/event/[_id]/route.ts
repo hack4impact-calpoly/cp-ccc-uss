@@ -4,7 +4,7 @@ import eventSchema, { IEvent } from "@database/eventSchema";
 
 type IParams = {
   params: {
-    slug: string;
+    _id: string;
   };
 };
 
@@ -14,10 +14,10 @@ type IParams = {
  */
 export async function GET(req: NextRequest, { params }: IParams) {
   await connectDB();
-  const { slug } = params;
+  const { _id } = params;
 
   try {
-    const event = await eventSchema.findOne({ slug }).orFail();
+    const event = await eventSchema.findOne({ _id }).orFail();
     return NextResponse.json(event, { status: 201 });
   } catch (err: any) {
     console.error("Error", err);
@@ -36,14 +36,14 @@ export async function GET(req: NextRequest, { params }: IParams) {
  */
 export async function PUT(req: NextRequest, { params }: IParams) {
   await connectDB();
-  const { slug } = params;
+  const { _id } = params;
 
   try {
     const { name, date, description, location }: IEvent = await req.json();
     const event = { name, date, description, location };
 
     if (event) {
-      const updatedEvent = await eventSchema.findByIdAndUpdate({ slug }, event);
+      const updatedEvent = await eventSchema.findByIdAndUpdate({ _id }, event);
       return NextResponse.json(updatedEvent, { status: 201 });
     } else {
       return NextResponse.json("Invalid request body", { status: 400 });
