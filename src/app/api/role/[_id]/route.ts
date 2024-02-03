@@ -29,27 +29,24 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
   const { _id } = params; //destructure
 
   try {
-    const event = await VolunteerRoles.findOne({ _id })
-      .select("event")
-      .orFail();
-    console.log("EVENT: " + event);
-    const eventid = event._id;
+    const volunteerRole = await VolunteerRoles.findOne({ _id }).orFail();
+    const eventid = volunteerRole.event; //gets event field from volunteerRole
 
     await Events.findByIdAndUpdate(
       eventid,
-      { $pull: { roles: _id } },
+      { $pull: { roles: _id } }, //removes role from event array
       { new: true }
     );
 
     const deletedVolunteerRole = await volunteerRoleSchema
-      .findOneAndDelete({ _id })
+      .findOneAndDelete({ _id }) //deltes volunteer role
       .orFail();
     if (!deletedVolunteerRole) {
       return NextResponse.json("Could not find the Volunteer Role.", {
         status: 404,
       });
     }
-    return NextResponse.json(deletedVolunteerRole);
+    return NextResponse.json(deletedVolunteerRole); //returns deleted volunteer role
   } catch (err) {
     console.log(err);
     return NextResponse.json("An error occurred.", { status: 500 });
