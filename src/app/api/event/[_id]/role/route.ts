@@ -13,7 +13,7 @@ export async function GET(req: NextRequest, { params }: IParams) {
 		const { slug } = params 
 
 	   try {
-	        const volunteerRoles = await volunteerRoleSchema.findOne().orFail()
+	        const volunteerRoles = await volunteerRoleSchema.find().orFail()
 	        return NextResponse.json(volunteerRoles)
 	    } catch (err) {
 	        return NextResponse.json('No volunteer roles found.', { status: 404 })
