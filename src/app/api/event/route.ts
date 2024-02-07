@@ -2,16 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
 import eventSchema, { IEvent } from "@database/eventSchema";
 
+// GET all events
 export async function GET(req: NextRequest) {
   await connectDB(); // function from db.ts
 
   try {
-    const event = await eventSchema.findOne().orFail();
+    const event = await eventSchema.find().orFail();
     return NextResponse.json(event);
   } catch (err) {
     return NextResponse.json("No event found.", { status: 404 });
   }
 }
+
+
 
 /**
  * POST API for creating an Event

@@ -65,20 +65,20 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
   const { _id } = params;
 
   try {
-    const events = await eventSchema.findOne({ _id: _id }).orFail(); // finding whole event document
-    const eventFormID = events.form; // getting form id from event
-    const eventRolesArray = events.roles; // getting array of roles from event
-    console.log("Array: " + eventRolesArray); // print array for testing purposes
+    const events = await eventSchema.findOne({ _id: _id }).orFail(); 
+    const eventFormID = events.form; 
+    const eventRolesArray = events.roles; 
+    console.log("Array: " + eventRolesArray); 
 
-    await VolunteerForms.findByIdAndDelete(eventFormID); // using event form ID from event to find the form and delete it
+    await VolunteerForms.findByIdAndDelete(eventFormID); 
 
     for (let i = 0; i < eventRolesArray.length; i++)
       [
-        // iterate through array of roles and delete using id in array
+        
         await VolunteerRoles.findByIdAndDelete(eventRolesArray[i]),
       ];
 
-    const eventToDelete = await eventSchema.deleteOne({ _id: _id }).orFail(); // delete entire event
+    const eventToDelete = await eventSchema.deleteOne({ _id: _id }).orFail(); 
 
     return NextResponse.json(eventToDelete);
   } catch (err) {
