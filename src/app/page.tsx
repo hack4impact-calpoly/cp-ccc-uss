@@ -2,13 +2,9 @@
 import React, { useState } from 'react';
 import Navbar from "@components/Navbar"; 
 import Calendar from "@components/Calendar";
-import FullCalendar from "@fullcalendar/core";
 
 export default function Home() {
   const [apiResponse, setApiResponse] = useState('');
-  const [eventTitle, setEventTitle] = useState('');
-  const eventDate = new Date();
-  
 
   const handleApiCall = async () => {
     try {

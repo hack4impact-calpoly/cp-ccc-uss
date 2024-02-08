@@ -2,10 +2,11 @@
 import React, { useState } from 'react';
 import Navbar from "@components/Navbar";
 import Link from 'next/link';
-import Calender from "@components/Calendar";
+
+/* NOTE: this is a demo page to show that clicking on events works
+ and loads a component page*/
 
 export default function Page() {
-  const [apiResponse, setApiResponse] = useState('');
 
   return (
     <main>

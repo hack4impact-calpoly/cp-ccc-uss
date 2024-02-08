@@ -7,11 +7,8 @@ import { useRef } from "react";
 import { EventInstance } from "@fullcalendar/common";
 
 const Calendar = () => {
-  /*const calendarRef = useRef(null);*/
   return (
     <FullCalendar
-      /*innerRef={calendarRef}*/
-      /*schedulerLicenseKey='CC-Attribution-NonCommercial-NoDerivatives'*/
       plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
       editable
       selectable
