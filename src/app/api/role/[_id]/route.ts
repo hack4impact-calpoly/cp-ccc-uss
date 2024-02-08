@@ -53,7 +53,7 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
   }
 }
 
-export async function PUT(req: NextRequest, { params }: IParams) {
+export async function PATCH(req: NextRequest, { params }: IParams) {
   await connectDB();
   const { _id } = params; //destructure
   const { fieldToUpdate, value } = await req.json();
