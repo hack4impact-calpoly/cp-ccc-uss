@@ -9,7 +9,7 @@ export type IVolunteerEntry = {
   eventId: string;
   roles: string[];
   volunteerId: string;
-  answers: IFormAnswer[];
+  responses: IFormAnswer[];
 };
 
 const formResponseSchema = new Schema<IFormAnswer>({
