@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
-import entrySchema, { IFormAnswer, IVolunteerEntry } from "@database/volunteerEntrySchema";
+import entrySchema, { IVolunteerEntry } from "@database/volunteerEntrySchema";
 
 // GET all events
 export async function GET(req: NextRequest) {
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   try {
     const { eventId, roles, volunteerId, responses }: IVolunteerEntry =
       await req.json();
-    
+
     if (!eventId || !roles || !volunteerId || !responses) {
         console.error("Invalid request body - Missing required fields");
         return NextResponse.json(
