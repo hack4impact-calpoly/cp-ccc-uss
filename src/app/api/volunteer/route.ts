@@ -2,7 +2,7 @@ import connectDB from "@database/db";
 import { NextRequest, NextResponse } from "next/server";
 import volunteerSchema, { IVolunteer } from "@database/volunteerSchema";
 
-// create a Volunteer
+// POST: create a Volunteer
 export async function POST(req: NextRequest) {
   await connectDB();
 
