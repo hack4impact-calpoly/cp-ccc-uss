@@ -58,3 +58,16 @@ export async function PUT(req: NextRequest, { params }: IParams) {
   }
 }
 
+// delete
+
+export async function DELETE(req: NextRequest, { params }: IParams) {
+  await connectDB(); // function from db.ts
+  const { _id } = params;
+  try {
+    const entryToDelete = await entrySchema.deleteOne({ _id: _id }).orFail(); 
+    return NextResponse.json(entryToDelete);
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json("Unable to delete event.", { status: 404 });
+  }
+}
