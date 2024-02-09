@@ -5,12 +5,11 @@ import Volunteers, { IVolunteer } from "@database/volunteerSchema";
 // Create a Volunteer
 export async function POST(req: NextRequest) {
   await connectDB();
-
   try {
-    const { name, email, languages, roles, entries }: IVolunteer =
+    const { name, email, languages, roles, entries } /*: IVolunteer*/ =
       await req.json(); // collect volunteer data from req
 
-    if (!name || !email || !languages || !roles || !entries) {
+    if (!name || !email) {
       console.error("Invalid request body - Missing required fields");
       return NextResponse.json(
         "Invalid request body - Missing required fields",

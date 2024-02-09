@@ -17,7 +17,6 @@ export async function GET(req: NextRequest, { params }: IParams) {
   try {
     const volunteer: IVolunteer = await Volunteers.findById(id).orFail(); // query for specific volunteer
     const roles = volunteer.roles; // retrieve list of role IDs from volunteer
-
     let rolesList = [];
     for (let i = 0; i < roles.length; i++) {
       const role = await VolunteerRoles.findById(roles[i]).orFail(); // query for each role by ID
@@ -28,6 +27,7 @@ export async function GET(req: NextRequest, { params }: IParams) {
 
     return NextResponse.json(rolesList);
   } catch (err) {
+    console.error(err);
     return NextResponse.json("No volunteer roles found.", { status: 404 });
   }
 }

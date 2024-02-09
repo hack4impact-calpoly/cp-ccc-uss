@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
-import Volunteers from "@database/volunteerSchema";
+import Volunteers, { IVolunteer } from "@database/volunteerSchema";
 
 type IParams = {
   params: {
@@ -28,12 +28,23 @@ export async function PUT(req: NextRequest, { params }: IParams) {
   try {
     // get Volunteer ID and structure
     const id = params._id;
-    const body = req.body;
-    if (body) {
-      const res = await Volunteers.findByIdAndUpdate(id, body);
-      return NextResponse.json(res);
+    const { name, email, languages, roles, entries }: IVolunteer =
+      await req.json();
+    const volunteer = { name, email, languages, roles, entries };
+
+    if (volunteer) {
+      const updatedVolunteer = await Volunteers.findByIdAndUpdate(
+        id,
+        volunteer,
+        { new: true }
+      );
+      return NextResponse.json(updatedVolunteer);
+    } else {
+      console.error("Invalid request body", { status: 200 });
+      return NextResponse.json("Invalid request body", { status: 400 });
     }
   } catch (err) {
+    console.error(err);
     return NextResponse.json("Could not edit the volunteer", { status: 400 });
   }
 }
