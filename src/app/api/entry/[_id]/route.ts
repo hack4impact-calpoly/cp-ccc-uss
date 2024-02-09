@@ -11,7 +11,7 @@ type IParams = {
 };
 
 /**
- * GET API for retrieving an event by its id
+ * GET API for retrieving a volunteer entry by its id
  * @returns None
  */
 export async function GET(req: NextRequest, { params }: IParams) {
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest, { params }: IParams) {
 }
 
 /**
- * PUT API for editing an event
+ * PUT API for editing a volunteer entry
  * @returns None
  */
 export async function PUT(req: NextRequest, { params }: IParams) {

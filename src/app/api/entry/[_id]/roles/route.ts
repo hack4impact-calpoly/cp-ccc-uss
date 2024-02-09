@@ -9,7 +9,7 @@ type IParams = {
   };
 };
 
-// GET all VolunteerRoles for a specific event
+// GET all VolunteerRoles for a specific volunteer entry
 export async function GET(req: NextRequest, { params }: IParams) {
   await connectDB();  // function from db.ts
   const { _id } = params;

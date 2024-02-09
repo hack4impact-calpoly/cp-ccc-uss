@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
 import entrySchema, { IVolunteerEntry } from "@database/volunteerEntrySchema";
 
-// GET all events
+// GET all entries
 export async function GET(req: NextRequest) {
   await connectDB(); // function from db.ts
 
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
 
 
 /**
- * POST API for creating an Event
+ * POST API for creating a volunteer entry
  * @returns None
  */
 export async function POST(req: NextRequest) {
