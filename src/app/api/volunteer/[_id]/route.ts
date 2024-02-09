@@ -22,3 +22,18 @@ export async function GET(req: NextRequest, { params }: IParams) {
 }
 
 // Edit a Volunteer
+export async function PUT(req: NextRequest, { params }: IParams) {
+  await connectDB();
+
+  try {
+    // get Volunteer ID and structure
+    const id = params._id;
+    const body = req.body;
+    if (body) {
+      const res = await Volunteers.findByIdAndUpdate(id, body);
+      return NextResponse.json(res);
+    }
+  } catch (err) {
+    return NextResponse.json("Could not edit the volunteer", { status: 400 });
+  }
+}
