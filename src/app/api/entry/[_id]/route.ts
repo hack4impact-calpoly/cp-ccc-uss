@@ -53,7 +53,7 @@ export async function PUT(req: NextRequest, { params }: IParams) {
       return NextResponse.json("Invalid request body", { status: 400 });
     }
   } catch (error) {
-    console.error("Error creating event:", error);
+    console.error("Error creating volunteer entry:", error);
     return NextResponse.json("Internal Server Error", { status: 500 });
   }
 }
@@ -68,6 +68,6 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
     return NextResponse.json(entryToDelete);
   } catch (err) {
     console.log(err);
-    return NextResponse.json("Unable to delete event.", { status: 404 });
+    return NextResponse.json("Unable to delete volunteer entry.", { status: 404 });
   }
 }
