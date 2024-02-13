@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Navbar from "@components/Navbar";
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Login from './Login';
-
+import AddQuestions from "@components/AddQuestions/AddQuestions"
 export default function Home() {
   const [apiResponse, setApiResponse] = useState('');
   const { data, status } = useSession();
@@ -29,6 +29,7 @@ export default function Home() {
         <h3>Login Website</h3>
         <Login />
       </div>
+      <AddQuestions eventId={''} questions={[]}/>
     </main>
   );
 }
