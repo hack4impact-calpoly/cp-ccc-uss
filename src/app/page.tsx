@@ -4,6 +4,9 @@ import Navbar from "@components/Navbar";
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Login from './Login';
 import Calendar from "@components/Calendar";
+import CreateEvent from '@components/CreateEvent/CreateEvent';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 export default function Home() {
   const [apiResponse, setApiResponse] = useState('');
@@ -27,6 +30,11 @@ export default function Home() {
       <button onClick={handleApiCall}>Test Database Connection</button>
       <p>API Response: {apiResponse}</p>
       <Calendar />
+      {/* note: may want to change LocalizationProvider wrapper to larger scope if use date picker again */}
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <CreateEvent />
+      </LocalizationProvider>
+
       <div style={{ width: "500px", margin: "0 auto", paddingTop: "30px" }}>
         <h3>Login Website</h3>
         <Login />
