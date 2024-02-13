@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
 import eventSchema, { IEvent } from "@database/eventSchema";
+<<<<<<< HEAD
+=======
+import VolunteerForms from "@database/volunteerFormSchema";
+import VolunteerRoles from "@database/volunteerRoleSchema";
+>>>>>>> 29f0445de9630471aebcd55f1b63039017bf61e4
 
 type IParams = {
   params: {
@@ -55,3 +60,35 @@ export async function PUT(req: NextRequest, { params }: IParams) {
     return NextResponse.json("Internal Server Error", { status: 500 });
   }
 }
+<<<<<<< HEAD
+=======
+
+// delete
+
+export async function DELETE(req: NextRequest, { params }: IParams) {
+  await connectDB(); // function from db.ts
+  const { _id } = params;
+
+  try {
+    const events = await eventSchema.findOne({ _id: _id }).orFail(); 
+    const eventFormID = events.form; 
+    const eventRolesArray = events.roles; 
+    console.log("Array: " + eventRolesArray); 
+
+    await VolunteerForms.findByIdAndDelete(eventFormID); 
+
+    for (let i = 0; i < eventRolesArray.length; i++)
+      [
+        
+        await VolunteerRoles.findByIdAndDelete(eventRolesArray[i]),
+      ];
+
+    const eventToDelete = await eventSchema.deleteOne({ _id: _id }).orFail(); 
+
+    return NextResponse.json(eventToDelete);
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json("Unable to delete event.", { status: 404 });
+  }
+}
+>>>>>>> 29f0445de9630471aebcd55f1b63039017bf61e4
