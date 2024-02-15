@@ -59,3 +59,25 @@ export async function PUT(req: NextRequest, { params }: IParams) {
     return NextResponse.json("Internal Server Error", { status: 500 });
   }
 }
+
+/**
+ * DELETE API for deleting a volunteerForm
+ * @returns None
+ */
+export async function DELETE(req: NextRequest, { params }: IParams) {
+  await connectDB(); // function from db.ts
+  const { _id } = params;
+
+  try {
+    const volunteerFormToDelete = await volunteerFormSchema
+      .deleteOne({ _id: _id })
+      .orFail();
+
+    return NextResponse.json(volunteerFormToDelete);
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json("Unable to delete volunteerForm.", {
+      status: 404,
+    });
+  }
+}
