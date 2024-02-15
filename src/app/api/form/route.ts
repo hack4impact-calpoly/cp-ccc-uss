@@ -14,14 +14,15 @@ export async function POST(req: NextRequest) {
 
   try {
     const { eventId, questions }: IVolunteerForm = await req.json();
-    console.log(eventId, questions);
     if (eventId && Array.isArray(questions)) {
       for (const question of questions) {
         if (!question.question || !question.fieldType) {
-          console.error("Invalid request body - Missing required fields");
+          console.log("received request:", req);
+          // console.error("Invalid request body - Missing required fields");
           return NextResponse.json(
-            "Invalid request body - Missing required fields",
-            { status: 400 }
+            // "Invalid request body - Missing required fields",
+            // { status: 400 }
+            "received request:", req
           );
         }
       }
@@ -42,5 +43,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json("Invalid request body - Malformed JSON", {
       status: 400,
     });
+  }
+}
+
+/**
+ * GET API for retrieving all volunteerForms in database
+ * @returns None
+ */
+export async function GET(req: NextRequest) {
+  await connectDB();
+
+  try {
+    const volunteerForms = await volunteerFormSchema.find().orFail();
+    return NextResponse.json(volunteerForms);
+  } catch (err) {
+    return NextResponse.json("No volunteerForm found.", { status: 404 });
   }
 }
