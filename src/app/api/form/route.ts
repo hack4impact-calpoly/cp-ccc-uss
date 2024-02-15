@@ -17,25 +17,37 @@ export async function POST(req: NextRequest) {
     if (eventId && Array.isArray(questions)) {
       for (const question of questions) {
         if (!question.question || !question.fieldType) {
-          console.log("received request:", req);
           console.error("Invalid request body - Missing required fields");
           return NextResponse.json(
             "Invalid request body - Missing required fields",
             { status: 400 }
           );
         }
+        if (Array.isArray(question.options)) {
+          for (const option of question.options) {
+            if (typeof option != "string") {
+              console.error(
+                "Invalid request body - Incorrect type for options"
+              );
+              return NextResponse.json(
+                "Invalid request body - Incorrect type for options",
+                { status: 400 }
+              );
+            }
+          }
+        }
       }
+    }
 
-      const volunteerForm = { eventId, questions };
-      try {
-        const createdVolunteerForm = await volunteerFormSchema.create(
-          volunteerForm
-        );
-        return NextResponse.json(createdVolunteerForm, { status: 201 });
-      } catch (error) {
-        console.error("Error creating volunteerForm:", error);
-        return NextResponse.json("Internal Server Error", { status: 500 });
-      }
+    const volunteerForm = { eventId, questions };
+    try {
+      const createdVolunteerForm = await volunteerFormSchema.create(
+        volunteerForm
+      );
+      return NextResponse.json(createdVolunteerForm, { status: 201 });
+    } catch (error) {
+      console.error("Error creating volunteerForm:", error);
+      return NextResponse.json("Internal Server Error", { status: 500 });
     }
   } catch (error) {
     console.error("Error parsing request body:", error);
