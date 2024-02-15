@@ -30,7 +30,6 @@ export default function Home() {
         <h3>Login Website</h3>
         <Login />
       </div>
-      <UserEventDetails  params = {{_id: "65b8dd3819caa34c2bffa95e"}} />
     </main>
   );
 }
