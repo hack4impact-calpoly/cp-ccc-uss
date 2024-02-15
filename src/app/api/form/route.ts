@@ -18,11 +18,10 @@ export async function POST(req: NextRequest) {
       for (const question of questions) {
         if (!question.question || !question.fieldType) {
           console.log("received request:", req);
-          // console.error("Invalid request body - Missing required fields");
+          console.error("Invalid request body - Missing required fields");
           return NextResponse.json(
-            // "Invalid request body - Missing required fields",
-            // { status: 400 }
-            "received request:", req
+            "Invalid request body - Missing required fields",
+            { status: 400 }
           );
         }
       }
