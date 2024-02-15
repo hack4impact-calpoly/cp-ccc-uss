@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
 import entrySchema, { IVolunteerEntry } from "@database/volunteerEntrySchema";
-import VolunteerForms from "@database/volunteerFormSchema";
-import VolunteerRoles from "@database/volunteerRoleSchema";
+import volunteerSchema from "@database/volunteerSchema";
 
 type IParams = {
   params: {
@@ -64,7 +63,21 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
   await connectDB(); // function from db.ts
   const { _id } = params;
   try {
-    const entryToDelete = await entrySchema.deleteOne({ _id: _id }).orFail(); 
+    const entry = await entrySchema.findOne({ _id: _id }).orFail(); 
+    const volID = entry.volunteerId;
+
+    await volunteerSchema.findByIdAndUpdate(
+      volID,
+      { $pull: { entries: _id } }, //removes entry from volunteer.entries array
+      { new: true }
+    );
+    
+    const entryToDelete = await entrySchema.findOneAndDelete({ _id: _id }).orFail(); 
+    if (!entryToDelete) {
+      return NextResponse.json("Could not find the Volunteer Entry.", {
+        status: 404,
+      });
+    }
     return NextResponse.json(entryToDelete);
   } catch (err) {
     console.log(err);
