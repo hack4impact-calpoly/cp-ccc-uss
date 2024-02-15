@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
 import eventSchema, { IEvent } from "@database/eventSchema";
-<<<<<<< HEAD
-=======
 import VolunteerForms from "@database/volunteerFormSchema";
 import VolunteerRoles from "@database/volunteerRoleSchema";
->>>>>>> 29f0445de9630471aebcd55f1b63039017bf61e4
 
 type IParams = {
   params: {
@@ -60,8 +57,6 @@ export async function PUT(req: NextRequest, { params }: IParams) {
     return NextResponse.json("Internal Server Error", { status: 500 });
   }
 }
-<<<<<<< HEAD
-=======
 
 // delete
 
@@ -91,4 +86,3 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
     return NextResponse.json("Unable to delete event.", { status: 404 });
   }
 }
->>>>>>> 29f0445de9630471aebcd55f1b63039017bf61e4
