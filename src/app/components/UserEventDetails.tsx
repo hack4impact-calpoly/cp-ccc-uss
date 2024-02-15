@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react"
 import type { IEvent } from '../../database/eventSchema'
-import { ObjectId } from "mongoose"
+import style from "@styles/UserEventDetails.module.css"
+
 
 type IParams = {
     params: {
@@ -51,13 +52,18 @@ export default function UserEventDetails ({ params }: { params: { _id: string } 
         }
 
         return (
-            <div>
-                    <h1>{eventData.name}</h1>
-                    <h2>{date}</h2>
-                    <h2>{eventData.location}</h2>
-                    <h2>{eventData.description}</h2>
-                    <button>Sign Up</button>
+            <div className={style.modal}>
+                <h1 className={style.eventName}>{eventData.name}</h1>
+                <div className={style.details}>
+                    <h2 className={style.info}>Date: {date}</h2>
+                    <h2 className={style.info}>Location: {eventData.location}</h2>
+                    <h2 className={style.info}>Description: {eventData.description}</h2>
+                    <h2 className={style.info}>Volunteers <span className={style.moreDetails}>More Details</span></h2>
+                    <h2 className={style.info}>Open Volunteer Slots</h2>
+                    <button className={style.button}>Sign Up</button>
                 </div>
+                
+            </div>
         )
     } else {
         return (
