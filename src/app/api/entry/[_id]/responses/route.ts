@@ -8,7 +8,7 @@ type IParams = {
   };
 };
 
-// GET all VolunteerRoles for a specific volunteer entry
+// GET all Volunteer responses for a specific volunteer entry
 export async function GET(req: NextRequest, { params }: IParams) {
   await connectDB();  // function from db.ts
   const { _id } = params;
@@ -18,6 +18,6 @@ export async function GET(req: NextRequest, { params }: IParams) {
 
     return NextResponse.json(entry.responses);
   } catch (err) {
-    return NextResponse.json("No volunteer roles found.", { status: 404 });
+    return NextResponse.json("No volunteer responses found.", { status: 404 });
   }
 }

@@ -16,17 +16,11 @@ export async function GET(req: NextRequest, { params }: IParams) {
 
   try {
     const entry = await entrySchema.findOne({ _id: _id }).orFail();
-    const volunteerRolesID = entry.roles;
+    const volunteerRoles = entry.roles;
 
-    const volunteerRoles = [];
-    for (let i = 0; i < volunteerRolesID.length; i++) {   // finding each role
-      const role = await VolunteerRoles.findById(volunteerRolesID[i]);
-      if (role) {
-        volunteerRoles.push(role);
-      }
-    }
+    const volunteerRolesArr = await VolunteerRoles.find({ _id: { $in: volunteerRoles } });
 
-    return NextResponse.json(volunteerRoles);
+    return NextResponse.json(volunteerRolesArr);
 
   } catch (err) {
     return NextResponse.json("No volunteer roles found.", { status: 404 });
