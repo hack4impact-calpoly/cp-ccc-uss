@@ -28,8 +28,7 @@ export async function PUT(req: NextRequest, { params }: IParams) {
   try {
     // get Volunteer ID and structure
     const id = params._id;
-    const { name, email, languages, roles, entries }: IVolunteer =
-      await req.json();
+    const { name, email, languages, roles, entries }: IVolunteer = await req.json();
     const volunteer = { name, email, languages, roles, entries };
 
     if (volunteer) {
