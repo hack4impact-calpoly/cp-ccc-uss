@@ -28,7 +28,8 @@ export async function PUT(req: NextRequest, { params }: IParams) {
   try {
     // get Volunteer ID and structure
     const id = params._id;
-    const { name, email, languages, roles, entries }: IVolunteer = await req.json();
+    const { name, email, languages, roles, entries }: IVolunteer =
+      await req.json();
     const volunteer = { name, email, languages, roles, entries };
 
     if (volunteer) {
@@ -59,10 +60,10 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
     if (deleted) {
       return NextResponse.json("Successfully deleted volunteer");
     } else {
-      return NextResponse.json("Unable to delete volunteer");
+      return NextResponse.json("Unable to delete volunteer", { status: 400 });
     }
   } catch (err) {
     console.error(err);
-    return NextResponse.json("Could not delete the volunteer", { status: 409 });
+    return NextResponse.json("Could not delete the volunteer", { status: 400 });
   }
 }
