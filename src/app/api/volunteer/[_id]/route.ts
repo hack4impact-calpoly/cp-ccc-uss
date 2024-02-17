@@ -48,3 +48,22 @@ export async function PUT(req: NextRequest, { params }: IParams) {
     return NextResponse.json("Could not edit the volunteer", { status: 400 });
   }
 }
+
+// Delete a volunteer
+export async function DELETE(req: NextRequest, { params }: IParams) {
+  await connectDB();
+
+  const id = params._id;
+  try {
+    const deleted = await Volunteers.findByIdAndDelete(id);
+
+    if (deleted) {
+      return NextResponse.json("Successfully deleted volunteer");
+    } else {
+      return NextResponse.json("Unable to delete volunteer");
+    }
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json("Could not delete the volunteer", { status: 409 });
+  }
+}
