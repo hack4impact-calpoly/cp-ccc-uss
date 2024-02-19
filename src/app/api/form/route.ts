@@ -16,7 +16,13 @@ export async function POST(req: NextRequest) {
     const { eventId, questions }: IVolunteerForm = await req.json();
     if (eventId && Array.isArray(questions)) {
       for (const question of questions) {
-        if (!question.question || !question.fieldType) {
+        if (
+          !question.question ||
+          !question.fieldType ||
+          ((question.fieldType === "MULTI_SELECT" ||
+            question.fieldType === "MULTI_CHOICE") &&
+            !question.options)
+        ) {
           console.error("Invalid request body - Missing required fields");
           return NextResponse.json(
             "Invalid request body - Missing required fields",
