@@ -45,11 +45,12 @@ export async function PUT(req: NextRequest, { params }: IParams) {
     const volunteerForm = { eventId, questions };
 
     if (volunteerForm) {
-      const updatedEvent = await volunteerFormSchema.findByIdAndUpdate(
+      const updatedVolunteerForm = await volunteerFormSchema.findByIdAndUpdate(
         { _id },
+        { new: true },
         volunteerForm
       );
-      return NextResponse.json(updatedEvent, { status: 201 });
+      return NextResponse.json(updatedVolunteerForm, { status: 201 });
     } else {
       console.error("Invalid request body");
       return NextResponse.json("Invalid request body", { status: 400 });
