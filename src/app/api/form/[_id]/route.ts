@@ -3,6 +3,7 @@ import connectDB from "@database/db";
 import volunteerFormSchema, {
   IVolunteerForm,
 } from "@database/volunteerFormSchema";
+import eventSchema from "@database/eventSchema";
 
 type IParams = {
   params: {
@@ -70,14 +71,30 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
   const { _id } = params;
 
   try {
-    const volunteerFormToDelete = await volunteerFormSchema
-      .deleteOne({ _id: _id })
-      .orFail();
+    const event = await eventSchema.findOne({ form: _id });
+    if (!event) {
+      return NextResponse.json(
+        "Event not found - unable to delete form reference from event.",
+        { status: 404 }
+      );
+    }
+    event.form = "";
+    await event.save();
 
-    return NextResponse.json(volunteerFormToDelete);
+    if (event.form === "") {
+      const volunteerFormToDelete = await volunteerFormSchema
+        .deleteOne({ _id: _id })
+        .orFail();
+
+      return NextResponse.json(volunteerFormToDelete);
+    } else {
+      return NextResponse.json("Unable to delete volunteerForm.1", {
+        status: 404,
+      });
+    }
   } catch (err) {
     console.log(err);
-    return NextResponse.json("Unable to delete volunteerForm.", {
+    return NextResponse.json("Unable to delete volunteerForm2.", {
       status: 404,
     });
   }
