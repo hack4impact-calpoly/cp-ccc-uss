@@ -70,7 +70,7 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
       volID,
       { $pull: { entries: _id } }, //removes entry from volunteer.entries array
       { new: true }
-    );
+    ).orFail();
     
     const entryToDelete = await entrySchema.findOneAndDelete({ _id: _id }).orFail(); 
     if (!entryToDelete) {
