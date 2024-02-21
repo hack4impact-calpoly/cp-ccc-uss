@@ -2,8 +2,7 @@
 import React, { useState } from 'react';
 import Navbar from "@components/Navbar";
 import { useSession, signIn, signOut } from 'next-auth/react';
-import Login from './Login';
-import UserEventDetails from "@components/UserEventDetails"
+import Login from "./Login";
 
 export default function Home() {
   const [apiResponse, setApiResponse] = useState('');
