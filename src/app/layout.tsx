@@ -15,12 +15,14 @@ export default function RootLayout({
   children: React.ReactNode;
 } ) {
   return (
-    <Providers>
-      <NextAuthProvider>
-        <html lang="en">
-          <body>{children}</body>
-        </html>
-      </NextAuthProvider>
-    </Providers>
+    <html lang="en">
+      <body>
+        <Providers>
+          <NextAuthProvider>
+            {children}
+          </NextAuthProvider>
+        </Providers>
+      </body>
+    </html>
   );
 }
