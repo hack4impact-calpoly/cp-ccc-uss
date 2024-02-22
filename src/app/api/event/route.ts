@@ -14,8 +14,6 @@ export async function GET(req: NextRequest) {
   }
 }
 
-
-
 /**
  * POST API for creating an Event
  * @returns None

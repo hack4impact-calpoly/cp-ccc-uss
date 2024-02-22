@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Navbar from "@components/Navbar";
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Login from './Login';
+import Calendar from "@components/Calendar";
 
 export default function Home() {
   const [apiResponse, setApiResponse] = useState('');
@@ -25,6 +26,7 @@ export default function Home() {
       <h1>Home</h1>
       <button onClick={handleApiCall}>Test Database Connection</button>
       <p>API Response: {apiResponse}</p>
+      <Calendar />
       <div style={{ width: "500px", margin: "0 auto", paddingTop: "30px" }}>
         <h3>Login Website</h3>
         <Login />
