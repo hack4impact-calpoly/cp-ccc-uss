@@ -2,7 +2,9 @@
 import React, { useState } from 'react';
 import Navbar from "@components/Navbar";
 import { useSession, signIn, signOut } from 'next-auth/react';
-import Login from "./Login";
+import Login from './Login';
+import Calendar from "@components/Calendar";
+import { Button, ChakraProvider } from "@chakra-ui/react";
 
 export default function Home() {
   const [apiResponse, setApiResponse] = useState('');
@@ -23,8 +25,10 @@ export default function Home() {
     <main>
       <Navbar />
       <h1>Home</h1>
-      <button onClick={handleApiCall}>Test Database Connection</button>
+      <p>The following button is styled with ChakraUI:</p>
+      <Button colorScheme="blue" onClick={handleApiCall}>Test DB Connection</Button>
       <p>API Response: {apiResponse}</p>
+      <Calendar />
       <div style={{ width: "500px", margin: "0 auto", paddingTop: "30px" }}>
         <h3>Login Website</h3>
         <Login />
