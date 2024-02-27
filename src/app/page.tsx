@@ -4,6 +4,7 @@ import Navbar from "@components/Navbar";
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Login from './Login';
 import Calendar from "@components/Calendar";
+import EventSignUp from '@components/EventSignUp';
 
 export default function Home() {
   const [apiResponse, setApiResponse] = useState('');
