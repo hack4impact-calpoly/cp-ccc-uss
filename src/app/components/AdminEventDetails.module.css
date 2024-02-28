@@ -8,6 +8,7 @@
     font-family: 'Avenir';
     padding-left: 37px;
     padding-right: 37px;
+    overflow: auto;
 }
 
 .eventName {
@@ -47,6 +48,8 @@
     font-size: 30px;
     margin-top: 15px;
     margin-bottom: 15px;
+    display: flex;
+    /* align-items: start; */
 }
 
 .eventRoles {
