@@ -5,6 +5,7 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import Login from './Login';
 import Calendar from "@components/Calendar";
 import { Button, ChakraProvider } from "@chakra-ui/react";
+import EventSignUp from '@components/EventSignUp';
 
 
 export default function Home() {
@@ -26,6 +27,7 @@ export default function Home() {
     <main>
       <Navbar />
       <h1>Home</h1>
+      <EventSignUp id="idk" />
       <p>The following button is styled with ChakraUI:</p>
       <Button colorScheme="blue" onClick={handleApiCall}>Test DB Connection</Button>
       <p>API Response: {apiResponse}</p>
