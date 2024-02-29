@@ -20,7 +20,7 @@ export default function Home() {
       setApiResponse('Failed to call API');
     }
   };
-
+  
   return (
     <main>
       <Navbar />
