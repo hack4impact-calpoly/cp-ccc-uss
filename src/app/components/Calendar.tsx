@@ -52,7 +52,8 @@ const Calendar = ({admin = false}) => {
     convertEventsToFCFormat();
   }, [events])
 
-
+  const [selectedEventId, setSelectedEventId] = useState('');
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
 
   return (
     <FullCalendar
