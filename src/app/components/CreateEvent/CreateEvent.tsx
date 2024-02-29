@@ -5,6 +5,7 @@ import styles from './CreateEvent.module.css'
 import { Input } from '@chakra-ui/react'
 import { Textarea } from '@chakra-ui/react'
 import { Button, ButtonGroup } from '@chakra-ui/react'
+import { Heading } from '@chakra-ui/react'
 
 function CreateEvent() {
     const[eventName, setEventName] = useState('')
@@ -78,7 +79,9 @@ function CreateEvent() {
 
     return (
         <div /* class={styles.event-container}*/>
-            <h1> Create Event</h1>
+            <Heading as='h3' size='lg'>
+                Create Event
+            </Heading>
             <div>
                 <Input 
                     placeholder='Event Name'
@@ -90,7 +93,7 @@ function CreateEvent() {
             size="md"
             type="date"
             onChange={handleChangeDate}/>
-            <div>
+            {/* <div>
                 <Input 
                     placeholder='Start Time'
                     onChange={handleChangeStart}
@@ -99,7 +102,7 @@ function CreateEvent() {
                     placeholder='End Time'
                     onChange={handleChangeStart}
                  />
-            </div>
+            </div> */}
             <div>
                  <Textarea 
                     placeholder='Event Description'
