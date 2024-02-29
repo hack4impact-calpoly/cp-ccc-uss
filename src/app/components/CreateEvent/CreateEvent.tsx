@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import TextField from '@mui/material/TextField';
-import { DatePicker } from '@mui/x-date-pickers';
-import IconButton from '@mui/material/IconButton';
-import { AddCircle } from '@mui/icons-material';
-import { CreateRounded } from '@mui/icons-material';
-import Button from '@mui/material/Button';
 import axios from 'axios';
 import { Dayjs } from 'dayjs';
-
+import styles from './CreateEvent.module.css'
+import { Input } from '@chakra-ui/react'
+import { Textarea } from '@chakra-ui/react'
+import { Button, ButtonGroup } from '@chakra-ui/react'
 
 function CreateEvent() {
     const[eventName, setEventName] = useState('')
@@ -37,7 +34,7 @@ function CreateEvent() {
     }
 
     const handleChangeDate = (e: any) => {
-        setDate(e)
+        setDate(e.target.value)
         console.log(e)
     }
 
@@ -80,47 +77,41 @@ function CreateEvent() {
       };
 
     return (
-        <div>
+        <div /* class={styles.event-container}*/>
             <h1> Create Event</h1>
             <div>
-                <TextField 
-                    id="outlined-basic" 
-                    label="Event Name"
-                    variant="outlined" 
+                <Input 
+                    placeholder='Event Name'
                     onChange={handleChangeName}
-                />
+                 />
             </div>
-            <DatePicker 
-                value={date} 
-                onChange={handleChangeDate} />
+            <Input
+            placeholder="Select Date and Time"
+            size="md"
+            type="date"
+            onChange={handleChangeDate}/>
             <div>
-                <TextField 
-                    id="outlined-basic" 
-                    label="Start Time"
-                    variant="outlined" 
+                <Input 
+                    placeholder='Start Time'
                     onChange={handleChangeStart}
-                />
-                <TextField 
-                    id="outlined-basic" 
-                    label="End Time"
-                    variant="outlined" 
-                    onChange={handleChangeEnd}
-                />
+                 />
+                <Input 
+                    placeholder='End Time'
+                    onChange={handleChangeStart}
+                 />
             </div>
             <div>
-                <TextField 
-                    id="outlined-basic" 
-                    label="Event Description"
-                    variant="outlined" 
+                 <Textarea 
+                    placeholder='Event Description'
                     onChange={handleChangeDescript}
                 />
             </div>
             <div>
-            <Button variant="outlined" startIcon={<AddCircle />}>
-                Add Question
+            <Button colorScheme='teal'>
+                    Add Question
             </Button>
-            <Button variant="outlined" startIcon={<CreateRounded />} onClick={handleSubmit}>
-                Create Event
+            <Button colorScheme='teal' onClick={handleSubmit}>
+                    Create Event 
             </Button>
             </div>
         </div>

@@ -7,6 +7,7 @@ import Calendar from "@components/Calendar";
 import CreateEvent from '@components/CreateEvent/CreateEvent';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { ChakraProvider } from '@chakra-ui/react'
 
 export default function Home() {
   const [apiResponse, setApiResponse] = useState('');
@@ -32,7 +33,9 @@ export default function Home() {
       <Calendar />
       {/* note: may want to change LocalizationProvider wrapper to larger scope if use date picker again */}
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <CreateEvent />
+        <ChakraProvider>
+          <CreateEvent />
+        </ChakraProvider>
       </LocalizationProvider>
 
       <div style={{ width: "500px", margin: "0 auto", paddingTop: "30px" }}>
