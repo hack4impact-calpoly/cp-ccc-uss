@@ -78,7 +78,7 @@ function CreateEvent() {
       };
 
     return (
-        <div /* class={styles.event-container}*/>
+        <div className={styles.event}>
             <Heading as='h3' size='lg'>
                 Create Event
             </Heading>
