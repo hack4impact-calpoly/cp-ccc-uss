@@ -1,92 +1,89 @@
 import React, {useState} from 'react';
 import type { IVolunteerForm } from '@database/volunteerFormSchema'; 
-
-import { AddCircle } from '@mui/icons-material';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
+import { IFormQuestion } from '@database/volunteerFormSchema'
 
 
+export default function AddQuestions(props: { questions: IFormQuestion[], setQuestions: Function }) {
 
-export default function AddQuestions(props: IVolunteerForm) {
-    const [inputValue, setInputValue] = useState('');
-    const [fieldType, setFieldType] = useState('Multiple Choice');
-    const [options, setOptions] = useState<string[]>([]);
     const [currentOption, setCurrentOption] = useState('');
-    const [finalized, setFinalized] = useState(false);
-    const [clickableOption, setClickableOption] = useState('');
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const updatedQuestions = [...props.questions];
+        updatedQuestions[index].question = e.target.value;
+        props.setQuestions(updatedQuestions);
 
-
-    const handleChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
-        setInputValue(e.target.value);
       };
-      
-    const handleOptionChange = (e: { target: { value: any; }; }) => {
-    setCurrentOption(e.target.value);
-    };    
-
-    const handleFieldTypeChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
-        setFieldType(e.target.value);
-      };
-      
-    const handleAddOption = () => {
-
-        setOptions((options) => [...options, currentOption]);
-        setCurrentOption('');
     
-    };
+    const handleFieldTypeChange = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+        const updatedQuestions = [...props.questions];
+        updatedQuestions[index].fieldType = e.target.value;
+        props.setQuestions(updatedQuestions);
+      };
 
-    const handleCircleClick = () => {
-        if (finalized) {
+      const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setCurrentOption(e.target.value);
+      }
+    
 
-        setOptions((options) => [...options, clickableOption]);
-        setCurrentOption('');
-
+      const handleAddOption = (index: number) => {
+        const updatedQuestions = [...props.questions];
+    
+        if (updatedQuestions[index].fieldType === 'Multiple Choice') {
+          updatedQuestions[index].options = [
+            ...(updatedQuestions[index].options || []), 
+            currentOption
+          ];
+    
+          props.setQuestions(updatedQuestions);
+          setCurrentOption('')
         }
-    }
-    
+      }
+
+
     return(
     <div>
-         {//<Button variant="outlined" startIcon={<AddCircle />}></Button>
-            }
+        {props.questions.map((question, index) => (
 
-        <input 
-            type="text" 
-            value={inputValue}
-            placeholder="Enter Question"
-            onChange={handleChange}
-        />
-        <select value={fieldType} onChange={handleFieldTypeChange}>
-            <option value="Multiple Choice">Multiple Choice</option>
-            <option value="Short Answer">Short Answer</option>
-        </select>
+            <div key={index}>
 
-        <div>
-            {fieldType == "Multiple Choice" ?         
-            <div>
-                <input
-                    type="text"
-                    value={currentOption}
-                    onChange={handleOptionChange}
-                    placeholder="Type an option..."
+                <input 
+                    type="text" 
+                    value={question.question}
+                    placeholder="Enter Question"
+                    onChange={(e) => handleInputChange(e, index)}
                 />
-                <button onClick={handleAddOption}>Add Option</button>
-                <ul>
-                    {options.map((option, index) => (
-                    <li key={index}>
-                        {option}
-                        {//maybe check if finalized and if it is then we can add clickable circles
-                        }
-                    </li>
-                    ))}
-                </ul>
-            </div> : <div><h1>Short Answer</h1></div>}
+                <select value={question.fieldType} onChange={(e) => handleFieldTypeChange(e, index)}>
+                    <option value="Multiple Choice">Multiple Choice</option>
+                    <option value="Short Answer">Short Answer</option>
+                </select>
 
+                <div>
+                    {question.fieldType == "Multiple Choice" ?         
+                    <div>
+                        <input
+                            type="text"
+                            value={currentOption}
+                            onChange={(e) => handleOptionChange(e)}
+                            placeholder="Type an option..."
+                        />
+                            <button onClick={() => handleAddOption(index)}>
+                                Add Option
+                            </button>
+                        
+                        <ul>
+                            {question.options?.map((option, opIndex) => (
+                            <li key={opIndex}>
+                                {option}
+                            </li>
+                            ))}
+                        </ul>
+                    </div> : <div><h1>Short Answer</h1></div>}
 
-        </div>
+                </div>
+
+            </div>
+            ))}
     </div>
     );
 }
+

@@ -4,9 +4,13 @@ import Navbar from "@components/Navbar";
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Login from './Login';
 import AddQuestions from "@components/AddQuestions/AddQuestions"
+import { IFormQuestion } from '@database/volunteerFormSchema'
+
+
 export default function Home() {
   const [apiResponse, setApiResponse] = useState('');
   const { data, status } = useSession();
+  const [questions, setQuestions] = useState<IFormQuestion[]>([])
 
   const handleApiCall = async () => {
     try {
@@ -19,6 +23,16 @@ export default function Home() {
     }
   };
 
+  const addQuestion = () => {
+    // Create an empty question and append it to the questions array
+    const emptyQuestion: IFormQuestion = {
+      question: '',
+      fieldType: 'Multiple Choice', // Set default fieldType or adjust as needed
+      options: [],
+    };
+    setQuestions((prevQuestions) => [...prevQuestions, emptyQuestion]);
+  };
+
   return (
     <main>
       <Navbar />
@@ -29,7 +43,10 @@ export default function Home() {
         <h3>Login Website</h3>
         <Login />
       </div>
-      <AddQuestions eventId={''} questions={[]}/>
+      <AddQuestions questions={questions} setQuestions={setQuestions}/>
+      <button onClick={addQuestion}>add questions</button>
+      {//whenever button is clicked, new empty question should be appended to the list
+      }
     </main>
   );
 }
