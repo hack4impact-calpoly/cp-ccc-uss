@@ -17,7 +17,7 @@ interface FullCalendarEvent {
 
 
 const Calendar = ({admin = false}) => {
-  const [events, setEvents] = useState <IEvent[] | null>(null);
+  const [events, setEvents] = useState<IEvent[]>([]);
   const [fullCalendarEvents, setFullCalendarEvents] = useState<FullCalendarEvent[]>([]);
 
   //get all events on first render
@@ -43,7 +43,7 @@ const Calendar = ({admin = false}) => {
         const FullCalendarEvents = events.map(event => ({
           id: event._id,
           title: event.name,
-          start: event.date //start is the date field for the full calendar (I Think)
+          start: event.date //start is the date field for the full calendar 
         }))
         setFullCalendarEvents(FullCalendarEvents);
       }
@@ -62,14 +62,6 @@ const Calendar = ({admin = false}) => {
       selectable
       initialView='dayGridMonth'
       events = {fullCalendarEvents}
-
-    //I didn't want to delete this testing code in case it was important
-    //   events= {
-    //     [
-    //     { title: 'Test 1', allDay: false, date: '2024-01-25T08:33:33', url: "/test" },
-    //     { title: 'Test 2', date: '2024-01-24T06:33:33' }
-    //   ]
-    // }
     />
   );
 };
