@@ -46,17 +46,22 @@ export default function EventSignUp({ id }: IParams) {
 
   async function handleEventInput(eventID: String) {
     try {
-      const selectedEvent = events.filter((e) => e._id === eventID);
+      const selectedEvent = events.filter((e) => e._id === eventID); 
 
-      console.log(selectedEvent); //has what I want
-      setEvent(selectedEvent[0]);
-      console.log(event); // is null
+      console.log(selectedEvent[0]); //good log
+      setEvent(selectedEvent[0]); // is not doing what I want, event is still null after
+      console.log(event); // bad log, is null
 
-      
-      /* Now that we have an event, we can get each of the actual roles we want instead of just ID's */
-      // setRoles(data.roles);
-      // roles.map(roleID => getRole(roleID));
+
+      /* Now that we have an event, we can get each of the actual roles we want instead of just using the ID's 
+      so that we can display role names*/
+      // setRoles(selectedEvent[0].roles);
+      // roles.map(roleID => getRole(roleID)); /
+      /* ^^^Plan: Turn list of roleID's into role Objects 
+      which will be used in the Select Role dropdown */
       // console.log(roles);
+
+      /* ****** From here, the roles section would be implemented similarly to the events, got to get the previous part working, though */
     } catch (err: unknown) {
       console.error("Error:", err);
       setEvent(null);
@@ -88,12 +93,12 @@ export default function EventSignUp({ id }: IParams) {
             variant="filled"
             placeholder="Select Event"
             onChange={(e) => {
-              handleEventInput(e.target.value);
+              handleEventInput(e.target.value); //Once an event option is picked, call this function with the eventID as arg
             }}
           >
             {events &&
               events.map((event) => (
-                <option key={event._id} value={event._id}>
+                <option key={event._id} value={event._id}> {/* whatever value equals is what onChange e.target.value will be */}
                   {event.name}
                 </option>
               ))}
@@ -105,7 +110,7 @@ export default function EventSignUp({ id }: IParams) {
           <h2>No events found to sign up for.</h2>
         </div>
       )}
-      {event ? (
+      {event ? ( //Do not show this section until there is an event picked
         <div>
           <Select variant="filled" placeholder="Select Role">
             {roles &&
@@ -119,8 +124,8 @@ export default function EventSignUp({ id }: IParams) {
       ) : (
         <div></div>
       )}
-      {/* {role ? <div></div> : <div></div>} This is for shift
-        {event ? <div></div> : <div></div>} This is for questions  */}
+      {/* {role ? <div></div> : <div></div>} This is for shifts, //Do not show this section until there is a role picked
+        {event ? <div></div> : <div></div>} This is for questions, //Do not show this section until there is an event picked */}
     </>
   );
 }
