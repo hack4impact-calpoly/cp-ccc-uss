@@ -1,55 +1,39 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios';
-import { Dayjs } from 'dayjs';
 import styles from './CreateEvent.module.css'
 import { Input } from '@chakra-ui/react'
 import { Textarea } from '@chakra-ui/react'
 import { Button, ButtonGroup } from '@chakra-ui/react'
 import { Heading } from '@chakra-ui/react'
+import { IFormQuestion, IVolunteerForm } from '@database/volunteerFormSchema';
+import { IVolunteerRole } from '@database/volunteerRoleSchema';
 
 function CreateEvent() {
     const[eventName, setEventName] = useState('')
-    const[date, setDate] = React.useState<Dayjs | null>(null);
-    const[startTime, setStartTime] = useState('')
-    const[endTime, setEndTime] = useState('')
+    const[date, setDate] = useState<Date | null>(null);
     const[description, setDescription] = useState('')
-    const[questions, setQuestions] = useState('')
-    const[roles, setRoles] = useState(['default role'])
-    const[form, setForm] = useState('default form')
+    const[questions, setQuestions] = useState<IFormQuestion[]>([])
+    const[roles, setRoles] = useState<IVolunteerRole[]>([])
     const[location, setLocation] = useState('default location')
     
     const handleChangeName = (e: any) => {
         setEventName(e.target.value)
     }
 
-    const handleChangeStart = (e: any) => {
-        setStartTime(e.target.value)
-    }
-
-    const handleChangeEnd = (e: any) => {
-        setEndTime(e.target.value)
-    }
-
-    const handleChangeDescript = (e: any) => {
+    const handleChangeDesc = (e: any) => {
         setDescription(e.target.value)
     }
 
     const handleChangeDate = (e: any) => {
         setDate(e.target.value)
-        console.log(e)
     }
 
-    //post request for all the event data 
     const handleSubmit = async () => {
+        // POST each role
+
+        // compile questions into VolunteerForm, POST form
+
+        // POST event with role id's and form id
         try {
-            console.log('Event Name:', eventName);
-            console.log('Start:', startTime);
-            console.log('End:', endTime);
-            console.log('Date:', date);
-            console.log('Roles:', roles);
-            console.log('Description:', description);
-            console.log('Location:', location);
-            console.log('Form:', form);
           const response = await fetch('/api/event', {
             method: 'POST',
             headers: {
@@ -58,16 +42,15 @@ function CreateEvent() {
             body: JSON.stringify({
               name: eventName,
               date: date,
-              roles: roles,
+              roles: ['roleId1', 'roleId2'],
               description: description,
               location: location,
-              form: form,
+              form: "formId"
             }),
           });
       
           if (response.ok) {
             const createdEvent = await response.json();
-            console.log(createdEvent);
           } else {
             const err = await response.text();
             console.error('Error creating event:', err);
@@ -93,26 +76,13 @@ function CreateEvent() {
             size="md"
             type="date"
             onChange={handleChangeDate}/>
-            {/* <div>
-                <Input 
-                    placeholder='Start Time'
-                    onChange={handleChangeStart}
-                 />
-                <Input 
-                    placeholder='End Time'
-                    onChange={handleChangeStart}
-                 />
-            </div> */}
             <div>
                  <Textarea 
                     placeholder='Event Description'
-                    onChange={handleChangeDescript}
+                    onChange={handleChangeDesc}
                 />
             </div>
             <div>
-            <Button colorScheme='teal'>
-                    Add Question
-            </Button>
             <Button colorScheme='teal' onClick={handleSubmit}>
                     Create Event 
             </Button>
