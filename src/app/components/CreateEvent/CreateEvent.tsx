@@ -9,7 +9,7 @@ import { IVolunteerRole } from '@database/volunteerRoleSchema';
 
 function CreateEvent() {
     const[eventName, setEventName] = useState('')
-    const[date, setDate] = useState<Date | null>(null);
+    const[date, setDate] = useState<Date>(new Date());
     const[description, setDescription] = useState('')
     const[questions, setQuestions] = useState<IFormQuestion[]>([])
     const[roles, setRoles] = useState<IVolunteerRole[]>([])
@@ -25,6 +25,15 @@ function CreateEvent() {
 
     const handleChangeDate = (e: any) => {
         setDate(e.target.value)
+    }
+
+    const clearInputs = () => {
+        setEventName('');
+        setDate(new Date());
+        setDescription('');
+        setQuestions([]);
+        setRoles([]);
+        setLocation('default location')
     }
 
     const handleSubmit = async () => {
@@ -49,8 +58,9 @@ function CreateEvent() {
             }),
           });
       
-          if (response.ok) {
+          if (response.status == 201) {
             const createdEvent = await response.json();
+            clearInputs();
           } else {
             const err = await response.text();
             console.error('Error creating event:', err);
@@ -68,6 +78,7 @@ function CreateEvent() {
             <div>
                 <Input 
                     placeholder='Event Name'
+                    value={eventName}
                     onChange={handleChangeName}
                  />
             </div>
@@ -75,10 +86,12 @@ function CreateEvent() {
             placeholder="Select Date and Time"
             size="md"
             type="date"
+            value={new Date(date).toLocaleDateString('en-CA')}
             onChange={handleChangeDate}/>
             <div>
                  <Textarea 
                     placeholder='Event Description'
+                    value={description}
                     onChange={handleChangeDesc}
                 />
             </div>
