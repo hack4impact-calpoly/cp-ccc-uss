@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import type { IEvent } from "../../database/eventSchema";
+import type { IVolunteerRole } from "../../database/volunteerRoleSchema";
 import { Input, Radio, RadioGroup, Select } from "@chakra-ui/react";
 import style from "@styles/EventSignUp.module.css";
 
@@ -13,7 +14,7 @@ export default function EventSignUp({ id }: IParams) {
   const [email, setEmail] = useState("");
   const [events, setEvents] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState<IVolunteerRole | null>(null);
   const [questions, setQuestions] = useState([]);
 
   /* as soon as event state is changed, whole page reloads  */
@@ -37,7 +38,7 @@ export default function EventSignUp({ id }: IParams) {
   async function getRole(roleID: String) {
     const response = await fetch(`http://localhost:3000/role/${roleID}`);
     if (!response.ok) {
-      throw new Error(`Failed to event role. Status: ${response.status}`);
+      throw new Error(`Failed to fetch event role. Status: ${response.status}`);
     }
     const data = await response.json();
     return data;
@@ -45,17 +46,13 @@ export default function EventSignUp({ id }: IParams) {
 
   async function handleEventInput(eventID: String) {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/event/${eventID}`
-      );
-      if (!response.ok) {
-        throw new Error(`Failed to fetch event. Status: ${response.status}`);
-      }
-      const data = await response.json();
-      console.log(data);
-      setEvent(data);
-      console.log(event);
+      const selectedEvent = events.filter((e) => e._id === eventID);
 
+      console.log(selectedEvent); //has what I want
+      setEvent(selectedEvent[0]);
+      console.log(event); // is null
+
+      
       /* Now that we have an event, we can get each of the actual roles we want instead of just ID's */
       // setRoles(data.roles);
       // roles.map(roleID => getRole(roleID));
@@ -105,12 +102,12 @@ export default function EventSignUp({ id }: IParams) {
       ) : (
         <div>
           <h1>Event Sign Up</h1>
-          <h2>No Events found.</h2>
+          <h2>No events found to sign up for.</h2>
         </div>
       )}
       {event ? (
         <div>
-          <Select variant="filled" placeholder="Select Roles">
+          <Select variant="filled" placeholder="Select Role">
             {roles &&
               roles.map((role) => (
                 <option key={role._id} value={role._id}>
