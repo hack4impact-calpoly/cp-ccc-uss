@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import type { IEvent } from "../../database/eventSchema";
 import type { IVolunteerRole } from "../../database/volunteerRoleSchema";
-import { Input, Radio, RadioGroup, Select } from "@chakra-ui/react";
+import { Input, Select } from "@chakra-ui/react";
 import style from "@styles/EventSignUp.module.css";
 
 type IParams = {
@@ -113,7 +113,7 @@ export default function EventSignUp({ id }: IParams) {
       {event ? ( //Do not show this section until there is an event picked
         <div>
           <Select variant="filled" placeholder="Select Role">
-            {roles &&
+            {roles.length > 0 &&
               roles.map((role) => (
                 <option key={role._id} value={role._id}>
                   {role.name}
