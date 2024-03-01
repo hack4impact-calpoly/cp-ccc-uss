@@ -11,16 +11,17 @@ export default function EventSignUp({ id }: IParams) {
   const [event, setEvent] = useState<IEvent | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState([]);
   const [roles, setRoles] = useState([]);
+  const [role, setRole] = useState("");
   const [questions, setQuestions] = useState([]);
+
   /* as soon as event state is changed, whole page reloads  */
   /*When looking to hide then show, check if event has been set, if not th4en don't show. If ithas, then show rest */
 
   async function fetchEvents() {
     try {
       const response = await fetch(`http://localhost:3000/api/event`);
-      console.log(response);
       if (!response.ok) {
         throw new Error(`Failed to fetch events. Status: ${response.status}`);
       }
@@ -30,6 +31,38 @@ export default function EventSignUp({ id }: IParams) {
     } catch (err: unknown) {
       console.error("Error:", err);
       setEvents([]);
+    }
+  }
+
+  async function getRole(roleID: String) {
+    const response = await fetch(`http://localhost:3000/role/${roleID}`);
+    if (!response.ok) {
+      throw new Error(`Failed to event role. Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  }
+
+  async function handleEventInput(eventID: String) {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/event/${eventID}`
+      );
+      if (!response.ok) {
+        throw new Error(`Failed to fetch event. Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log(data);
+      setEvent(data);
+      console.log(event);
+
+      /* Now that we have an event, we can get each of the actual roles we want instead of just ID's */
+      // setRoles(data.roles);
+      // roles.map(roleID => getRole(roleID));
+      // console.log(roles);
+    } catch (err: unknown) {
+      console.error("Error:", err);
+      setEvent(null);
     }
   }
 
@@ -54,7 +87,13 @@ export default function EventSignUp({ id }: IParams) {
             onChange={(e) => setEmail(e.target.value)}
             className={style.inputLine}
           />
-          <Select placeholder="Select Event">
+          <Select
+            variant="filled"
+            placeholder="Select Event"
+            onChange={(e) => {
+              handleEventInput(e.target.value);
+            }}
+          >
             {events &&
               events.map((event) => (
                 <option key={event._id} value={event._id}>
@@ -69,9 +108,22 @@ export default function EventSignUp({ id }: IParams) {
           <h2>No Events found.</h2>
         </div>
       )}
-      {/* {event ? <div></div> : <div></div>} This is for roles
-      {role ? <div></div> : <div></div>} This is for shift
-      {event ? <div></div> : <div></div>} This is for questions */}
+      {event ? (
+        <div>
+          <Select variant="filled" placeholder="Select Roles">
+            {roles &&
+              roles.map((role) => (
+                <option key={role._id} value={role._id}>
+                  {role.name}
+                </option>
+              ))}
+          </Select>
+        </div>
+      ) : (
+        <div></div>
+      )}
+      {/* {role ? <div></div> : <div></div>} This is for shift
+        {event ? <div></div> : <div></div>} This is for questions  */}
     </>
   );
 }
