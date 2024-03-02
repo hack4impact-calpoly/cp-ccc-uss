@@ -19,6 +19,8 @@ interface FullCalendarEvent {
 const Calendar = ({admin = false}) => {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [fullCalendarEvents, setFullCalendarEvents] = useState<FullCalendarEvent[]>([]);
+  const [selectedEventId, setSelectedEventId] = useState('');
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
 
   //get all events on first render
   useEffect(() => {
@@ -51,9 +53,6 @@ const Calendar = ({admin = false}) => {
 
     convertEventsToFCFormat();
   }, [events])
-
-  const [selectedEventId, setSelectedEventId] = useState('');
-  const [detailModalOpen, setDetailModalOpen] = useState(false);
 
   return (
     <FullCalendar
