@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { IFormQuestion } from '@database/volunteerFormSchema'
 import style from "./AddQuestions.module.css";
 
@@ -12,6 +12,9 @@ import style from "./AddQuestions.module.css";
 export default function AddQuestions(props: { questions: IFormQuestion[], setQuestions: Function }) {
 
     const [currentOption, setCurrentOption] = useState('');
+    useEffect(() => {
+      console.log('Questions state changed:', props.questions);
+  }, [props.questions]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const updatedQuestions = [...props.questions];

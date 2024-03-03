@@ -9,7 +9,8 @@ import { IFormQuestion } from '@database/volunteerFormSchema'
 export default function Home() {
   const [apiResponse, setApiResponse] = useState('');
   const { data, status } = useSession();
-
+  const [questions, setQuestions] = useState<IFormQuestion[]>([])
+  
   const handleApiCall = async () => {
     try {
       const response = await fetch('/api/example/');
@@ -31,7 +32,7 @@ export default function Home() {
         <h3>Login Website</h3>
         <Login />
       </div>
-
+      <AddQuestions questions={questions} setQuestions={setQuestions}/>
     </main>
   );
 }
