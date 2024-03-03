@@ -37,7 +37,7 @@ export default function AddQuestions(props: { questions: IFormQuestion[], setQue
       const handleAddOption = (index: number) => {
         const updatedQuestions = [...props.questions];
     
-        if (updatedQuestions[index].fieldType === 'Multiple Choice') {
+        if (updatedQuestions[index].fieldType === 'MULTI_SELECT') {
           updatedQuestions[index].options = [
             ...(updatedQuestions[index].options || []), 
             currentOption
@@ -52,7 +52,7 @@ export default function AddQuestions(props: { questions: IFormQuestion[], setQue
         // Create an empty question and append it to the questions array
         const emptyQuestion: IFormQuestion = {
           question: '',
-          fieldType: 'Multiple Choice', // Set default fieldType or adjust as needed
+          fieldType: 'MULTI_SELECT', // Set default fieldType or adjust as needed
           options: [],
         };
         props.setQuestions((prevQuestions: any) => [...prevQuestions, emptyQuestion]);
@@ -63,9 +63,7 @@ export default function AddQuestions(props: { questions: IFormQuestion[], setQue
     return(
     <div className={style.container}>
         {props.questions.map((question, index) => (
-
             <div key={index} className={style.question}>
-
                 <input 
                     type="text" 
                     value={question.question}
@@ -73,12 +71,12 @@ export default function AddQuestions(props: { questions: IFormQuestion[], setQue
                     onChange={(e) => handleInputChange(e, index)}
                 />
                 <select value={question.fieldType} onChange={(e) => handleFieldTypeChange(e, index)}>
-                    <option value="Multiple Choice">Multiple Choice</option>
-                    <option value="Short Answer">Short Answer</option>
+                    <option value="MULTI_SELECT">Multiple Choice</option>
+                    <option value="SHORT_ANSWER">Short Answer</option>
                 </select>
 
                 <div>
-                    {question.fieldType == "Multiple Choice" ?         
+                    {question.fieldType == "MULTI_SELECT" ?         
                     <div>
                         <input
                             type="text"
