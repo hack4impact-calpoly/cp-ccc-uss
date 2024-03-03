@@ -83,6 +83,19 @@ export default function AddQuestions(props: {
     }
   };
 
+  const handleDeleteOption = (questionIndex: number, optionIndex: number) => {
+    const updatedQuestions = [...props.questions];
+    const question = updatedQuestions[questionIndex];
+
+    if (question.options) {
+      //splice here removes the option from the array at index optionIndex
+      question.options.splice(optionIndex, 1);
+      props.setQuestions(updatedQuestions);
+    } else {
+      console.error("Options are undefined");
+    }
+  };
+
   const addQuestion = () => {
     const emptyQuestion: IFormQuestion = {
       question: "",
@@ -126,6 +139,9 @@ export default function AddQuestions(props: {
                           handleOptionInputChange(e, index, opIndex)
                         }
                       />
+                      <button onClick={() => handleDeleteOption(index, opIndex)}>
+                        X
+                      </button>
                     </li>
                   ))}
                   <li>
