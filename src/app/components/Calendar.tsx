@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useRef } from "react";
 import { EventClickArg } from "@fullcalendar/core/index.js";
 import { EventInstance } from "@fullcalendar/core/internal";
-import {Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton} from '@chakra-ui/react'
+import {Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton, Button} from '@chakra-ui/react'
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
@@ -40,11 +40,17 @@ const Calendar = ({admin = false}) => {
     fetchEvents();
   }, []);
   
+  //updates state varibales
   const handleEventClick = (info: EventClickArg) => {
     setSelectedEventId(info.event.id);
     setDetailModalOpen(true);
+    console.log(detailModalOpen)
   };
   
+  const handleCloseModal = () => {
+    setDetailModalOpen(false);
+  }
+
   // useEffect to convert events to FullCalendar compatible events whenever events array changes
   useEffect(() => {
     const convertEventsToFCFormat = () => {
@@ -62,14 +68,33 @@ const Calendar = ({admin = false}) => {
   }, [events])
 
   return (
-    <FullCalendar
-      plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
-      editable
-      selectable
-      initialView='dayGridMonth'
-      events = {fullCalendarEvents}
-      eventClick={handleEventClick}
-    />
+    <>
+      <FullCalendar
+        plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
+        editable
+        selectable
+        initialView='dayGridMonth'
+        events = {fullCalendarEvents}
+        eventClick={handleEventClick}
+      />
+
+      <Modal isOpen={detailModalOpen} onClose={handleCloseModal}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Modal Title</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          
+        </ModalBody>
+
+        <ModalFooter>
+          <Button colorScheme='blue' mr={3} onClick={handleCloseModal}>
+            Close
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  </>
   );
 };
 
