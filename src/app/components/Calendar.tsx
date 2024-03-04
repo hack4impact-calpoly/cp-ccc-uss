@@ -6,7 +6,9 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import type { IEvent } from "@database/eventSchema";
 import Link from 'next/link';
 import { useRef } from "react";
-import { EventInstance } from "@fullcalendar/common";
+import { EventClickArg } from "@fullcalendar/core/index.js";
+import { EventInstance } from "@fullcalendar/core/internal";
+import {Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton} from '@chakra-ui/react'
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
@@ -38,6 +40,11 @@ const Calendar = ({admin = false}) => {
     fetchEvents();
   }, []);
   
+  const handleEventClick = (info: EventClickArg) => {
+    setSelectedEventId(info.event.id);
+    setDetailModalOpen(true);
+  };
+  
   // useEffect to convert events to FullCalendar compatible events whenever events array changes
   useEffect(() => {
     const convertEventsToFCFormat = () => {
@@ -61,6 +68,7 @@ const Calendar = ({admin = false}) => {
       selectable
       initialView='dayGridMonth'
       events = {fullCalendarEvents}
+      eventClick={handleEventClick}
     />
   );
 };
