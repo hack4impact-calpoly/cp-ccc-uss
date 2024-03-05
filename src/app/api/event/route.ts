@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
     }
 
     const event = { name, date, roles, description, location, form };
+    console.log(event)
 
     try {
       const createdEvent = await eventSchema.create(event);

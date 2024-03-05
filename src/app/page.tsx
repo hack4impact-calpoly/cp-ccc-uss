@@ -4,6 +4,7 @@ import Navbar from "@components/Navbar";
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Login from './Login';
 import Calendar from "@components/Calendar";
+import CreateEvent from '@components/CreateEvent/CreateEvent';
 import { Button, ChakraProvider } from "@chakra-ui/react";
 
 export default function Home() {
@@ -29,6 +30,7 @@ export default function Home() {
       <Button colorScheme="blue" onClick={handleApiCall}>Test DB Connection</Button>
       <p>API Response: {apiResponse}</p>
       <Calendar />
+      <CreateEvent />
       <div style={{ width: "500px", margin: "0 auto", paddingTop: "30px" }}>
         <h3>Login Website</h3>
         <Login />
