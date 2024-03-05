@@ -7,6 +7,7 @@ import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import ImportContactsIcon from '@mui/icons-material/ImportContacts';
 import { useEffect, useState } from 'react';
 import { IEvent } from '@database/eventSchema';
+import { IVolunteerRole } from '@database/volunteerRoleSchema';
 
 type Props = {
   _id: string ;
@@ -15,6 +16,23 @@ type Props = {
 async function getEvent(_id: string) {
   try {
     const res = await fetch(`http://localhost:3000/api/event/${_id}`, { //default GET
+      cache: "no-store", 
+    } );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch blog");
+    }
+    console.log("Data: " + res.json)
+    return res.json();
+  } catch (err: unknown) {
+    console.log(`error: ${err}`);
+    return null;
+  }
+}
+
+async function getRoles(_id: string) {
+  try {
+    const res = await fetch(`http://localhost:3000/api/event/${_id}/role`, { //default GET
       cache: "no-store", 
     } );
 
@@ -57,6 +75,7 @@ function AdminEventDetailsButton() {
 
 export default function AdminEventDetails({ _id }: Props) {
   const [event, setEvent] = useState<IEvent | null>(null);
+  const [roles, setRoles] = useState<IVolunteerRole[]>([])
 
   const tempVolunteerRole = { //temporary volunteer role, once we have the volunteer data, we can remove this
     startTime: new Date("2024-02-26T08:00:00.000-08:00").toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
@@ -69,6 +88,8 @@ export default function AdminEventDetails({ _id }: Props) {
       try {
         const data = await getEvent(_id);
         setEvent(data);
+        const roles = await getRoles(_id);
+        setRoles(roles);
       } catch (err) {
         console.error(err);
       }
@@ -91,14 +112,15 @@ export default function AdminEventDetails({ _id }: Props) {
         </div>
         <AdminEventDetailsButton/>
       </div>
+      {/* Later implement all volunteers for an event here */}
       <div className={style.eventRoles}>
-        {event.roles.map((role: string) => (
-        <div className={style.eventRole} key={role}>{role}</div>
-        ))}
+
       </div>
       <div className={style.openVolunteerSlots}><ImportContactsIcon className={style.icon} sx={{fontSize: 32}}></ImportContactsIcon>Open Volunteer Slots</div>
       <div className={style.eventOpenSlots}>
-        {event.roles.map((role: string) => (
+        {/* Lists all roles for an event with corresponding time frames */}
+
+        {/* {event.roles.map((role: string) => (
         <div key={role}>
           <div>{role}</div>
           <div className={style.openDetails}>
@@ -106,6 +128,16 @@ export default function AdminEventDetails({ _id }: Props) {
             <div className={style.openTime}>{tempVolunteerRole.startTime} - {tempVolunteerRole.endTime}</div>
           </div>
         </div>
+        ))} */}
+
+        {roles.map((role: IVolunteerRole) => (
+          <div key={role.roleName}>
+            <div>{role.roleName}</div>
+            <div className={style.openDetails}>
+              <div className={style.signedUp}>Volunteers Signed Up: {tempVolunteerRole.volunteers.length}</div>
+              <div className={style.openTime}>{tempVolunteerRole.startTime} - {tempVolunteerRole.endTime}</div>
+            </div>
+          </div>
         ))}
       </div>
     </div>
