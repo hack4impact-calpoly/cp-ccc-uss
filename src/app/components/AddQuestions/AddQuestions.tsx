@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IFormQuestion } from "@database/volunteerFormSchema";
-import style from "./AddQuestions.module.css";
+import { Box, FormControl, Input, List, ListItem, Select } from "@chakra-ui/react";
 
 //add to parent component
 //const [questions, setQuestions] = useState<IFormQuestion[]>([])
@@ -109,30 +109,32 @@ export default function AddQuestions(props: {
   };
 
   return (
-    <div className={style.container}>
+    <Box>
       {props.questions.map((question, index) => (
-        <div key={index} className={style.question}>
-          <input
-            type="text"
-            value={question.question}
-            placeholder="Enter Question"
-            onChange={(e) => handleInputChange(e, index)}
-          />
-          <select
-            value={question.fieldType}
-            onChange={(e) => handleFieldTypeChange(e, index)}
-          >
-            <option value="MULTI_SELECT">Multiple Choice</option>
-            <option value="SHORT_ANSWER">Short Answer</option>
-          </select>
+        <Box key={index}>
+          <FormControl>
+            <Input
+              type="text"
+              value={question.question}
+              placeholder="Enter Question"
+              onChange={(e) => handleInputChange(e, index)}
+            />
+            <Select
+              value={question.fieldType}
+              onChange={(e) => handleFieldTypeChange(e, index)}
+            >
+              <option value="MULTI_SELECT">Multiple Choice</option>
+              <option value="SHORT_ANSWER">Short Answer</option>
+            </Select>
+          </FormControl>
 
-          <div>
+          <Box>
             {question.fieldType === "MULTI_SELECT" && (
-              <div>
-                <ul>
+              <Box>
+                <List>
                   {question.options?.map((option, opIndex) => (
-                    <li key={opIndex}>
-                      <input
+                    <ListItem key={opIndex}>
+                      <Input
                         type="text"
                         value={option}
                         onChange={(e) =>
@@ -142,10 +144,10 @@ export default function AddQuestions(props: {
                       <button onClick={() => handleDeleteOption(index, opIndex)}>
                         X
                       </button>
-                    </li>
+                    </ListItem>
                   ))}
-                  <li>
-                    <input
+                  <ListItem>
+                    <Input
                       type="text"
                       value={newOptionInputs[index] || ""}
                       onChange={(e) => handleOptionChange(e, index)}
@@ -154,14 +156,14 @@ export default function AddQuestions(props: {
                     <button onClick={() => handleAddOption(index)}>
                       Add Option
                     </button>
-                  </li>
-                </ul>
-              </div>
+                  </ListItem>
+                </List>
+              </Box>
             )}
-          </div>
-        </div>
+          </Box>
+        </Box>
       ))}
       <button onClick={addQuestion}>add questions</button>
-    </div>
+    </Box>
   );
 }
