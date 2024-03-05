@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { IFormQuestion } from "@database/volunteerFormSchema";
-import { Box, Button, FormControl, IconButton, Input, List, ListItem, Select } from "@chakra-ui/react";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { Flex, Box, Button, FormControl, IconButton, Input, List, ListItem, Select } from "@chakra-ui/react";
+import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 
 //add to parent component
 //const [questions, setQuestions] = useState<IFormQuestion[]>([])
@@ -65,23 +65,10 @@ export default function AddQuestions(props: {
     }
   };
 
-  const handleAddOption = (index: number) => {
+  const handleAddOption = (questionIndex: number) => {
     const updatedQuestions = [...props.questions];
-    const newOption = newOptionInputs[index] || "";
-
-    if (updatedQuestions[index].fieldType === "MULTI_SELECT" && newOption) {
-      updatedQuestions[index].options = [
-        ...(updatedQuestions[index].options || []),
-        newOption,
-      ];
-
-      setNewOptionInputs({
-        ...newOptionInputs,
-        [index]: "",
-      });
-
-      props.setQuestions(updatedQuestions);
-    }
+    updatedQuestions[questionIndex].options = [...(updatedQuestions[questionIndex].options || []), ""];
+    props.setQuestions(updatedQuestions);
   };
 
   const handleDeleteOption = (questionIndex: number, optionIndex: number) => {
@@ -110,37 +97,44 @@ export default function AddQuestions(props: {
   };
 
   return (
-    <Box>
+    <Box maxWidth="463px" mx="auto">
       {props.questions.map((question, index) => (
-        <Box key={index}>
-          <FormControl>
-            <Input
-              type="text"
-              value={question.question}
-              placeholder="Enter Question"
-              onChange={(e) => handleInputChange(e, index)}
-            />
-            <Select
-              value={question.fieldType}
-              onChange={(e) => handleFieldTypeChange(e, index)}
-            >
-              <option value="MULTI_SELECT">Multiple Choice</option>
-              <option value="SHORT_ANSWER">Short Answer</option>
-            </Select>
-          </FormControl>
+        <Box key={index} mb={4}>
+          <Flex align="center" mb={2}>
+            <FormControl flex="1" mr="2">
+              <Input
+                type="text"
+                value={question.question}
+                placeholder="Enter Question"
+                onChange={(e) => handleInputChange(e, index)}
+              />
+            </FormControl>
+            <FormControl width="200px">
+              <Select
+                value={question.fieldType}
+                onChange={(e) => handleFieldTypeChange(e, index)}
+              >
+                <option value="MULTI_SELECT">Multiple Choice</option>
+                <option value="SHORT_ANSWER">Short Answer</option>
+              </Select>
+            </FormControl>
+          </Flex>
 
           <Box>
             {question.fieldType === "MULTI_SELECT" && (
               <Box>
                 <List>
                   {question.options?.map((option, opIndex) => (
-                    <ListItem key={opIndex}>
+                    <ListItem key={opIndex} display="flex" alignItems="center">
                       <Input
                         type="text"
                         value={option}
                         onChange={(e) =>
                           handleOptionInputChange(e, index, opIndex)
                         }
+                        placeholder={`Option ${opIndex + 1}`}
+                        flex="1"
+                        mr={2}
                       />
                       <IconButton
                         aria-label="Delete option"
@@ -150,13 +144,7 @@ export default function AddQuestions(props: {
                     </ListItem>
                   ))}
                   <ListItem>
-                    <Input
-                      type="text"
-                      value={newOptionInputs[index] || ""}
-                      onChange={(e) => handleOptionChange(e, index)}
-                      placeholder="Type an option..."
-                    />
-                    <Button onClick={() => handleAddOption(index)}>
+                    <Button onClick={() => handleAddOption(index)} leftIcon={<AddIcon />}>
                       Add Option
                     </Button>
                   </ListItem>
@@ -166,7 +154,7 @@ export default function AddQuestions(props: {
           </Box>
         </Box>
       ))}
-      <Button onClick={addQuestion}>Add Question</Button>
+      <Button mt={6} onClick={addQuestion} leftIcon={<AddIcon />}>Add Question</Button>
     </Box>
   );
 }
