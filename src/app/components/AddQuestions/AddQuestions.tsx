@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { IFormQuestion } from "@database/volunteerFormSchema";
-import { Box, FormControl, Input, List, ListItem, Select } from "@chakra-ui/react";
+import { Box, Button, FormControl, IconButton, Input, List, ListItem, Select } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 //add to parent component
 //const [questions, setQuestions] = useState<IFormQuestion[]>([])
@@ -141,9 +142,11 @@ export default function AddQuestions(props: {
                           handleOptionInputChange(e, index, opIndex)
                         }
                       />
-                      <button onClick={() => handleDeleteOption(index, opIndex)}>
-                        X
-                      </button>
+                      <IconButton
+                        aria-label="Delete option"
+                        icon={<DeleteIcon />}
+                        onClick={() => handleDeleteOption(index, opIndex)}
+                      />
                     </ListItem>
                   ))}
                   <ListItem>
@@ -153,9 +156,9 @@ export default function AddQuestions(props: {
                       onChange={(e) => handleOptionChange(e, index)}
                       placeholder="Type an option..."
                     />
-                    <button onClick={() => handleAddOption(index)}>
+                    <Button onClick={() => handleAddOption(index)}>
                       Add Option
-                    </button>
+                    </Button>
                   </ListItem>
                 </List>
               </Box>
@@ -163,7 +166,7 @@ export default function AddQuestions(props: {
           </Box>
         </Box>
       ))}
-      <button onClick={addQuestion}>add questions</button>
+      <Button onClick={addQuestion}>Add Question</Button>
     </Box>
   );
 }
