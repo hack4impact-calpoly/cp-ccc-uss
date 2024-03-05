@@ -1,6 +1,5 @@
 "use client";
 import style from './AdminEventDetails.module.css';
-import AdminEventDetailsButton from './AdminEventDetailsButton';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import SegmentIcon from '@mui/icons-material/Segment';
@@ -35,6 +34,25 @@ function getDayName(date: Date) {
   const eventDay = new Date(date).getDay();
   const eventDayName = days[eventDay];
   return eventDayName;
+}
+
+function AdminEventDetailsButton() {
+  const handleClick = () => {
+    console.log('Button clicked!');
+  };
+
+  return <button onClick={handleClick}
+    style={{ 
+    background: 'transparent', 
+    border: 'none', 
+    textDecoration: 'underline', 
+    color: 'black', 
+    cursor: 'pointer',
+    fontFamily: 'Avenir',
+    fontSize: '16px',
+  }}>
+    more details 
+    </button>;
 }
 
 export default function AdminEventDetails({ _id }: Props) {
