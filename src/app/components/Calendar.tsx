@@ -19,6 +19,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import UserEventDetails from "./UserEventDetails";
+import style from "../styles/Calendar.module.css";
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
@@ -88,9 +89,9 @@ const Calendar = ({ admin = false }) => {
         eventClick={handleEventClick}
       />
 
-      <Modal size="xl" isOpen={detailModalOpen} onClose={handleCloseModal}>
+      <Modal size="sm" isOpen={detailModalOpen} onClose={handleCloseModal}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent className={style.modal}>
           <ModalBody>
             {admin ? (
               <div>
@@ -102,11 +103,7 @@ const Calendar = ({ admin = false }) => {
             )}
           </ModalBody>
 
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleCloseModal}>
-              Close
-            </Button>
-          </ModalFooter>
+          <ModalFooter></ModalFooter>
         </ModalContent>
       </Modal>
     </>

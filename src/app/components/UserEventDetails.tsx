@@ -40,7 +40,10 @@ export default function UserEventDetails({ id }: IParams) {
             </h2>
             <h2 className={style.info}>Location: {eventData.location}</h2>
             <h2 className={style.info}>Description: {eventData.description}</h2>
+            
             <button className={style.button}>Sign Up</button>
+            
+            
           </div>
         </div>
       ) : (
