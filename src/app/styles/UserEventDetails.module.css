@@ -1,7 +1,11 @@
+@import url("https://fonts.googleapis.com/css2?family=Avenir:wght@400;700&display=swap");
+
 .modal {
   border-radius: 20px;
-  width: fit-content; /* Adjusted width to fit the content */
-  max-width: 90%; /* Added max-width for responsiveness */
+  /*width: fit-content; /* Adjusted width to fit the content */
+  width: 100%; /* Full width */
+  max-width: 48rem; /* Chakra UI 'md' modal size */
+  /*max-width: 90%; /* Added max-width for responsiveness */
   padding: 25px;
   font-family: sans-serif;
   font-size: 25px;
@@ -13,33 +17,62 @@
 
 .info {
   padding-top: 20px;
-  font-size: 25px;
+  font-size: 16px;
   text-align: left !important; /* Left align date, time, and location */
+  font-weight: 500 !important;
+}
+
+.eventTitle {
+  font-size: 24px;
+  text-align: center;
+  color: #00aa9e;
+  font-weight: 500;
+}
+
+.eventName {
+  font-size: 30px;
+  text-align: center;
+  color: black;
+  font-family: "avenir";
+  font-weight: 900;
+}
+
+.description {
+  border: 1px solid #706f6f; /* Gray border for the description */
+  padding: 15px;
+  margin-top: 20px;
+  font-size: 16px;
+  text-align: left !important; /* Left align description */
+  color: #706f6f; /* Gray text color */
+  border-radius: 10px;
+  font-weight: 500;
 }
 
 .button {
-  padding: 20px 40px;
-  margin-top: 30px;
-  font-size: 20px;
-  font-weight: bold;
+  margin: 0 auto;
+  margin-top: 20px !important; /* Adjust the space between the button and the description box */
+  width: 120px;
+
+  height: 48px;
+  font-size: 16px;
   text-align: center;
+  line-height: 48px;
   border-radius: 16px !important;
-  border: 2px solid #00aa9e; /* Border color */
-  background-color: #00aa9e; /* Button color */
-  color: #ffffff; /* Text color */
+  background-color: #00aa9e;
+  color: #ffffff;
   cursor: pointer;
-  border-radius: 5px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* Adjust the space between the button and the description box */
 }
 
 .button:hover {
-  background-color: #c3c3c3;
-}
-
-.moreDetails:hover {
-  text-decoration: underline;
-}
-
-.moreDetails {
-  text-align: right;
-  font-size: 15px;
+  background-color: #007f78;
 }

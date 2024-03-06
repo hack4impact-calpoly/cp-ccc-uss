@@ -33,17 +33,26 @@ export default function UserEventDetails({ id }: IParams) {
     <>
       {eventData ? (
         <div className={style.modal}>
-          <h1 className={style.eventName}>{eventData.name}</h1>
+          <h1 className={style.eventName}>Event Details</h1>
+          <h2 className={style.eventTitle}>{eventData.name}</h2>
           <div className={style.details}>
             <h2 className={style.info}>
               Date: {new Date(eventData.date).toDateString()}
             </h2>
+            <h2 className={style.info}>
+              Time:{" "}
+              {new Date(eventData.date).toLocaleTimeString([], {
+                hour: "numeric",
+                minute: "numeric",
+              })}
+            </h2>
             <h2 className={style.info}>Location: {eventData.location}</h2>
-            <h2 className={style.info}>Description: {eventData.description}</h2>
-            
-            <button className={style.button}>Sign Up</button>
-            
-            
+            <h2 className={style.description}>
+              Description: {eventData.description}
+            </h2>
+            <div className={style.buttonContainer}>
+              <button className={style.button}>Sign Up</button>
+            </div>
           </div>
         </div>
       ) : (
