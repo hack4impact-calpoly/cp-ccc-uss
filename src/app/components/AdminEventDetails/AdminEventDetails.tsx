@@ -8,6 +8,7 @@ import ImportContactsIcon from '@mui/icons-material/ImportContacts';
 import { useEffect, useState } from 'react';
 import { IEvent } from '@database/eventSchema';
 import { IVolunteerRole } from '@database/volunteerRoleSchema';
+import { IVolunteerRoleTimeslot } from '@database/volunteerRoleSchema';
 
 type Props = {
   _id: string ;
@@ -54,6 +55,10 @@ function getDayName(date: Date) {
   return eventDayName;
 }
 
+function parseDate(date: Date) {
+  return (new Date(date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
+}
+
 function AdminEventDetailsButton() {
   const handleClick = () => {
     console.log('Button clicked!');
@@ -77,12 +82,7 @@ export default function AdminEventDetails({ _id }: Props) {
   const [event, setEvent] = useState<IEvent | null>(null);
   const [roles, setRoles] = useState<IVolunteerRole[]>([])
 
-  const tempVolunteerRole = { //temporary volunteer role, once we have the volunteer data, we can remove this
-    startTime: new Date("2024-02-26T08:00:00.000-08:00").toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
-    endTime: new Date("2024-02-26T08:00:00.000-09:00").toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
-    volunteers: ['volunteer1', 'volunteer2', 'volunteer3'],
-  };
-  
+  //fetching data for respective use state vars
   useEffect(() => {
     const setEventData = async () => {
       try {
@@ -119,23 +119,15 @@ export default function AdminEventDetails({ _id }: Props) {
       <div className={style.openVolunteerSlots}><ImportContactsIcon className={style.icon} sx={{fontSize: 32}}></ImportContactsIcon>Open Volunteer Slots</div>
       <div className={style.eventOpenSlots}>
         {/* Lists all roles for an event with corresponding time frames */}
-
-        {/* {event.roles.map((role: string) => (
-        <div key={role}>
-          <div>{role}</div>
-          <div className={style.openDetails}>
-            <div className={style.signedUp}>Volunteers Signed Up: {tempVolunteerRole.volunteers.length}</div>
-            <div className={style.openTime}>{tempVolunteerRole.startTime} - {tempVolunteerRole.endTime}</div>
-          </div>
-        </div>
-        ))} */}
-
-        {roles.map((role: IVolunteerRole) => (
-          <div key={role.roleName}>
+        {roles.map((role: IVolunteerRole, Index) => (
+          <div key={Index}>
             <div>{role.roleName}</div>
             <div className={style.openDetails}>
-              <div className={style.signedUp}>Volunteers Signed Up: {tempVolunteerRole.volunteers.length}</div>
-              <div className={style.openTime}>{tempVolunteerRole.startTime} - {tempVolunteerRole.endTime}</div>
+              {role.timeslots.map((timeslot: IVolunteerRoleTimeslot, Index2) => (
+                <div key={Index2}>
+                  <div className={style.openTime}>{parseDate(timeslot.startTime)} - {parseDate(timeslot.endTime)} | Volunteers Signed Up: {timeslot.volunteers.length}</div>
+                </div>
+              ))}
             </div>
           </div>
         ))}
