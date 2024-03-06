@@ -13,10 +13,11 @@ import { IVolunteerRoleTimeslot } from '@database/volunteerRoleSchema';
 type Props = {
   _id: string ;
 };
-  
+
+// get event by id
 async function getEvent(_id: string) {
   try {
-    const res = await fetch(`http://localhost:3000/api/event/${_id}`, { //default GET
+    const res = await fetch(`http://localhost:3000/api/event/${_id}`, {
       cache: "no-store", 
     } );
 
@@ -31,6 +32,7 @@ async function getEvent(_id: string) {
   }
 }
 
+// get all roles for specified event
 async function getRoles(_id: string) {
   try {
     const res = await fetch(`http://localhost:3000/api/event/${_id}/role`, { //default GET
@@ -82,7 +84,7 @@ export default function AdminEventDetails({ _id }: Props) {
   const [event, setEvent] = useState<IEvent | null>(null);
   const [roles, setRoles] = useState<IVolunteerRole[]>([])
 
-  //fetching data for respective use state vars
+  //fetch event, then roles for that event
   useEffect(() => {
     const setEventData = async () => {
       try {
@@ -118,7 +120,7 @@ export default function AdminEventDetails({ _id }: Props) {
       </div>
       <div className={style.openVolunteerSlots}><ImportContactsIcon className={style.icon} sx={{fontSize: 32}}></ImportContactsIcon>Open Volunteer Slots</div>
       <div className={style.eventOpenSlots}>
-        {/* Lists all roles for an event with corresponding time frames */}
+        {/* Lists all roles for an event with corresponding timeslots */}
         {roles.map((role: IVolunteerRole, Index) => (
           <div key={Index}>
             <div>{role.roleName}</div>
