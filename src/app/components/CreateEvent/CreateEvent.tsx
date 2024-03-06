@@ -71,39 +71,37 @@ function CreateEvent() {
       };
 
     return (
-        <div className={styles.event}>
-            <Heading as='h3' size='lg'>
-                Create Event
-            </Heading>
-            <div>
-                <Input 
-                    placeholder='Event Name'
-                    value={eventName}
-                    onChange={handleChangeName}
-                 />
-            </div>
-            <Input
-            placeholder="Select Date and Time"
-            size="md"
-            type="date"
-            value={new Date(date).toLocaleDateString('en-CA')}
-            onChange={handleChangeDate}/>
-            <div>
-                 <Textarea 
-                    placeholder='Event Description'
-                    value={description}
-                    onChange={handleChangeDesc}
-                />
-            </div>
-            <div>
-            <Button colorScheme='teal' onClick={handleSubmit}>
-                    Create Event 
-            </Button>
-            </div>
+      <div className={styles.event}>
+        <h2 className={styles.eventHeader}>Create Event</h2>
+        <Input
+          placeholder="Event Name"
+          value={eventName}
+          onChange={handleChangeName}
+          borderColor="black"
+        />
+        <Input
+          placeholder="Select Date and Time"
+          type="date"
+          value={new Date(date).toLocaleDateString("en-CA")}
+          onChange={handleChangeDate}
+          borderColor="black"
+        />
+        <Textarea
+          placeholder="Event Description"
+          value={description}
+          onChange={handleChangeDesc}
+          width="463px"
+          height="197px"
+          borderColor="black"
+        />
+        <div>Add questions here</div>
+        <div className={styles.createEventButton}>
+          <Button colorScheme="teal" onClick={handleSubmit}>
+            Create Event
+          </Button>
         </div>
-    )
-
-
+      </div>
+    );
 }
 
 export default CreateEvent;
