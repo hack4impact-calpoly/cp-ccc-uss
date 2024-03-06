@@ -1,6 +1,7 @@
 "use client"
 import { useSession, signIn, signOut } from "next-auth/react";
 import { UserCard } from "./userCard";
+import { Button, ChakraProvider } from "@chakra-ui/react";
 import Google from "next-auth/providers/google";
 
 export default function Login() {
@@ -9,20 +10,20 @@ export default function Login() {
     if(session) { //if user logged in, show signout
         return (
           <>
-            <button
+            <Button
               onClick={() => signOut()}
-              type="button"
-              className="btn btn-primary"
+              colorScheme="yellow"
+              size="lg"
             >
-              Sign Out of Google
-            </button>
+              Sign Out
+            </Button>
             <UserCard user={session?.user} />
           </>
         );
     } else { //if not logged in, sign in
         return (
             <>
-                <button onClick={() => signIn('google')} type="button" className="btn btn-primary">Sign In with Google</button>
+                <Button colorScheme="yellow" size = "lg" onClick={() => signIn('google')}>Sign Up</Button>
             </>
         )
     }
