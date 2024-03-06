@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { IFormQuestion } from "@database/volunteerFormSchema";
-import { Flex, Box, Button, FormControl, IconButton, Input, List, ListItem, Select } from "@chakra-ui/react";
+import {
+  Flex,
+  Box,
+  Button,
+  FormControl,
+  IconButton,
+  Input,
+  List,
+  ListItem,
+  Select,
+  Circle,
+} from "@chakra-ui/react";
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 
 //add to parent component
@@ -8,6 +19,16 @@ import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 
 //when adding component
 //<AddQuestions questions={questions} setQuestions={setQuestions}/>
+
+const EmptyCircleIcon = () => (
+  <Circle size="17px" bg="transparent" border="1px solid black" />
+);
+
+const PlusCircleIcon = () => (
+  <Circle size="17px" bg="transparent" border="1px solid black">
+    <AddIcon boxSize="9px" />
+  </Circle>
+);
 
 export default function AddQuestions(props: {
   questions: IFormQuestion[];
@@ -67,7 +88,10 @@ export default function AddQuestions(props: {
 
   const handleAddOption = (questionIndex: number) => {
     const updatedQuestions = [...props.questions];
-    updatedQuestions[questionIndex].options = [...(updatedQuestions[questionIndex].options || []), ""];
+    updatedQuestions[questionIndex].options = [
+      ...(updatedQuestions[questionIndex].options || []),
+      "",
+    ];
     props.setQuestions(updatedQuestions);
   };
 
@@ -107,6 +131,12 @@ export default function AddQuestions(props: {
                 value={question.question}
                 placeholder="Enter Question"
                 onChange={(e) => handleInputChange(e, index)}
+                variant="unstyled"
+                borderBottom="1px solid"
+                borderRadius={0}
+                borderColor="#8D8C8C"
+                _placeholder={{ color: "#ACABAB" }}
+                _focus={{ borderColor: "#000000" }}
               />
             </FormControl>
             <FormControl width="200px">
@@ -126,6 +156,7 @@ export default function AddQuestions(props: {
                 <List>
                   {question.options?.map((option, opIndex) => (
                     <ListItem key={opIndex} display="flex" alignItems="center">
+                      <EmptyCircleIcon />
                       <Input
                         type="text"
                         value={option}
@@ -134,17 +165,28 @@ export default function AddQuestions(props: {
                         }
                         placeholder={`Option ${opIndex + 1}`}
                         flex="1"
+                        ml={2}
                         mr={2}
+                        variant="unstyled"
+                        borderRadius={0}
+                        borderColor="#8D8C8C"
+                        _placeholder={{ color: "#ACABAB" }}
+                        _focus={{ borderColor: "#000000" }}
                       />
                       <IconButton
                         aria-label="Delete option"
                         icon={<DeleteIcon />}
                         onClick={() => handleDeleteOption(index, opIndex)}
+                        variant="unstyled"
                       />
                     </ListItem>
                   ))}
                   <ListItem>
-                    <Button onClick={() => handleAddOption(index)} leftIcon={<AddIcon />}>
+                    <Button
+                      onClick={() => handleAddOption(index)}
+                      leftIcon={<PlusCircleIcon />}
+                      variant="unstyled"
+                    >
                       Add Option
                     </Button>
                   </ListItem>
@@ -154,7 +196,14 @@ export default function AddQuestions(props: {
           </Box>
         </Box>
       ))}
-      <Button mt={6} onClick={addQuestion} leftIcon={<AddIcon />}>Add Question</Button>
+      <Button
+        mt={6}
+        onClick={addQuestion}
+        leftIcon={<PlusCircleIcon />}
+        variant="unstyled"
+      >
+        Add Question
+      </Button>
     </Box>
   );
 }
