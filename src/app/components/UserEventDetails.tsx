@@ -36,16 +36,16 @@ export default function UserEventDetails({ id }: IParams) {
           <h1 className={style.eventName}>Event Details</h1>
           <h2 className={style.eventTitle}>{eventData.name}</h2>
           <div className={style.details}>
-            <p className={style.info}>
+            <div className={style.info}>
               Date: {new Date(eventData.date).toDateString()}
-            </p>
-            <p className={style.info}>
+            </div>
+            <div className={style.info}>
               Time:{" "}
               {new Date(eventData.date).toLocaleTimeString([], {
                 hour: "numeric",
                 minute: "numeric",
               })}
-            </p>
+            </div>
             <p className={style.info}>Location: {eventData.location}</p>
             <h2 className={style.description}>
               Description: {eventData.description}

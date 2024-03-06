@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Avenir:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&display=swap");
 
 .modal {
   border-radius: 20px;
@@ -7,7 +7,7 @@
   max-width: 48rem; /* Chakra UI 'md' modal size */
   /*max-width: 90%; /* Added max-width for responsiveness */
   padding: 25px;
-  font-family: sans-serif;
+  font-family: sans-serif bold;
   font-size: 25px;
   margin: 0 auto; /* Centering horizontally */
   text-align: center; /* Centering text */
@@ -30,15 +30,15 @@
   font-size: 24px;
   text-align: center;
   color: #00aa9e;
-  font-weight: 500;
+  font-weight: 500 !important;
 }
 
 .eventName {
   font-size: 30px;
   text-align: center;
   color: black;
-  font-family: "avenir";
-  font-weight: 900;
+  font-family: "Open Sans";
+  font-weight: 900 !important;
 }
 
 .description {
