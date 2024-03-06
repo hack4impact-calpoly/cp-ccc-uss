@@ -1,11 +1,14 @@
+'use client'
 import React, { useState, useEffect } from "react";
 import type { IEvent } from "../../database/eventSchema";
 import type {
   IVolunteerRole,
   IVolunteerRoleTimeslot,
 } from "../../database/volunteerRoleSchema";
-import { Input, Select } from "@chakra-ui/react";
+import { Input, Select, Stack } from "@chakra-ui/react";
 import style from "@styles/EventSignUp.module.css";
+import { IFormQuestion } from "@database/volunteerFormSchema";
+import { Radio, RadioGroup } from '@chakra-ui/react'
 
 type IParams = {
   id: string;
@@ -58,7 +61,7 @@ export default function EventSignUp({ id }: IParams) {
       );
       if (selectedEvent) {
         setEvent(selectedEvent);
-
+        
         const fetchRoles = async () => {
           try {
             const rolesData = await Promise.all(
@@ -89,6 +92,31 @@ export default function EventSignUp({ id }: IParams) {
     } catch (err: unknown) {
       console.error("Error:", err);
       setEvent(null);
+    }
+  }
+
+  async function fetchForm(event: IEvent | null ) {
+    try {
+      if (event === null) {
+        setQuestions([]);
+        return;
+      }
+      const formID = event?.form
+      console.log("FormID: " + formID);
+      const response = await fetch(`http://localhost:3000/api/form/${formID}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch event form. Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setQuestions(data.questions);
+      console.log("Event Form: " + data);
+      console.log("Event Questions: " + data.questions);
+    } 
+    
+    catch(error) {
+      console.error("Error:", error);
+      return null;
     }
   }
 
@@ -124,6 +152,28 @@ export default function EventSignUp({ id }: IParams) {
   useEffect(() => {
     fetchEvents();
   }, []);
+
+  useEffect(() => {
+    fetchForm(event);
+  }, [event])
+
+  function renderCustomQuestion(question: IFormQuestion) {
+    switch (question.fieldType) {
+      case 'SHORT_ANSWER':
+        return <div><Input placeholder='Answer'/></div>;
+      case 'MULTI_CHOICE':
+        return <div>
+          <Stack>
+          {question.options && question.options.map((option: String, index) => (
+            <div key= {index}><Radio size='md' name='1' colorScheme='green'>
+              {option}
+            </Radio>
+            </div>
+          ))}
+          </Stack>
+      </div>
+    }
+  }
 
   return (
     <>
@@ -206,6 +256,15 @@ export default function EventSignUp({ id }: IParams) {
         </div>
       ))}
 
+      {event ? // Don't show this section until there is an event selected.
+        (<div>
+          {questions.map((question: IFormQuestion, index) => (
+            <div key = {index}>
+            <div>Question: {question.question}</div>
+            <div> {renderCustomQuestion(question)} </div>
+            </div>
+          ))}
+        </div>) : (<div></div>)}
       {/* {role ? <div></div> : <div></div>} This is for shifts, //Do not show this section until there is a role picked
         {event ? <div></div> : <div></div>} This is for questions, //Do not show this section until there is an event picked */}
     </>
