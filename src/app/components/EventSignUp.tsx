@@ -186,14 +186,12 @@ export default function EventSignUp({ id }: IParams) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            timeslots: selectedShifts[role._id]
+            timeslots: selectedShifts[role._id],
           }),
         });
       });
 
       // PUT or PATCH to Volunteer (roles and entries arrays)
-
-      
     } catch (err: unknown) {
       console.error("Error:", err);
       setEvents([]);
