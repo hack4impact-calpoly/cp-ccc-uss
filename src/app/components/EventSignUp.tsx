@@ -233,7 +233,7 @@ export default function EventSignUp({ id }: IParams) {
   }
 
   return (
-    <>
+    <div className={style.event}>
       {events.length > 0 ? (
         <div>
           <h1>Event Sign Up</h1>
@@ -341,6 +341,6 @@ export default function EventSignUp({ id }: IParams) {
       ) : (
         <div></div>
       )}
-    </>
+    </div>
   );
 }
