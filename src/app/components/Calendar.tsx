@@ -21,7 +21,6 @@ import {
 import UserEventDetails from "./UserEventDetails";
 import style from "../styles/Calendar.module.css";
 import AdminEventDetails from "./AdminEventDetails/AdminEventDetails";
-import style from "@styles/calendar.module.css";
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
