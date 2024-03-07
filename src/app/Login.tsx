@@ -6,7 +6,6 @@ import Google from "next-auth/providers/google";
 
 export default function Login() {
     const { data: session } = useSession();
-    console.log(session);
     if(session) { //if user logged in, show signout
         return (
           <>
