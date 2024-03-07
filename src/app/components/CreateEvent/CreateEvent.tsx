@@ -7,6 +7,16 @@ import { Heading } from '@chakra-ui/react'
 import { IFormQuestion, IVolunteerForm } from '@database/volunteerFormSchema';
 import { IVolunteerRole } from '@database/volunteerRoleSchema';
 import { useDisclosure } from '@chakra-ui/react'
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+  } from '@chakra-ui/react'
+
 
 function CreateEvent() {
     const[eventName, setEventName] = useState('')
@@ -16,7 +26,9 @@ function CreateEvent() {
     const[roles, setRoles] = useState<IVolunteerRole[]>([])
     const[location, setLocation] = useState('default location')
 
-    
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const btnRef = React.useRef(null)
+
     const handleChangeName = (e: any) => {
         setEventName(e.target.value)
     }
@@ -73,36 +85,58 @@ function CreateEvent() {
       };
 
     return (
-      <div className={styles.event}>
-        <h2 className={styles.eventHeader}>Create Event</h2>
-        <Input
-          placeholder="Event Name"
-          value={eventName}
-          onChange={handleChangeName}
-          borderColor="black"
-        />
-        <Input
-          placeholder="Select Date and Time"
-          type="date"
-          value={new Date(date).toLocaleDateString("en-CA")}
-          onChange={handleChangeDate}
-          borderColor="black"
-        />
-        <Textarea
-          placeholder="Event Description"
-          value={description}
-          onChange={handleChangeDesc}
-          width="463px"
-          height="197px"
-          borderColor="black"
-        />
-        <div>Add questions here</div>
-        <div className={styles.createEventButton}>
-          <Button colorScheme="teal" onClick={handleSubmit}>
-            Create Event
-          </Button>
-        </div>
-      </div>
+        <>
+  
+        <Button mt={3} ref={btnRef} onClick={onOpen}>
+          Add Event
+        </Button>
+  
+        <Modal
+          onClose={onClose}
+          finalFocusRef={btnRef}
+          isOpen={isOpen}
+          scrollBehavior={'inside'}
+          size={'xl'}
+        >
+          <ModalOverlay />
+          <ModalContent>
+                <div className={styles.event}>
+                    <h2 className={styles.eventHeader}>Create Event</h2>
+                    <ModalCloseButton />
+                    <Input
+                    placeholder="Event Name"
+                    value={eventName}
+                    onChange={handleChangeName}
+                    borderColor="black"
+                    />
+                    <Input
+                        placeholder="Select Date and Time"
+                        type="date"
+                        value={new Date(date).toLocaleDateString("en-CA")}
+                        onChange={handleChangeDate}
+                        borderColor="black"
+                    />
+                    <Textarea
+                        placeholder="Event Description"
+                        value={description}
+                        onChange={handleChangeDesc}
+                        width="463px"
+                        height="197px"
+                        borderColor="black"
+                    />
+                    <div>Add questions here</div>
+                    <div className={styles.createEventButton}>
+                        <Button colorScheme="teal" onClick={handleSubmit}>
+                            Create Event
+                        </Button>
+                    </div>
+                </div>
+            <ModalFooter>
+              <Button onClick={onClose}>Close</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>
     );
 }
 
