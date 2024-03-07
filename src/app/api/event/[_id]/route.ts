@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@database/db"; 
+import connectDB from "@database/db";
 import eventSchema, { IEvent } from "@database/eventSchema";
 import VolunteerForms from "@database/volunteerFormSchema";
 import VolunteerRoles from "@database/volunteerRoleSchema";

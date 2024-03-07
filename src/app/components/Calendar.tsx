@@ -17,11 +17,12 @@ interface FullCalendarEvent {
   start: Date;
 }
 
-const Calendar = ({ admin = false }) => {
-  const [events, setEvents] = useState<IEvent[] | null>(null);
-  const [fullCalendarEvents, setFullCalendarEvents] = useState<
-    FullCalendarEvent[]
-  >([]);
+
+const Calendar = ({admin = false}) => {
+  const [events, setEvents] = useState<IEvent[]>([]);
+  const [fullCalendarEvents, setFullCalendarEvents] = useState<FullCalendarEvent[]>([]);
+  const [selectedEventId, setSelectedEventId] = useState('');
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
 
   //get all events on first render
   useEffect(() => {
@@ -45,8 +46,8 @@ const Calendar = ({ admin = false }) => {
         const FullCalendarEvents = events.map((event) => ({
           id: event._id,
           title: event.name,
-          start: event.date, //start is the date field for the full calendar (I Think)
-        }));
+          start: event.date //start is the date field for the full calendar 
+        }))
         setFullCalendarEvents(FullCalendarEvents);
       }
     };
