@@ -164,31 +164,46 @@ export default function EventSignUp({ id }: IParams) {
         question: question?.question,
         answer: "unsure how to get",
       })) as Array<IFormAnswer>;
+
+      const roleIDs = roles.map((role) => role._id);
+
       // Combine data from all input states (name, email, event, roles/shifts, questions) to POST to VolunteerEntry
-      const response = await fetch("/api/entry", {
+      const response = await fetch("http://localhost:3000/api/entry", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          eventID: event?._id,
-          roles: roles,
-          volunteerID: "dummy value :(",
+          eventId: event?._id,
+          roles: roleIDs,
+          volunteerId: "dummy value :(",
           responses: responses,
         }),
       });
 
+      if (!response.ok) {
+        throw new Error(
+          `Failed to add volunteer entry. Status: ${response.status}`
+        );
+      }
+
       // PUT to VolunteerRoles (selected timeslots/shifts)
       roles.map(async (role) => {
-        const ret = await fetch(`/api/entry/${role._id}`, {
+        const ret = await fetch(`http://localhost:3000/api/role/${role._id}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            timeslots: selectedShifts[role._id],
+            fieldToUpdate: "timeslots",
+            value: selectedShifts[role._id],
           }),
         });
+        if (!ret.ok) {
+          throw new Error(
+            `Failed to update volunteer role with id: ${role._id}. Status: ${response.status}`
+          );
+        }
       });
 
       // PUT or PATCH to Volunteer (roles and entries arrays)
