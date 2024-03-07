@@ -10,7 +10,11 @@ export default function Home() {
   return (
     <main>
         <Navbar />
-        <Calendar admin={admin}/>
+        <div style={{display: 'flex', alignContent: 'center', justifyContent: 'center'}}>
+        <div style={{width: '70%'}}>
+            <Calendar admin={admin} />
+          </div>
+        </div>
         <CreateEvent />
     </main>
   );
