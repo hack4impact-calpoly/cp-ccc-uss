@@ -9,13 +9,19 @@ export default function Home() {
 
   return (
     <main>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <Navbar />
-        <div style={{display: 'flex', alignContent: 'center', justifyContent: 'center'}}>
-        <div style={{width: '70%'}}>
-            <Calendar admin={admin} />
-          </div>
+        <div style={{ width: "70%", margin: "20px" }}>
+          <Calendar admin={admin} />
         </div>
-        <CreateEvent />
+      </div>
     </main>
   );
 }
