@@ -8,7 +8,6 @@ import Link from "next/link";
 import { useRef } from "react";
 import { EventInstance } from "@fullcalendar/common";
 import style from "@styles/calendar.module.css";
-// import "../styles/calendar.css";
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
@@ -17,11 +16,12 @@ interface FullCalendarEvent {
   start: Date;
 }
 
-
-const Calendar = ({admin = false}) => {
+const Calendar = ({ admin = false }) => {
   const [events, setEvents] = useState<IEvent[]>([]);
-  const [fullCalendarEvents, setFullCalendarEvents] = useState<FullCalendarEvent[]>([]);
-  const [selectedEventId, setSelectedEventId] = useState('');
+  const [fullCalendarEvents, setFullCalendarEvents] = useState<
+    FullCalendarEvent[]
+  >([]);
+  const [selectedEventId, setSelectedEventId] = useState("");
   const [detailModalOpen, setDetailModalOpen] = useState(false);
 
   //get all events on first render
@@ -46,8 +46,8 @@ const Calendar = ({admin = false}) => {
         const FullCalendarEvents = events.map((event) => ({
           id: event._id,
           title: event.name,
-          start: event.date //start is the date field for the full calendar 
-        }))
+          start: event.date, //start is the date field for the full calendar
+        }));
         setFullCalendarEvents(FullCalendarEvents);
       }
     };
@@ -66,13 +66,12 @@ const Calendar = ({admin = false}) => {
           center: "title",
           right: "next",
         }}
-        titleFormat={{month: "long"}}
+        titleFormat={{ month: "long" }}
+        dayHeaderFormat={{ weekday: "long" }}
         editable
         selectable
         initialView="dayGridMonth"
         events={fullCalendarEvents}
-        // eventColor="light-teal"
-        // headerToolbar={}
 
         //I didn't want to delete this testing code in case it was important
         //   events= {
@@ -85,7 +84,6 @@ const Calendar = ({admin = false}) => {
     </div>
   );
 };
-
 
 const calendarStyles = `
 .fc .fc-prev-button, .fc .fc-next-button {
@@ -122,6 +120,10 @@ const calendarStyles = `
   align-items: center;
   box-sizing: border-box;
   font-family: Sans-serif;
+
+  .fc-event-title {
+    font-weight: normal;
+  }
 }
 
 .fc-daygrid-event-dot {
@@ -132,6 +134,24 @@ const calendarStyles = `
   display: none;
 }
 
+.fc-col-header-cell-cushion {
+  font-family: Sans-serif;
+  font-weight: normal; 
+}
+
+.fc-col-header   {
+  background-color: #ffb94f;
+  border-radius: 1em;
+  font-family: Sans-serif;
+}
+
+.fc-col-header-cell {
+  border-style: none;
+}
+
+.fc-day {
+  border-radius: 1em;
+}
 
 `;
 
