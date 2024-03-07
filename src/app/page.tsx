@@ -22,7 +22,6 @@ export default function Home() {
           <Calendar admin={admin} />
         </div>
       </div>
-      <AddQuestions questions={questions} setQuestions={setQuestions}/>
     </main>
   );
 }
