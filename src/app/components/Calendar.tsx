@@ -59,7 +59,7 @@ const Calendar = ({ admin = false }) => {
     <div className={style.wrapper}>
       <style>{calendarStyles}</style>
       <FullCalendar
-        aspectRatio={style ? 1.5 : 2.5}
+        aspectRatio={style ? 1.5 : 2.0}
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
         headerToolbar={{
           left: "prev",
