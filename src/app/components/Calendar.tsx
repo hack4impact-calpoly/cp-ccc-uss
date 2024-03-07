@@ -29,7 +29,7 @@ interface FullCalendarEvent {
   start: Date;
 }
 
-const Calendar = ({ admin = false }) => {
+const Calendar = ({ admin = true }) => {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [fullCalendarEvents, setFullCalendarEvents] = useState<
     FullCalendarEvent[]

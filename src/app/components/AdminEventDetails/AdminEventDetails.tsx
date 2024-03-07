@@ -104,7 +104,7 @@ export default function AdminEventDetails({ _id }: Props) {
   return (
     <div className={style.adminEventDetails}>
       <div className={style.eventName}>{event.name}</div>
-      <div className={style.eventDay}><AccessTimeIcon className={style.icon} sx={{fontSize: 40, marginBottom: 0}}></AccessTimeIcon>{getDayName(event.date)}</div>
+      <div className={style.eventDay}><AccessTimeIcon className={style.icon} sx={{fontSize: 40}}></AccessTimeIcon>{getDayName(event.date)}</div>
       <div className={style.eventLocation}><LocationOnOutlinedIcon className={style.icon} sx={{fontSize: 40}}></LocationOnOutlinedIcon>{event.location}</div>
       <div className={style.eventDescription}><SegmentIcon className={style.icon} sx={{fontSize: 40}}></SegmentIcon>{event.description}</div>
       <div className={style.headerContainer}>
