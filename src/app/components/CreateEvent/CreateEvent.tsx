@@ -17,7 +17,8 @@ import {
     ModalCloseButton,
   } from '@chakra-ui/react'
 
-
+// TODO: Re-render calendar page immediately after creating event
+// TODO: combine close modal w create event button
 function CreateEvent() {
     const[eventName, setEventName] = useState('')
     const[date, setDate] = useState<Date>(new Date());
