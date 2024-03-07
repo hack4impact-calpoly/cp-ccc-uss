@@ -51,16 +51,6 @@ export default function AddQuestions(props: {
     props.setQuestions(updatedQuestions);
   };
 
-  const handleOptionChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    setNewOptionInputs({
-      ...newOptionInputs,
-      [index]: e.target.value,
-    });
-  };
-
   const handleOptionInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     questionIndex: number,
@@ -125,9 +115,9 @@ export default function AddQuestions(props: {
                 variant="unstyled"
                 borderBottom="1px solid"
                 borderRadius={0}
-                borderColor="#8D8C8C"
-                _placeholder={{ color: "#ACABAB" }}
-                _focus={{ borderColor: "#000000" }}
+                borderColor="customGray"
+                _placeholder={{ color: "placeholder" }}
+                _focus={{ borderColor: "inputBorder" }}
               />
             </FormControl>
             <FormControl width="200px">
@@ -160,9 +150,9 @@ export default function AddQuestions(props: {
                         mr={2}
                         variant="unstyled"
                         borderRadius={0}
-                        borderColor="#8D8C8C"
-                        _placeholder={{ color: "#ACABAB" }}
-                        _focus={{ borderColor: "#000000" }}
+                        borderColor="customGray"
+                        _placeholder={{ color: "placeholder" }}
+                        _focus={{ borderColor: "inputBorder" }}
                       />
                       <IconButton
                         aria-label="Delete option"
