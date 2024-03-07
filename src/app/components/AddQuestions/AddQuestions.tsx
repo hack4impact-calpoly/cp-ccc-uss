@@ -120,10 +120,15 @@ export default function AddQuestions(props: {
                 _focus={{ borderColor: "inputBorder" }}
               />
             </FormControl>
-            <FormControl width="200px">
+            <FormControl width="145px">
               <Select
                 value={question.fieldType}
                 onChange={(e) => handleFieldTypeChange(e, index)}
+                borderColor="customGray"
+                color="customGray"
+                borderRadius="12px"
+                fontSize={14}
+                size="sm"
               >
                 <option value="MULTI_SELECT">Multiple Choice</option>
                 <option value="SHORT_ANSWER">Short Answer</option>
@@ -167,8 +172,11 @@ export default function AddQuestions(props: {
                       onClick={() => handleAddOption(index)}
                       leftIcon={<PlusCircleIcon />}
                       variant="unstyled"
+                      color="customGray"
+                      fontWeight="normal" 
+                      fontStyle={"italic"}
                     >
-                      Add Option
+                      Add option
                     </Button>
                   </ListItem>
                 </List>
