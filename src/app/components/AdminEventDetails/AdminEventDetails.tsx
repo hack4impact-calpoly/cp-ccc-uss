@@ -104,12 +104,12 @@ export default function AdminEventDetails({ _id }: Props) {
   return (
     <div className={style.adminEventDetails}>
       <div className={style.eventName}>{event.name}</div>
-      <div className={style.eventDay}><AccessTimeIcon className={style.icon} sx={{fontSize: 32}}></AccessTimeIcon>{getDayName(event.date)}</div>
-      <div className={style.eventLocation}><LocationOnOutlinedIcon className={style.icon} sx={{fontSize: 32}}></LocationOnOutlinedIcon>{event.location}</div>
-      <div className={style.eventDescription}><SegmentIcon className={style.icon} sx={{fontSize: 32}}></SegmentIcon>{event.description}</div>
+      <div className={style.eventDay}><AccessTimeIcon className={style.icon} sx={{fontSize: 40, marginBottom: 0}}></AccessTimeIcon>{getDayName(event.date)}</div>
+      <div className={style.eventLocation}><LocationOnOutlinedIcon className={style.icon} sx={{fontSize: 40}}></LocationOnOutlinedIcon>{event.location}</div>
+      <div className={style.eventDescription}><SegmentIcon className={style.icon} sx={{fontSize: 40}}></SegmentIcon>{event.description}</div>
       <div className={style.headerContainer}>
         <div>
-          <PeopleOutlineIcon className={style.icon} sx={{fontSize: 32}}></PeopleOutlineIcon>
+          <PeopleOutlineIcon className={style.icon} sx={{fontSize: 40}}></PeopleOutlineIcon>
           Volunteers
         </div>
         <AdminEventDetailsButton/>
@@ -118,7 +118,7 @@ export default function AdminEventDetails({ _id }: Props) {
       <div className={style.eventRoles}>
 
       </div>
-      <div className={style.openVolunteerSlots}><ImportContactsIcon className={style.icon} sx={{fontSize: 32}}></ImportContactsIcon>Open Volunteer Slots</div>
+      <div className={style.openVolunteerSlots}><ImportContactsIcon className={style.icon} sx={{fontSize: 40}}></ImportContactsIcon>Open Volunteer Slots</div>
       <div className={style.eventOpenSlots}>
         {/* Lists all roles for an event with corresponding timeslots */}
         {roles.map((role: IVolunteerRole, Index) => (

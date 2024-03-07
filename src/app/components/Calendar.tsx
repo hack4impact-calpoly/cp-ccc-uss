@@ -95,10 +95,7 @@ const Calendar = ({ admin = false }) => {
         <ModalContent className={style.modal}>
           <ModalBody>
             {admin ? (
-              <div>
-                <p>Admin Section:</p>
                 <AdminEventDetails _id={selectedEventId} />
-              </div>
             ) : (
               <UserEventDetails id={selectedEventId} />
             )}
