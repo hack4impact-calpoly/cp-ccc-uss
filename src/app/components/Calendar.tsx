@@ -1,12 +1,14 @@
-import React, {useState, useEffect} from "react"
+import React, { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import dayGridPlugin from '@fullcalendar/daygrid';
+import dayGridPlugin from "@fullcalendar/daygrid";
 import type { IEvent } from "@database/eventSchema";
-import Link from 'next/link';
+import Link from "next/link";
 import { useRef } from "react";
 import { EventInstance } from "@fullcalendar/common";
+import style from "@styles/calendar.module.css";
+// import "../styles/calendar.css";
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
@@ -15,62 +17,121 @@ interface FullCalendarEvent {
   start: Date;
 }
 
-
-const Calendar = ({admin = false}) => {
-  const [events, setEvents] = useState <IEvent[] | null>(null);
-  const [fullCalendarEvents, setFullCalendarEvents] = useState<FullCalendarEvent[]>([]);
+const Calendar = ({ admin = false }) => {
+  const [events, setEvents] = useState<IEvent[] | null>(null);
+  const [fullCalendarEvents, setFullCalendarEvents] = useState<
+    FullCalendarEvent[]
+  >([]);
 
   //get all events on first render
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch('/api/event/');
-        const eventsFromDB = await response.json(); 
+        const response = await fetch("/api/event/");
+        const eventsFromDB = await response.json();
         setEvents(eventsFromDB);
-
       } catch (error) {
-        console.error('Error fetching events:', error);
+        console.error("Error fetching events:", error);
       }
     };
 
     fetchEvents();
   }, []);
-  
+
   // useEffect to convert events to FullCalendar compatible events whenever events array changes
   useEffect(() => {
     const convertEventsToFCFormat = () => {
-      if (events !== null){
-        const FullCalendarEvents = events.map(event => ({
+      if (events !== null) {
+        const FullCalendarEvents = events.map((event) => ({
           id: event._id,
           title: event.name,
-          start: event.date //start is the date field for the full calendar (I Think)
-        }))
+          start: event.date, //start is the date field for the full calendar (I Think)
+        }));
         setFullCalendarEvents(FullCalendarEvents);
       }
-    }
+    };
 
     convertEventsToFCFormat();
-  }, [events])
-
-
+  }, [events]);
 
   return (
-    <FullCalendar
-      plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
-      editable
-      selectable
-      initialView='dayGridMonth'
-      events = {fullCalendarEvents}
+    <div className={style.wrapper}>
+      <style>{calendarStyles}</style>
+      <FullCalendar
+        aspectRatio={style ? 1.5 : 2.5}
+        plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
+        headerToolbar={{
+          left: "prev",
+          center: "title",
+          right: "next",
+        }}
+        titleFormat={{month: "long"}}
+        editable
+        selectable
+        initialView="dayGridMonth"
+        events={fullCalendarEvents}
+        // eventColor="light-teal"
+        // headerToolbar={}
 
-    //I didn't want to delete this testing code in case it was important
-    //   events= {
-    //     [
-    //     { title: 'Test 1', allDay: false, date: '2024-01-25T08:33:33', url: "/test" },
-    //     { title: 'Test 2', date: '2024-01-24T06:33:33' }
-    //   ]
-    // }
-    />
+        //I didn't want to delete this testing code in case it was important
+        //   events= {
+        //     [
+        //     { title: 'Test 1', allDay: false, date: '2024-01-25T08:33:33', url: "/test" },
+        //     { title: 'Test 2', date: '2024-01-24T06:33:33' }
+        //   ]
+        // }
+      />
+    </div>
   );
 };
+
+
+const calendarStyles = `
+.fc .fc-prev-button, .fc .fc-next-button {
+  background-color: #bfbdbd;
+  border: none;
+  color: #FFF;
+  font-size: 2em;
+  font-size: .5em;
+  border-radius: 50%; 
+  line-height: 1;
+}
+
+.fc .fc-toolbar {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.fc-toolbar-chunk {
+  padding-right: 2%;
+}
+
+.fc-toolbar-title {
+  font-family: sans-serif;
+}
+
+.fc .fc-event {
+  background-color: #C4F1DE;
+  border-radius: 1em;
+  padding: 5%;
+  padding-right: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  font-family: Sans-serif;
+}
+
+.fc-daygrid-event-dot {
+  display: none;
+}
+
+.fc-event-time {
+  display: none;
+}
+
+
+`;
 
 export default Calendar;
