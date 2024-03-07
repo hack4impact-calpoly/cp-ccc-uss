@@ -6,8 +6,21 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import type { IEvent } from "@database/eventSchema";
 import Link from "next/link";
 import { useRef } from "react";
-import { EventInstance } from "@fullcalendar/common";
-import style from "@styles/calendar.module.css";
+import { EventClickArg } from "@fullcalendar/core/index.js";
+import { EventInstance } from "@fullcalendar/core/internal";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+} from "@chakra-ui/react";
+import UserEventDetails from "./UserEventDetails";
+import style from "../styles/Calendar.module.css";
+import AdminEventDetails from "./AdminEventDetails/AdminEventDetails";
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
@@ -38,6 +51,16 @@ const Calendar = ({ admin = false }) => {
 
     fetchEvents();
   }, []);
+
+  //updates state varibales
+  const handleEventClick = (info: EventClickArg) => {
+    setSelectedEventId(info.event.id);
+    setDetailModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setDetailModalOpen(false);
+  };
 
   // useEffect to convert events to FullCalendar compatible events whenever events array changes
   useEffect(() => {
@@ -72,7 +95,23 @@ const Calendar = ({ admin = false }) => {
         selectable
         initialView="dayGridMonth"
         events={fullCalendarEvents}
+        eventClick={handleEventClick}
       />
+
+      <Modal size="md" isOpen={detailModalOpen} onClose={handleCloseModal}>
+        <ModalOverlay />
+        <ModalContent className={style.modal}>
+          <ModalBody>
+            {admin ? (
+              <AdminEventDetails _id={selectedEventId} />
+            ) : (
+              <UserEventDetails id={selectedEventId} />
+            )}
+          </ModalBody>
+
+          <ModalFooter></ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

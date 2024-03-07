@@ -18,6 +18,10 @@ export default function Home() {
         }}
       >
         <Navbar />
+        <div>i am the admin: {admin.toString()}</div>
+        <button onClick={() => (admin ? setAdmin(false) : setAdmin(true))}>
+          secure button
+        </button>
         <div style={{ width: "70%", margin: "20px" }}>
           <Calendar admin={admin} />
         </div>

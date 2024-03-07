@@ -1,14 +1,10 @@
 .adminEventDetails {
-    width: 576px;
-    height: 801px;
-    border-radius: 24px;
     background: #FFF;
-    border-color: black;
-    border: 2px solid;
     font-family: 'Avenir';
-    padding-left: 37px;
-    padding-right: 37px;
+    padding-left: 30px;
+    padding-right: 30px;
     overflow: auto;
+    /* max-width: 48rem; */
 }
 
 .eventName {
@@ -18,14 +14,14 @@
     font-weight: 500;
     line-height: normal;
     margin-top: 20px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     font-weight: bold;
 }
 
 .headerContainer {
     display: flex;
     justify-content: space-between;
-    font-size: 30px;
+    font-size: 25px;
     margin-top: 15px;
     margin-bottom: 15px;
 }
@@ -33,23 +29,23 @@
 
 
 .eventDay {
-    font-size: 30px;
+    font-size: 25px;
     margin-top: 15px;
     margin-bottom: 15px;
 }
 
 .eventLocation {
-    font-size: 30px;
+    font-size: 25px;
     margin-top: 15px;
     margin-bottom: 15px;
+    display: 'flex';
 }
 
 .eventDescription {
-    font-size: 30px;
+    font-size: 25px;
     margin-top: 15px;
     margin-bottom: 15px;
     display: flex;
-    /* align-items: start; */
 }
 
 .eventRoles {
@@ -65,7 +61,7 @@
 }
 
 .openVolunteerSlots{
-    font-size: 30px;
+    font-size: 25px;
     margin-top: 15px;
     margin-bottom: 15px;
 }
