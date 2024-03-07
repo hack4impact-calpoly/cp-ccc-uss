@@ -15,7 +15,6 @@ interface FullCalendarEvent {
   start: Date;
 }
 
-
 const Calendar = ({admin = false}) => {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [fullCalendarEvents, setFullCalendarEvents] = useState<FullCalendarEvent[]>([]);
@@ -55,13 +54,17 @@ const Calendar = ({admin = false}) => {
   }, [events])
 
   return (
-    <FullCalendar
-      plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
-      editable
-      selectable
-      initialView='dayGridMonth'
-      events = {fullCalendarEvents}
-    />
+    <>
+       <FullCalendar
+        plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
+        editable
+        selectable
+        initialView='dayGridMonth'
+        events = {fullCalendarEvents}
+      />
+    </>
+    
+    
   );
 };
 
