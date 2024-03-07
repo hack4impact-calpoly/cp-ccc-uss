@@ -12,23 +12,14 @@ import {
   Select,
   Circle,
 } from "@chakra-ui/react";
-import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon } from "@chakra-ui/icons";
+import { EmptyCircleIcon, PlusCircleIcon } from "../../styles/CustomElements";
 
 //add to parent component
 //const [questions, setQuestions] = useState<IFormQuestion[]>([])
 
 //when adding component
 //<AddQuestions questions={questions} setQuestions={setQuestions}/>
-
-const EmptyCircleIcon = () => (
-  <Circle size="17px" bg="transparent" border="1px solid black" />
-);
-
-const PlusCircleIcon = () => (
-  <Circle size="17px" bg="transparent" border="1px solid black">
-    <AddIcon boxSize="9px" />
-  </Circle>
-);
 
 export default function AddQuestions(props: {
   questions: IFormQuestion[];
