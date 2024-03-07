@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Navbar from "@components/Navbar";
 import Calendar from "@components/Calendar";
 import CreateEvent from '@components/CreateEvent/CreateEvent';
+import CreateEventButton from '@components/CreateEvent/CreateEventButton';
 
 export default function Home() {
   const [admin, setAdmin] = useState(false);
@@ -19,6 +20,7 @@ export default function Home() {
       >
         <Navbar />
         <div style={{ width: "70%", margin: "20px" }}>
+          <CreateEventButton/>
           <Calendar admin={admin} />
         </div>
       </div>

@@ -6,6 +6,7 @@ import { Button, ButtonGroup } from '@chakra-ui/react'
 import { Heading } from '@chakra-ui/react'
 import { IFormQuestion, IVolunteerForm } from '@database/volunteerFormSchema';
 import { IVolunteerRole } from '@database/volunteerRoleSchema';
+import { useDisclosure } from '@chakra-ui/react'
 
 function CreateEvent() {
     const[eventName, setEventName] = useState('')
@@ -14,6 +15,7 @@ function CreateEvent() {
     const[questions, setQuestions] = useState<IFormQuestion[]>([])
     const[roles, setRoles] = useState<IVolunteerRole[]>([])
     const[location, setLocation] = useState('default location')
+
     
     const handleChangeName = (e: any) => {
         setEventName(e.target.value)
