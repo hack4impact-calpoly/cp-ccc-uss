@@ -56,7 +56,6 @@ const Calendar = ({ admin = true }) => {
   const handleEventClick = (info: EventClickArg) => {
     setSelectedEventId(info.event.id);
     setDetailModalOpen(true);
-    console.log(detailModalOpen);
   };
 
   const handleCloseModal = () => {
@@ -95,7 +94,7 @@ const Calendar = ({ admin = true }) => {
         <ModalContent className={style.modal}>
           <ModalBody>
             {admin ? (
-                <AdminEventDetails _id={selectedEventId} />
+              <AdminEventDetails _id={selectedEventId} />
             ) : (
               <UserEventDetails id={selectedEventId} />
             )}
