@@ -1,14 +1,15 @@
-'use client'
+"use client";
 import React, { useState, useEffect } from "react";
 import type { IEvent } from "../../database/eventSchema";
 import type {
   IVolunteerRole,
   IVolunteerRoleTimeslot,
 } from "../../database/volunteerRoleSchema";
-import { Input, Select, Stack } from "@chakra-ui/react";
+import { Input, Select, Stack, Button } from "@chakra-ui/react";
 import style from "@styles/EventSignUp.module.css";
 import { IFormQuestion } from "@database/volunteerFormSchema";
-import { Radio, RadioGroup } from '@chakra-ui/react'
+import { IFormAnswer } from "@database/volunteerEntrySchema";
+import { Radio, RadioGroup } from "@chakra-ui/react";
 
 type IParams = {
   id: string;
@@ -25,7 +26,8 @@ export default function EventSignUp({ id }: IParams) {
   const [selectedShifts, setSelectedShifts] = useState<{
     [roleId: string]: IVolunteerRoleTimeslot[];
   }>({});
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState<IFormQuestion[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   /* as soon as event state is changed, whole page reloads  */
   /*When looking to hide then show, check if event has been set, if not th4en don't show. If ithas, then show rest */
@@ -61,7 +63,7 @@ export default function EventSignUp({ id }: IParams) {
       );
       if (selectedEvent) {
         setEvent(selectedEvent);
-        
+
         const fetchRoles = async () => {
           try {
             const rolesData = await Promise.all(
@@ -95,26 +97,26 @@ export default function EventSignUp({ id }: IParams) {
     }
   }
 
-  async function fetchForm(event: IEvent | null ) {
+  async function fetchForm(event: IEvent | null) {
     try {
       if (event === null) {
         setQuestions([]);
         return;
       }
-      const formID = event?.form
+      const formID = event?.form;
       console.log("FormID: " + formID);
       const response = await fetch(`http://localhost:3000/api/form/${formID}`);
       if (!response.ok) {
-        throw new Error(`Failed to fetch event form. Status: ${response.status}`);
+        throw new Error(
+          `Failed to fetch event form. Status: ${response.status}`
+        );
       }
 
       const data = await response.json();
       setQuestions(data.questions);
       console.log("Event Form: " + data);
       console.log("Event Questions: " + data.questions);
-    } 
-    
-    catch(error) {
+    } catch (error) {
       console.error("Error:", error);
       return null;
     }
@@ -136,6 +138,7 @@ export default function EventSignUp({ id }: IParams) {
     }
   }
   function handleShiftSelect(shift: IVolunteerRoleTimeslot) {
+    setIsLoading(false);
     setSelectedShifts((prevSelectedShifts) => ({
       ...prevSelectedShifts,
       [selectedRoles[selectedRoles.length - 1]._id]: prevSelectedShifts[
@@ -149,29 +152,85 @@ export default function EventSignUp({ id }: IParams) {
     }));
   }
 
+  async function handleSubmission() {
+    try {
+      /*const resp = await fetch(`http://localhost:3000/api/volunteer`);
+      if (!resp.ok) {
+        throw new Error(`Failed to fetch events. Status: ${resp.status}`);
+      }*/
+      // Need to get volunteerID in order to post to volunteer entries
+
+      const responses = questions.map((question) => ({
+        question: question?.question,
+        answer: "unsure how to get",
+      })) as Array<IFormAnswer>;
+      // Combine data from all input states (name, email, event, roles/shifts, questions) to POST to VolunteerEntry
+      const response = await fetch("/api/entry", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          eventID: event?._id,
+          roles: roles,
+          volunteerID: "dummy value :(",
+          responses: responses,
+        }),
+      });
+
+      // PUT to VolunteerRoles (selected timeslots/shifts)
+      roles.map(async (role) => {
+        const ret = await fetch(`/api/entry/${role._id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            timeslots: selectedShifts[role._id]
+          }),
+        });
+      });
+
+      // PUT or PATCH to Volunteer (roles and entries arrays)
+
+      
+    } catch (err: unknown) {
+      console.error("Error:", err);
+      setEvents([]);
+    }
+  }
+
   useEffect(() => {
     fetchEvents();
   }, []);
 
   useEffect(() => {
     fetchForm(event);
-  }, [event])
+  }, [event]);
 
   function renderCustomQuestion(question: IFormQuestion) {
     switch (question.fieldType) {
-      case 'SHORT_ANSWER':
-        return <div><Input placeholder='Answer'/></div>;
-      case 'MULTI_CHOICE':
-        return <div>
-          <Stack>
-          {question.options && question.options.map((option: String, index) => (
-            <div key= {index}><Radio size='md' name='1' colorScheme='green'>
-              {option}
-            </Radio>
-            </div>
-          ))}
-          </Stack>
-      </div>
+      case "SHORT_ANSWER":
+        return (
+          <div>
+            <Input placeholder="Answer" />
+          </div>
+        );
+      case "MULTI_CHOICE":
+        return (
+          <div>
+            <Stack>
+              {question.options &&
+                question.options.map((option: String, index) => (
+                  <div key={index}>
+                    <Radio size="md" name="1" colorScheme="green">
+                      {option}
+                    </Radio>
+                  </div>
+                ))}
+            </Stack>
+          </div>
+        );
     }
   }
 
@@ -256,17 +315,34 @@ export default function EventSignUp({ id }: IParams) {
         </div>
       ))}
 
-      {event ? // Don't show this section until there is an event selected.
-        (<div>
+      {event ? ( // Don't show this section until there is an event selected.
+        <div>
           {questions.map((question: IFormQuestion, index) => (
-            <div key = {index}>
-            <div>Question: {question.question}</div>
-            <div> {renderCustomQuestion(question)} </div>
+            <div key={index}>
+              <div>Question: {question.question}</div>
+              <div> {renderCustomQuestion(question)} </div>
             </div>
           ))}
-        </div>) : (<div></div>)}
-      {/* {role ? <div></div> : <div></div>} This is for shifts, //Do not show this section until there is a role picked
-        {event ? <div></div> : <div></div>} This is for questions, //Do not show this section until there is an event picked */}
+        </div>
+      ) : (
+        <div></div>
+      )}
+
+      {shifts ? (
+        <div>
+          <Button
+            type="submit"
+            isLoading={isLoading}
+            colorScheme="teal"
+            variant="solid"
+            onClick={() => handleSubmission()}
+          >
+            Submit
+          </Button>
+        </div>
+      ) : (
+        <div></div>
+      )}
     </>
   );
 }
