@@ -21,6 +21,7 @@ import {
 import UserEventDetails from "./UserEventDetails";
 import style from "../styles/Calendar.module.css";
 import AdminEventDetails from "./AdminEventDetails/AdminEventDetails";
+import style from "@styles/calendar.module.css";
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
@@ -79,9 +80,18 @@ const Calendar = ({ admin = false }) => {
   }, [events]);
 
   return (
-    <>
+    <div className={style.wrapper}>
+      <style>{calendarStyles}</style>
       <FullCalendar
+        aspectRatio={style ? 1.5 : 2.0}
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
+        headerToolbar={{
+          left: "prev",
+          center: "title",
+          right: "next",
+        }}
+        titleFormat={{ month: "long" }}
+        dayHeaderFormat={{ weekday: "long" }}
         editable
         selectable
         initialView="dayGridMonth"
@@ -103,8 +113,85 @@ const Calendar = ({ admin = false }) => {
           <ModalFooter></ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </div>
   );
 };
+
+const calendarStyles = `
+.fc .fc-prev-button, .fc .fc-next-button {
+  background-color: #bfbdbd;
+  border: none;
+  color: #FFF;
+  font-size: 2em;
+  font-size: .5em;
+  border-radius: 50%; 
+  line-height: 1;
+}
+
+.fc .fc-toolbar {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.fc-toolbar-chunk {
+  padding-right: 2%;
+}
+
+.fc-toolbar-title {
+  font-family: sans-serif;
+}
+
+.fc .fc-event {
+  background-color: #C4F1DE;
+  border-radius: 1em;
+  padding: 5%;
+  padding-right: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  font-family: Sans-serif;
+
+  .fc-event-title {
+    font-weight: normal;
+  }
+}
+
+.fc-daygrid-event-dot {
+  display: none;
+}
+
+.fc-event-time {
+  display: none;
+}
+
+.fc-daygrid-day-top {
+  justify-content: left;
+  .fc-daygrid-day-number {
+    font-family: Sans-serif;
+  }
+}
+
+.fc-col-header-cell-cushion {
+  font-family: Sans-serif;
+  font-weight: normal; 
+}
+
+.fc-col-header   {
+  background-color: #ffb94f;
+  border-radius: 1em;
+  font-family: Sans-serif;
+}
+
+.fc-col-header-cell {
+  border-style: none;
+}
+
+.fc-day {
+  border-radius: 1em;
+}
+
+`;
 
 export default Calendar;
