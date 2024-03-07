@@ -1,0 +1,96 @@
+.adminEventDetails {
+    width: 576px;
+    height: 801px;
+    border-radius: 24px;
+    background: #FFF;
+    border-color: black;
+    border: 2px solid;
+    font-family: 'Avenir';
+    padding-left: 37px;
+    padding-right: 37px;
+    overflow: auto;
+}
+
+.eventName {
+    color: black;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    font-weight: bold;
+}
+
+.headerContainer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 30px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+
+
+.eventDay {
+    font-size: 30px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.eventLocation {
+    font-size: 30px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.eventDescription {
+    font-size: 30px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    /* align-items: start; */
+}
+
+.eventRoles {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 50px;
+  }
+
+.eventRole{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.openVolunteerSlots{
+    font-size: 30px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.eventOpenSlots {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 50px;
+}
+
+.signedUp {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.openTime {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.openDetails {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 50px;
+}
+
+.icon {
+    padding-right: 20px;
+}
