@@ -82,6 +82,7 @@ function CreateEvent() {
         } catch (err) {
           console.error('Error creating event:', err);
         }
+        // onclose;
       };
 
     return (
@@ -129,11 +130,9 @@ function CreateEvent() {
                         <Button colorScheme="teal" onClick={handleSubmit}>
                             Create Event
                         </Button>
+                        <Button onClick={onClose}>Close</Button>
                     </div>
                 </div>
-            <ModalFooter>
-              <Button onClick={onClose}>Close</Button>
-            </ModalFooter>
           </ModalContent>
         </Modal>
       </>
