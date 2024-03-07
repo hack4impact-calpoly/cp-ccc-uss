@@ -6,7 +6,7 @@ import CreateEvent from '@components/CreateEvent/CreateEvent';
 
 export default function Home() {
   const [admin, setAdmin] = useState(false);
-
+  
   return (
     <main>
       <div
@@ -22,6 +22,7 @@ export default function Home() {
           <Calendar admin={admin} />
         </div>
       </div>
+      <AddQuestions questions={questions} setQuestions={setQuestions}/>
     </main>
   );
 }
