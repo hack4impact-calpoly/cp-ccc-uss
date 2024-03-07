@@ -72,14 +72,6 @@ const Calendar = ({ admin = false }) => {
         selectable
         initialView="dayGridMonth"
         events={fullCalendarEvents}
-
-        //I didn't want to delete this testing code in case it was important
-        //   events= {
-        //     [
-        //     { title: 'Test 1', allDay: false, date: '2024-01-25T08:33:33', url: "/test" },
-        //     { title: 'Test 2', date: '2024-01-24T06:33:33' }
-        //   ]
-        // }
       />
     </div>
   );
