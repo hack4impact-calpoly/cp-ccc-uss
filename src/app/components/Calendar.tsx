@@ -134,6 +134,13 @@ const calendarStyles = `
   display: none;
 }
 
+.fc-daygrid-day-top {
+  justify-content: left;
+  .fc-daygrid-day-number {
+    font-family: Sans-serif;
+  }
+}
+
 .fc-col-header-cell-cushion {
   font-family: Sans-serif;
   font-weight: normal; 
