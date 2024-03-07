@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import Navbar from "@components/Navbar";
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Login from './Login';
+import AddQuestions from "@components/AddQuestions/AddQuestions"
+import { IFormQuestion } from '@database/volunteerFormSchema'
 import Calendar from "@components/Calendar";
 import CreateEvent from '@components/CreateEvent/CreateEvent';
 import { Button, ChakraProvider } from "@chakra-ui/react";
@@ -10,7 +12,8 @@ import { Button, ChakraProvider } from "@chakra-ui/react";
 export default function Home() {
   const [apiResponse, setApiResponse] = useState('');
   const { data, status } = useSession();
-
+  const [questions, setQuestions] = useState<IFormQuestion[]>([])
+  
   const handleApiCall = async () => {
     try {
       const response = await fetch('/api/example/');
@@ -35,6 +38,7 @@ export default function Home() {
         <h3>Login Website</h3>
         <Login />
       </div>
+      <AddQuestions questions={questions} setQuestions={setQuestions}/>
     </main>
   );
 }
