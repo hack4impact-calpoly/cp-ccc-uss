@@ -1,6 +1,6 @@
 "use client"
 import { useSession, signIn, signOut } from "next-auth/react";
-import { UserCard } from "./userCard";
+import { UserCard } from "./components/userCard";
 import { Button, ChakraProvider } from "@chakra-ui/react";
 import Google from "next-auth/providers/google";
 
