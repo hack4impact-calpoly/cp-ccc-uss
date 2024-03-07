@@ -20,6 +20,7 @@ import {
 } from "@chakra-ui/react";
 import UserEventDetails from "./UserEventDetails";
 import style from "../styles/Calendar.module.css";
+import AdminEventDetails from "./AdminEventDetails/AdminEventDetails";
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
@@ -96,7 +97,7 @@ const Calendar = ({ admin = false }) => {
             {admin ? (
               <div>
                 <p>Admin Section:</p>
-                <UserEventDetails id={selectedEventId} />
+                <AdminEventDetails _id={selectedEventId} />
               </div>
             ) : (
               <UserEventDetails id={selectedEventId} />
