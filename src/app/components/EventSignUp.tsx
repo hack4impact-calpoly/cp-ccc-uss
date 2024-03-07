@@ -233,7 +233,7 @@ export default function EventSignUp({ id }: IParams) {
   }
 
   return (
-    <div className={style.event}>
+    <div className={style.comp}>
       {events.length > 0 ? (
         <div>
           <h1>Event Sign Up</h1>
@@ -327,7 +327,7 @@ export default function EventSignUp({ id }: IParams) {
       )}
 
       {shifts ? (
-        <div>
+        <div className={style.centralize}>
           <Button
             type="submit"
             isLoading={isLoading}
