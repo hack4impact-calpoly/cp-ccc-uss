@@ -75,10 +75,11 @@ const Calendar = ({ admin = false }) => {
       <div className={style.wrapper}>
         <style>{calendarStyles}</style>
         <>
-        <Button mt={3} ref={btnRef} onClick={onOpen}>
-          Add Event
-        </Button>
-
+        <div className={style.buttonContainer}>
+          <Button mt={3} ref={btnRef} onClick={onOpen} colorScheme="teal">
+            Add Event
+          </Button>
+        </div>
         <Modal
           onClose={onClose}
           finalFocusRef={btnRef}
