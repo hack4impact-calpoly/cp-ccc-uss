@@ -7,6 +7,15 @@ import { Heading } from "@chakra-ui/react";
 import { IFormQuestion, IVolunteerForm } from "@database/volunteerFormSchema";
 import { IVolunteerRole } from "@database/volunteerRoleSchema";
 import { useDisclosure } from "@chakra-ui/react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from "@chakra-ui/react";
 import AddQuestions from "@components/AddQuestions/AddQuestions";
 
 function CreateEvent() {
@@ -66,6 +75,7 @@ function CreateEvent() {
       if (response.status == 201) {
         const createdEvent = await response.json();
         clearInputs();
+        onclose;
       } else {
         const err = await response.text();
         console.error("Error creating event:", err);
@@ -73,12 +83,12 @@ function CreateEvent() {
     } catch (err) {
       console.error("Error creating event:", err);
     }
-    // onclose;
   };
 
   return (
     <div className={styles.event}>
         <h2 className={styles.eventHeader}>Create Event</h2>
+        <ModalCloseButton/>
         <Input
             placeholder="Event Name"
             value={eventName}

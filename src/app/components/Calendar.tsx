@@ -88,10 +88,8 @@ const Calendar = ({ admin = false }) => {
         >
           <ModalOverlay />
           <ModalContent>
-            <div>
-              <ModalCloseButton/>
-              <CreateEvent/>
-            </div>
+            {/* <ModalCloseButton/> */}
+            <CreateEvent/>
           </ModalContent>
         </Modal>
       </>
