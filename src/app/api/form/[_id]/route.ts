@@ -40,16 +40,18 @@ export async function GET(req: NextRequest, { params }: IParams) {
 export async function PUT(req: NextRequest, { params }: IParams) {
   await connectDB();
   const { _id } = params;
+  console.log("PUT _id: ", _id);
 
   try {
     const { eventId, questions }: IVolunteerForm = await req.json();
     const volunteerForm = { eventId, questions };
+    console.log("PUT form eventID: ", eventId);
 
     if (volunteerForm) {
-      const updatedVolunteerForm = await volunteerFormSchema.findByIdAndUpdate(
-        { _id },
+      const updatedVolunteerForm = await volunteerFormSchema.findOneAndUpdate(
+        { _id: _id },
+        volunteerForm,
         { new: true },
-        volunteerForm
       );
       return NextResponse.json(updatedVolunteerForm, { status: 201 });
     } else {
