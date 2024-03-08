@@ -19,7 +19,6 @@ export default function Home() {
       >
         <Navbar />
         <div style={{ width: "70%", margin: "20px" }}>
-          <CreateEvent/>
           <Calendar admin={admin} />
         </div>
       </div>

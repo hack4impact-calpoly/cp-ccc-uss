@@ -8,6 +8,18 @@ import Link from "next/link";
 import { useRef } from "react";
 import { EventInstance } from "@fullcalendar/common";
 import style from "@styles/calendar.module.css";
+import { useDisclosure } from "@chakra-ui/react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from "@chakra-ui/react";
+import { Button, ButtonGroup } from "@chakra-ui/react";
+import CreateEvent from "./CreateEvent/CreateEvent";
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
@@ -23,6 +35,10 @@ const Calendar = ({ admin = false }) => {
   >([]);
   const [selectedEventId, setSelectedEventId] = useState("");
   const [detailModalOpen, setDetailModalOpen] = useState(false);
+
+  //for event modal
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const btnRef = React.useRef(null);
 
   //get all events on first render
   useEffect(() => {
@@ -56,8 +72,29 @@ const Calendar = ({ admin = false }) => {
   }, [events]);
 
   return (
-    <div className={style.wrapper}>
-      <style>{calendarStyles}</style>
+      <div className={style.wrapper}>
+        <style>{calendarStyles}</style>
+        <>
+        <Button mt={3} ref={btnRef} onClick={onOpen}>
+          Add Event
+        </Button>
+
+        <Modal
+          onClose={onClose}
+          finalFocusRef={btnRef}
+          isOpen={isOpen}
+          scrollBehavior={'inside'}
+          size={"xl"}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <div>
+              <ModalCloseButton/>
+              <CreateEvent/>
+            </div>
+          </ModalContent>
+        </Modal>
+      </>
       <FullCalendar
         aspectRatio={style ? 1.5 : 2.0}
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}

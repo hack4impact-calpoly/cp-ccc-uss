@@ -88,57 +88,38 @@ function CreateEvent() {
   };
 
   return (
-    <>
-      <Button mt={3} ref={btnRef} onClick={onOpen}>
-        Add Event
-      </Button>
-
-      <Modal
-        onClose={onClose}
-        finalFocusRef={btnRef}
-        isOpen={isOpen}
-        scrollBehavior={"inside"}
-        size={"xl"}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <div className={styles.event}>
-            <h2 className={styles.eventHeader}>Create Event</h2>
-            <ModalCloseButton />
-            <Input
-              placeholder="Event Name"
-              value={eventName}
-              onChange={handleChangeName}
-              borderColor="black"
-            />
-            <Input
-              placeholder="Select Date and Time"
-              type="date"
-              value={new Date(date).toLocaleDateString("en-CA")}
-              onChange={handleChangeDate}
-              borderColor="black"
-            />
-            <Textarea
-              placeholder="Event Description"
-              value={description}
-              onChange={handleChangeDesc}
-              width="463px"
-              height="197px"
-              borderColor="black"
-            />
-            <div>
-              <AddQuestions questions={questions} setQuestions={setQuestions} />
-            </div>
-            <div className={styles.createEventButton}>
-              <Button colorScheme="teal" onClick={handleSubmit}>
+    <div className={styles.event}>
+        <h2 className={styles.eventHeader}>Create Event</h2>
+        <Input
+            placeholder="Event Name"
+            value={eventName}
+            onChange={handleChangeName}
+            borderColor="black"
+        />
+        <Input
+            placeholder="Select Date and Time"
+            type="date"
+            value={new Date(date).toLocaleDateString("en-CA")}
+            onChange={handleChangeDate}
+            borderColor="black"
+        />
+        <Textarea
+            placeholder="Event Description"
+            value={description}
+            onChange={handleChangeDesc}
+            width="463px"
+            height="197px"
+            borderColor="black"
+        />
+        <div>
+            <AddQuestions questions={questions} setQuestions={setQuestions} />
+        </div>
+        <div className={styles.createEventButton}>
+            <Button colorScheme="teal" onClick={handleSubmit}>
                 Create Event
-              </Button>
-              <Button onClick={onClose}>Close</Button>
-            </div>
-          </div>
-        </ModalContent>
-      </Modal>
-    </>
+            </Button>
+        </div>
+    </div>
   );
 }
 
