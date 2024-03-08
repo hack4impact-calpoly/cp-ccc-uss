@@ -26,6 +26,9 @@ export default function EventSignUp({ id }: IParams) {
   const [selectedShifts, setSelectedShifts] = useState<{
     [roleId: string]: IVolunteerRoleTimeslot[];
   }>({});
+  const [originalShifts, setOriginalShifts] = useState<{
+    [roleId: string]: IVolunteerRoleTimeslot[];
+  }>({});
   const [questions, setQuestions] = useState<IFormQuestion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -45,15 +48,6 @@ export default function EventSignUp({ id }: IParams) {
       console.error("Error:", err);
       setEvents([]);
     }
-  }
-
-  async function getRole(roleID: String) {
-    const response = await fetch(`http://localhost:3000/role/${roleID}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch event role. Status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
   }
 
   async function handleEventInput(eventID: String) {
@@ -152,6 +146,15 @@ export default function EventSignUp({ id }: IParams) {
     }));
   }
 
+  async function getRole(roleID: String) {
+    const response = await fetch(`http://localhost:3000/role/${roleID}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch event role. Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  }
+
   async function handleSubmission() {
     try {
       /*const resp = await fetch(`http://localhost:3000/api/volunteer`);
@@ -189,6 +192,9 @@ export default function EventSignUp({ id }: IParams) {
 
       // PUT to VolunteerRoles (selected timeslots/shifts)
       roles.map(async (role) => {
+        const originalShifts = role.timeslots;
+        const newShifts = selectedShifts[role._id] || [];
+        const updatedTimeslots = [...originalShifts, ...newShifts];
         const ret = await fetch(`http://localhost:3000/api/role/${role._id}`, {
           method: "PATCH",
           headers: {
@@ -196,9 +202,10 @@ export default function EventSignUp({ id }: IParams) {
           },
           body: JSON.stringify({
             fieldToUpdate: "timeslots",
-            value: selectedShifts[role._id],
+            value: updatedTimeslots,
           }),
         });
+
         if (!ret.ok) {
           throw new Error(
             `Failed to update volunteer role with id: ${role._id}. Status: ${response.status}`
