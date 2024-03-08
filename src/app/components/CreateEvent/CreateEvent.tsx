@@ -7,19 +7,8 @@ import { Heading } from "@chakra-ui/react";
 import { IFormQuestion, IVolunteerForm } from "@database/volunteerFormSchema";
 import { IVolunteerRole } from "@database/volunteerRoleSchema";
 import { useDisclosure } from "@chakra-ui/react";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-} from "@chakra-ui/react";
 import AddQuestions from "@components/AddQuestions/AddQuestions";
 
-// TODO: Re-render calendar page immediately after creating event
-// TODO: combine close modal w create event button
 function CreateEvent() {
   const [eventName, setEventName] = useState("");
   const [date, setDate] = useState<Date>(new Date());
