@@ -8,8 +8,14 @@ import { IFormQuestion, IVolunteerForm } from "@database/volunteerFormSchema";
 import { IVolunteerRole } from "@database/volunteerRoleSchema";
 import { useDisclosure } from "@chakra-ui/react";
 import AddQuestions from "@components/AddQuestions/AddQuestions";
+import { IEvent } from "@database/eventSchema";
 
-function CreateEvent() {
+interface CreateEventProps {
+  events: IEvent[];
+  setEvents: React.Dispatch<React.SetStateAction<IEvent[]>>;
+}
+
+function CreateEvent({ events, setEvents }: CreateEventProps) {
   const [eventName, setEventName] = useState("");
   const [date, setDate] = useState<Date>(new Date());
   const [description, setDescription] = useState("");
@@ -65,6 +71,8 @@ function CreateEvent() {
 
       if (response.status == 201) {
         const createdEvent = await response.json();
+        console.log(createdEvent);
+        setEvents([...events, createdEvent]);
         clearInputs();
       } else {
         const err = await response.text();
@@ -78,36 +86,36 @@ function CreateEvent() {
 
   return (
     <div className={styles.event}>
-        <h2 className={styles.eventHeader}>Create Event</h2>
-        <Input
-            placeholder="Event Name"
-            value={eventName}
-            onChange={handleChangeName}
-            borderColor="black"
-        />
-        <Input
-            placeholder="Select Date and Time"
-            type="date"
-            value={new Date(date).toLocaleDateString("en-CA")}
-            onChange={handleChangeDate}
-            borderColor="black"
-        />
-        <Textarea
-            placeholder="Event Description"
-            value={description}
-            onChange={handleChangeDesc}
-            width="463px"
-            height="197px"
-            borderColor="black"
-        />
-        <div>
-            <AddQuestions questions={questions} setQuestions={setQuestions} />
-        </div>
-        <div className={styles.createEventButton}>
-            <Button colorScheme="teal" onClick={handleSubmit}>
-                Create Event
-            </Button>
-        </div>
+      <h2 className={styles.eventHeader}>Create Event</h2>
+      <Input
+        placeholder="Event Name"
+        value={eventName}
+        onChange={handleChangeName}
+        borderColor="black"
+      />
+      <Input
+        placeholder="Select Date and Time"
+        type="date"
+        value={new Date(date).toLocaleDateString("en-CA")}
+        onChange={handleChangeDate}
+        borderColor="black"
+      />
+      <Textarea
+        placeholder="Event Description"
+        value={description}
+        onChange={handleChangeDesc}
+        width="463px"
+        height="197px"
+        borderColor="black"
+      />
+      <div>
+        <AddQuestions questions={questions} setQuestions={setQuestions} />
+      </div>
+      <div className={styles.createEventButton}>
+        <Button colorScheme="teal" onClick={handleSubmit}>
+          Create Event
+        </Button>
+      </div>
     </div>
   );
 }

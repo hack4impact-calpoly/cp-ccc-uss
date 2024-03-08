@@ -72,9 +72,9 @@ const Calendar = ({ admin = false }) => {
   }, [events]);
 
   return (
-      <div className={style.wrapper}>
-        <style>{calendarStyles}</style>
-        <>
+    <div className={style.wrapper}>
+      <style>{calendarStyles}</style>
+      <>
         <Button mt={3} ref={btnRef} onClick={onOpen}>
           Add Event
         </Button>
@@ -83,14 +83,14 @@ const Calendar = ({ admin = false }) => {
           onClose={onClose}
           finalFocusRef={btnRef}
           isOpen={isOpen}
-          scrollBehavior={'inside'}
+          scrollBehavior={"inside"}
           size={"xl"}
         >
           <ModalOverlay />
           <ModalContent>
             <div>
-              <ModalCloseButton/>
-              <CreateEvent/>
+              <ModalCloseButton />
+              <CreateEvent events={events} setEvents={setEvents} />
             </div>
           </ModalContent>
         </Modal>
