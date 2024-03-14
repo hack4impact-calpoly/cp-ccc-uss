@@ -12,13 +12,6 @@ export default function Home() {
   return (
     <main>
       <Navbar />
-      <h1>Home</h1>
-      <EventSignUp id="idk" />
-      <p>The following button is styled with ChakraUI:</p>
-      <Button colorScheme="blue" onClick={handleApiCall}>
-        Test DB Connection
-      </Button>
-      <p>API Response: {apiResponse}</p>
       <Calendar />
       <CreateEvent />
       <div
@@ -39,7 +32,7 @@ export default function Home() {
       </div>
       <div style={{ width: "500px", margin: "0 auto", paddingTop: "30px" }}>
         <h3>Login Website</h3>
-        <Login />
+        {/* <Login /> */}
       </div>
     </main>
   );
