@@ -1,19 +1,33 @@
 .inputLine {
-    border-radius: 30px;
-    border: 5 solid black;
+  border-radius: 30px;
+  border: 5 solid black;
 }
 .comp {
-    display: flex;
-    flex-direction: column;
-    width: 25%;
-    border-radius: 20px;
-    background-color: rgb(255, 255, 255);
-    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-    margin-left: auto;
-    margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: space-between;
+  width: 25%;
+  padding: 56px;
+  background-color: white;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  border-radius: 20px;
+  background-color: rgb(255, 255, 255);
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.eventHeader {
+  font-family: "Helvetica";
+  font-size: 32px;
+  font-weight: 550;
+  line-height: 100%;
+  letter-spacing: 0em;
+  text-align: left;
 }
 
 .centralize {
-    margin-left: auto;
-    margin-right: auto;
+  margin-left: auto;
+  margin-right: auto;
 }

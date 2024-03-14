@@ -19,6 +19,7 @@ export default function EventSignUp({ id }: IParams) {
   const [event, setEvent] = useState<IEvent | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [date, setDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<IEvent[]>([]);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<IVolunteerRole[]>([]);
@@ -31,6 +32,10 @@ export default function EventSignUp({ id }: IParams) {
   }>({});
   const [questions, setQuestions] = useState<IFormQuestion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const handleChangeDate = (e: any) => {
+    setDate(e.target.value);
+  };
 
   /* as soon as event state is changed, whole page reloads  */
   /*When looking to hide then show, check if event has been set, if not th4en don't show. If ithas, then show rest */
@@ -258,7 +263,7 @@ export default function EventSignUp({ id }: IParams) {
     <div className={style.comp}>
       {events.length > 0 ? (
         <div>
-          <h1>Event Sign Up</h1>
+          <h1 className={style.eventHeader}>Event Sign Up</h1>
           <Input
             placeholder="Name"
             value={name}
@@ -270,6 +275,14 @@ export default function EventSignUp({ id }: IParams) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className={style.inputLine}
+          />
+          <Input
+            placeholder="Select Date and Time"
+            type="date"
+            colorScheme="teal"
+            value={new Date(date).toLocaleDateString("en-CA")}
+            onChange={handleChangeDate}
+            borderColor="black"
           />
           <Select
             variant="filled"
