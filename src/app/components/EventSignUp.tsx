@@ -348,15 +348,25 @@ export default function EventSignUp({ id }: IParams) {
           <h3>Select Shifts for {role.roleName}:</h3>
           {role.timeslots.map((shift, index) => (
             <div key={index}>
-              <input
+              <Radio
                 type="checkbox"
                 id={`shift-${index}`}
                 value={`shift-${index}`}
+                size="lg"
+                colorScheme="teal"
                 onChange={() => handleShiftSelect(shift)}
                 checked={selectedShifts[role._id]?.includes(shift)}
               />
               <label htmlFor={`shift-${index}`}>
-                {`Shift ${index + 1}: ${shift.startTime} - ${shift.endTime}`}
+                {`Shift ${index + 1}: ${new Date(
+                  shift.startTime
+                ).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })} - ${new Date(shift.endTime).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}`}
               </label>
             </div>
           ))}
