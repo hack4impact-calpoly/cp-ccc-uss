@@ -1,39 +1,42 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import Navbar from "@components/Navbar";
-import { useSession, signIn, signOut } from 'next-auth/react';
-import Login from './Login';
 import Calendar from "@components/Calendar";
-import CreateEvent from '@components/CreateEvent/CreateEvent';
+import CreateEvent from "@components/CreateEvent/CreateEvent";
 import { Button, ChakraProvider } from "@chakra-ui/react";
-import EventSignUp from '@components/EventSignUp';
-
+import EventSignUp from "@components/EventSignUp";
 
 export default function Home() {
-  const [apiResponse, setApiResponse] = useState('');
-  const { data, status } = useSession();
+  const [admin, setAdmin] = useState(false);
 
-  const handleApiCall = async () => {
-    try {
-      const response = await fetch('/api/example/');
-      const data = await response.json();
-      setApiResponse(data.message);
-    } catch (error) {
-      console.error('Error calling API:', error);
-      setApiResponse('Failed to call API');
-    }
-  };
-  
   return (
     <main>
       <Navbar />
       <h1>Home</h1>
       <EventSignUp id="idk" />
       <p>The following button is styled with ChakraUI:</p>
-      <Button colorScheme="blue" onClick={handleApiCall}>Test DB Connection</Button>
+      <Button colorScheme="blue" onClick={handleApiCall}>
+        Test DB Connection
+      </Button>
       <p>API Response: {apiResponse}</p>
       <Calendar />
       <CreateEvent />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div>i am the admin: {admin.toString()}</div>
+        <button onClick={() => (admin ? setAdmin(false) : setAdmin(true))}>
+          secure button
+        </button>
+        <div style={{ width: "70%", margin: "20px" }}>
+          <Calendar admin={admin} />
+        </div>
+      </div>
       <div style={{ width: "500px", margin: "0 auto", paddingTop: "30px" }}>
         <h3>Login Website</h3>
         <Login />
