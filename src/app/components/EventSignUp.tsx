@@ -320,7 +320,7 @@ export default function EventSignUp({ id }: IParams) {
         <div>
           <Select
             variant={"filled"}
-            bg="#84acac"
+            bg="#54948c"
             className={`${style.inputLine} ${style.shortenedInput}`}
             colorScheme="teal"
             color="black"
@@ -345,7 +345,9 @@ export default function EventSignUp({ id }: IParams) {
       )}
       {selectedRoles.map((role) => (
         <div key={role._id}>
-          <h3>Select Shifts for {role.roleName}:</h3>
+          <h3 className={style.smallHeader}>
+            Select Shifts for {role.roleName}:
+          </h3>
           {role.timeslots.map((shift, index) => (
             <div key={index}>
               <Radio
@@ -354,6 +356,8 @@ export default function EventSignUp({ id }: IParams) {
                 value={`shift-${index}`}
                 size="lg"
                 colorScheme="teal"
+                className={style.inputLine}
+                s
                 onChange={() => handleShiftSelect(shift)}
                 checked={selectedShifts[role._id]?.includes(shift)}
               />
@@ -377,7 +381,9 @@ export default function EventSignUp({ id }: IParams) {
         <div>
           {questions.map((question: IFormQuestion, index) => (
             <div key={index}>
-              <div>Question: {question.question}</div>
+              <div className={style.smallHeader}>
+                Question: {question.question}
+              </div>
               <div> {renderCustomQuestion(question)} </div>
             </div>
           ))}
@@ -390,6 +396,7 @@ export default function EventSignUp({ id }: IParams) {
         <div className={style.centralize}>
           <Button
             type="submit"
+            className={style.submit}
             isLoading={isLoading}
             colorScheme="teal"
             variant="solid"

@@ -4,6 +4,18 @@
   margin-bottom: 20px;
 }
 
+.smallHeader {
+  margin-bottom: 10px;
+  border-bottom: 2px solid black;
+}
+
+.submit {
+  margin-top: 20px;
+  margin-bottom: -10px;
+  display: flex;
+  justify-content: center;
+}
+
 .comp {
   display: flex;
   flex-direction: column;
