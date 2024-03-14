@@ -12,8 +12,8 @@ export default function Home() {
   return (
     <main>
       <Navbar />
-      <Calendar />
       <CreateEvent />
+      {/* <Calendar /> */}
       <div
         style={{
           display: "flex",
