@@ -1,7 +1,9 @@
 .inputLine {
-  border-radius: 30px;
+  border-radius: 10px;
   border: 5 solid black;
+  margin-bottom: 20px;
 }
+
 .comp {
   display: flex;
   flex-direction: column;
@@ -18,6 +20,15 @@
   margin-right: auto;
 }
 
+.shortenedInput {
+  width: 50%;
+}
+
+.chakra-select__icon-wrapper {
+  margin-left: -20px; /* Adjust as needed */
+  margin-top: 5px; /* Adjust as needed */
+}
+
 .eventHeader {
   font-family: "Helvetica";
   font-size: 32px;
@@ -25,6 +36,7 @@
   line-height: 100%;
   letter-spacing: 0em;
   text-align: left;
+  margin-bottom: 20px;
 }
 
 .centralize {

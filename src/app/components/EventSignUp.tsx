@@ -6,6 +6,7 @@ import type {
   IVolunteerRoleTimeslot,
 } from "../../database/volunteerRoleSchema";
 import { Input, Select, Stack, Button } from "@chakra-ui/react";
+// import { DefaultIcon } from "@chakra-ui/select";
 import style from "@styles/EventSignUp.module.css";
 import { IFormQuestion } from "@database/volunteerFormSchema";
 import { IFormAnswer } from "@database/volunteerEntrySchema";
@@ -238,7 +239,11 @@ export default function EventSignUp({ id }: IParams) {
       case "SHORT_ANSWER":
         return (
           <div>
-            <Input placeholder="Answer" />
+            <Input
+              placeholder="Answer"
+              className={style.inputLine}
+              borderColor="black"
+            />
           </div>
         );
       case "MULTI_CHOICE":
@@ -248,7 +253,7 @@ export default function EventSignUp({ id }: IParams) {
               {question.options &&
                 question.options.map((option: String, index) => (
                   <div key={index}>
-                    <Radio size="md" name="1" colorScheme="green">
+                    <Radio size="lg" name="1" colorScheme="teal">
                       {option}
                     </Radio>
                   </div>
@@ -269,12 +274,14 @@ export default function EventSignUp({ id }: IParams) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className={style.inputLine}
+            borderColor="black"
           />
           <Input
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className={style.inputLine}
+            borderColor="black"
           />
           <Input
             placeholder="Select Date and Time"
@@ -283,9 +290,11 @@ export default function EventSignUp({ id }: IParams) {
             value={new Date(date).toLocaleDateString("en-CA")}
             onChange={handleChangeDate}
             borderColor="black"
+            className={style.inputLine}
           />
           <Select
-            variant="filled"
+            className={style.inputLine}
+            borderColor="black"
             placeholder="Select Event"
             onChange={(e) => {
               handleEventInput(e.target.value); //Once an event option is picked, call this function with the eventID as arg
@@ -310,8 +319,14 @@ export default function EventSignUp({ id }: IParams) {
       {event ? ( //Do not show this section until there is an event picked
         <div>
           <Select
-            variant="filled"
+            variant={"filled"}
+            bg="#84acac"
+            className={`${style.inputLine} ${style.shortenedInput}`}
+            colorScheme="teal"
+            color="black"
             placeholder="Select Role"
+            // icon={<DefaultIcon />}
+            // iconSize="24px"
             onChange={(e) => {
               const selectedRoleID = e.target.value;
               handleRoleSelect(selectedRoleID);

@@ -13,12 +13,10 @@ const theme = extendTheme({
   },
   components: {
     Input: {
-      variants: {
-      },
+      variants: {},
     },
     Button: {
-      variants: {
-      },
+      variants: {},
     },
     //...other components
   },
