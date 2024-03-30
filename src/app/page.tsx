@@ -13,7 +13,7 @@ export default function Home() {
     <main>
       <Navbar />
       <CreateEvent />
-      <EventSignUp/>
+      <EventSignUp id={"test"} />
       {/* <Calendar /> */}
       <div
         style={{
