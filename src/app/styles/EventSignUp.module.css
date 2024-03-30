@@ -74,3 +74,10 @@
   max-height: 80vh;
   overflow-y: auto;
 }
+
+.close {
+  width: 10%;
+  display: flex;
+  left: 90%;
+  bottom: 10px;
+}

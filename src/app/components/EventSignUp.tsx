@@ -286,6 +286,13 @@ export default function EventSignUp({ id }: IParams) {
       >
         <div className={style.content}>
           <div className={style.comp}>
+            <Button
+              className={style.close}
+              colorScheme="red"
+              onClick={closeModal}
+            >
+              X
+            </Button>
             {events.length > 0 ? (
               <div>
                 <h1 className={style.eventHeader}>Event Sign Up</h1>
