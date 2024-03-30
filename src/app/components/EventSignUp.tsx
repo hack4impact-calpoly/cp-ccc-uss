@@ -288,7 +288,7 @@ export default function EventSignUp({ id }: IParams) {
           <div className={style.comp}>
             <Button
               className={style.close}
-              colorScheme="red"
+              colorScheme="teal"
               onClick={closeModal}
             >
               X
