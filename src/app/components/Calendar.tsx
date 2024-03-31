@@ -91,7 +91,11 @@ const Calendar = ({ admin = false }) => {
           <ModalContent>
             <div>
               <ModalCloseButton />
-              <CreateEvent events={events} setEvents={setEvents} />
+              <CreateEvent 
+                events={events} 
+                setEvents={setEvents} 
+                onOpen={onOpen}
+                onClose={onClose}/>
             </div>
           </ModalContent>
         </Modal>

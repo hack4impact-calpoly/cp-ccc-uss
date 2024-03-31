@@ -23,9 +23,11 @@ import { set } from "mongoose";
 interface CreateEventProps {
   events: IEvent[];
   setEvents: React.Dispatch<React.SetStateAction<IEvent[]>>;
+  onOpen: () => void;
+  onClose: () => void;
 }
 
-function CreateEvent({ events, setEvents }: CreateEventProps) {
+function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
   const [eventName, setEventName] = useState("");
   const [date, setDate] = useState<Date>(new Date());
   const [description, setDescription] = useState("");
@@ -34,7 +36,6 @@ function CreateEvent({ events, setEvents }: CreateEventProps) {
   const [location, setLocation] = useState("default location");
   const [eventId, setEventId] = useState("61d634706a98a61edd42bf45");
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef(null);
 
   const handleChangeName = (e: any) => {
@@ -111,7 +112,7 @@ function CreateEvent({ events, setEvents }: CreateEventProps) {
         setEvents([...events, createdEvent]);
         setEventId(createdEvent._id); // save event id for form
         clearInputs();
-        onclose;
+        onClose();
       } else {
         const err = await response.text();
         console.error("Error creating event:", err);
