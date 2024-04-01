@@ -61,13 +61,12 @@ function CreateEvent({ events, setEvents }: CreateEventProps) {
   const handleSubmit = async () => {
     let formIdTemp = "";
     let eventIdTemp = "";
-    // POST each role
+    // Create form with placeholder eventId
+    // Create event with new formId
+    // Update form with new eventId
 
-    // compile questions into VolunteerForm, POST form
-
-    // POST event with role id's and form id
     try {
-      // Create new form
+      // Create new form with placeholder eventId
       const response1 = await fetch("/api/form", {
         method: "POST",
         headers: {
@@ -81,13 +80,13 @@ function CreateEvent({ events, setEvents }: CreateEventProps) {
 
       if (response1.status == 201) {
         const createdForm = await response1.json();
-        console.log(createdForm);
         formIdTemp = createdForm._id;
       } else {
         const err = await response1.text();
         console.error("Error creating Form:", err);
       }
 
+      // create event <roles not implemented yet> with new formId
       const response = await fetch("/api/event", {
         method: "POST",
         headers: {
@@ -105,9 +104,7 @@ function CreateEvent({ events, setEvents }: CreateEventProps) {
 
       if (response.status == 201) {
         const createdEvent = await response.json();
-        console.log(createdEvent);
         eventIdTemp = createdEvent._id;
-        console.log("eventIdTem SET for form PUT: ", eventIdTemp);
         setEvents([...events, createdEvent]);
         setEventId(createdEvent._id); // save event id for form
         clearInputs();
@@ -120,7 +117,7 @@ function CreateEvent({ events, setEvents }: CreateEventProps) {
       console.error("Error creating event:", err);
     }
 
-    console.log("api url", "/api/form/" + formIdTemp);
+    // update form with new eventId => now form and event have mutual id's
     const response2 = await fetch("/api/form/" + formIdTemp, {
       method: "PUT",
       headers: {
@@ -134,7 +131,6 @@ function CreateEvent({ events, setEvents }: CreateEventProps) {
 
     if (response2.status == 201) {
       const changedForm = await response2.json();
-      console.log(changedForm);
     } else {
       const err = await response2.text();
       console.error("Error changing Form:", err);
