@@ -4,12 +4,9 @@ import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import type { IEvent } from "@database/eventSchema";
-import Link from "next/link";
-import { useRef } from "react";
 import style from "@styles/calendar.module.css";
 import { useDisclosure } from "@chakra-ui/react";
 import { EventClickArg } from "@fullcalendar/core/index.js";
-import { EventInstance } from "@fullcalendar/core/internal";
 import {
   Modal,
   ModalOverlay,
@@ -19,10 +16,8 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
-  ButtonGroup,
 } from "@chakra-ui/react";
 import UserEventDetails from "./UserEventDetails";
-import style from "../styles/Calendar.module.css";
 import AdminEventDetails from "./AdminEventDetails/AdminEventDetails";
 import CreateEvent from "./CreateEvent/CreateEvent";
 
