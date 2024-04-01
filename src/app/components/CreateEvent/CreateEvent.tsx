@@ -47,7 +47,12 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
   };
 
   const handleChangeDate = (e: any) => {
-    setDate(e.target.value);
+    const selectedDate = new Date(e.target.value);
+    // Adjusting for time zone offset
+    const timezoneOffset = selectedDate.getTimezoneOffset();
+    selectedDate.setMinutes(selectedDate.getMinutes() + timezoneOffset);
+    
+    setDate(selectedDate);
   };
 
   const clearInputs = () => {
