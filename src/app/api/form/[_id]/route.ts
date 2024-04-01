@@ -40,12 +40,10 @@ export async function GET(req: NextRequest, { params }: IParams) {
 export async function PUT(req: NextRequest, { params }: IParams) {
   await connectDB();
   const { _id } = params;
-  console.log("PUT _id: ", _id);
 
   try {
     const { eventId, questions }: IVolunteerForm = await req.json();
     const volunteerForm = { eventId, questions };
-    console.log("PUT form eventID: ", eventId);
 
     if (volunteerForm) {
       const updatedVolunteerForm = await volunteerFormSchema.findOneAndUpdate(
