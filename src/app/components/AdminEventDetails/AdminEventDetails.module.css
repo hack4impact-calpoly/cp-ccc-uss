@@ -1,27 +1,35 @@
 .adminEventDetails {
     background: #FFF;
-    font-family: 'Avenir';
-    padding-left: 30px;
-    padding-right: 30px;
+    font-family: sans-serif bold;
+    padding: 25px;
     overflow: auto;
-    /* max-width: 48rem; */
+    font-size: 25px;
 }
 
 .eventName {
-    color: black;
-    font-size: 40px;
-    font-style: normal;
-    font-weight: 500;
+    color: #00aa9e;
+    font-size: 24px;
     line-height: normal;
-    margin-top: 20px;
     margin-bottom: 20px;
-    font-weight: bold;
+    text-align: center;
+    font-weight: 500 !important;
 }
 
-.headerContainer {
+.eventHeader {
+    color: black;;
+    font-size: 30px;
+    text-align: center;
+    color: black;
+    font-family: "Open Sans";
+    font-weight: 900 !important;
+    margin-top: 20px;
+}
+
+.volunteersHeaderContainer {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    font-size: 25px;
+    font-size: 30x;
     margin-top: 15px;
     margin-bottom: 15px;
 }
@@ -29,23 +37,24 @@
 
 
 .eventDay {
-    font-size: 25px;
-    margin-top: 15px;
-    margin-bottom: 15px;
-}
-
-.eventLocation {
-    font-size: 25px;
-    margin-top: 15px;
-    margin-bottom: 15px;
-    display: 'flex';
-}
-
-.eventDescription {
-    font-size: 25px;
     margin-top: 15px;
     margin-bottom: 15px;
     display: flex;
+    align-items: flex-start;
+}
+
+.eventLocation {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.eventDescription {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
 }
 
 .eventRoles {
@@ -61,15 +70,17 @@
 }
 
 .openVolunteerSlots{
-    font-size: 25px;
     margin-top: 15px;
     margin-bottom: 15px;
+    display: flex;
+    align-items: center;
 }
 
 .eventOpenSlots {
     margin-top: 15px;
     margin-bottom: 15px;
     padding-left: 50px;
+    font-size: 15px;
 }
 
 .signedUp {
@@ -90,3 +101,4 @@
 .icon {
     padding-right: 20px;
 }
+
