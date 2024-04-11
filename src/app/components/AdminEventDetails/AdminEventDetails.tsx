@@ -49,21 +49,6 @@ async function getRoles(_id: string) {
   }
 }
 
-function getDayName(date: Date) {
-  const days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const eventDay = new Date(date).getDay();
-  const eventDayName = days[eventDay];
-  return eventDayName;
-}
-
 function parseDate(date: Date) {
   return new Date(date).toLocaleTimeString("en-US", {
     hour: "2-digit",
@@ -86,8 +71,8 @@ function AdminEventDetailsButton() {
         textDecoration: "underline",
         color: "#00aa9e",
         cursor: "pointer",
-        fontFamily: "Avenir",
-        fontSize: "16px",
+        fontFamily: "sans-serif",
+        fontSize: "20px",
       }}
     >
       more details
@@ -130,16 +115,16 @@ export default function AdminEventDetails({ _id }: Props) {
           <Icon as={LuCalendarDays}
             className={style.icon}
             sx={{ fontSize: 50 }}/>
-          <div className={style.sectionContent} style={{marginTop: "6px"}}>
+          <div style={{marginTop: "10px"}}>
             <strong>Date:</strong>
-            {" " + getDayName(event.date)}
+            {" " + new Date(event.date).toDateString()}
           </div>
         </div>
         <div className={style.eventLocation}>
           <Icon as={IoLocationOutline}
             className={style.icon}
             sx={{ fontSize: 50 }}/>
-          <div style={{marginTop: "6px"}}>
+          <div style={{marginTop: "10px"}}>
             <strong>Location:</strong>
             {" " + event.location}
           </div>
@@ -148,7 +133,7 @@ export default function AdminEventDetails({ _id }: Props) {
           <Icon as={LuText}
             className={style.icon}
             sx={{ fontSize: 50 }}/>
-          <div style={{marginTop: "6px"}}>
+          <div style={{marginTop: "10px", overflow: 'scroll', maxHeight: '400px'}}>
             <strong>Description:{" "}</strong>
             {" " +event.description}
           </div>
@@ -158,7 +143,7 @@ export default function AdminEventDetails({ _id }: Props) {
             <Icon as={LuUsers}
               className={style.icon}
               sx={{ fontSize: 50 }}/>
-            <div style={{marginTop: "6px"}}>Volunteers</div>
+            <div style={{marginTop: "6px"}}><strong>Volunteers</strong></div>
           </div>
           <div style={{marginTop: "6px"}}><AdminEventDetailsButton /></div>
         </div>
@@ -168,7 +153,7 @@ export default function AdminEventDetails({ _id }: Props) {
           <Icon as={LuBookOpen}
             className={style.icon}
             sx={{ fontSize: 50 }}/>
-          Open Volunteer Slots
+          <strong>Open Volunteer Slots</strong>
         </div>
         <div className={style.eventOpenSlots}>
           {/* Lists all roles for an event with corresponding timeslots */}
@@ -180,8 +165,8 @@ export default function AdminEventDetails({ _id }: Props) {
                   (timeslot: IVolunteerRoleTimeslot, Index2) => (
                     <div key={Index2}>
                       <div className={style.openTime}>
-                        {parseDate(timeslot.startTime)} -{" "}
-                        {parseDate(timeslot.endTime)} | Volunteers Signed Up:{" "}
+                        {parseDate(timeslot.startTime)} - {" "}
+                        {parseDate(timeslot.endTime)} | Volunteers Signed Up: {" "}
                         {timeslot.volunteers.length}
                       </div>
                     </div>

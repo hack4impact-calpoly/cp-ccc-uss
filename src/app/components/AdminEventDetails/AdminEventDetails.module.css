@@ -1,16 +1,15 @@
 .adminEventDetails {
-    background: #FFF;
-    font-family: sans-serif bold;
+    font-family: sans-serif;
     padding: 25px;
     overflow: auto;
-    font-size: 25px;
+    font-size: 20px;
 }
 
 .eventName {
     color: #00aa9e;
-    font-size: 24px;
+    font-size: 25px;
     line-height: normal;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     text-align: center;
     font-weight: 500 !important;
 }
@@ -21,8 +20,7 @@
     text-align: center;
     color: black;
     font-family: "Open Sans";
-    font-weight: 900 !important;
-    margin-top: 20px;
+    font-weight: 1000 !important;
 }
 
 .volunteersHeaderContainer {
@@ -55,6 +53,7 @@
     margin-bottom: 15px;
     display: flex;
     align-items: flex-start;
+    overflow: auto;
 }
 
 .eventRoles {
@@ -80,7 +79,6 @@
     margin-top: 15px;
     margin-bottom: 15px;
     padding-left: 50px;
-    font-size: 15px;
 }
 
 .signedUp {
