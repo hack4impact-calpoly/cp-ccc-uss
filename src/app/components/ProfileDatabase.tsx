@@ -1,22 +1,24 @@
 import * as React from "react";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import type {} from '@mui/x-data-grid/themeAugmentation';
-import { Theme } from "@fullcalendar/core/internal";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
+
 const rows: GridRowsProp = [
-  { id: 1, col1: "Hello", col2: "World" },
-  { id: 2, col1: "MUI X", col2: "is awesome" },
-  { id: 3, col1: "Material UI", col2: "is amazing" },
-  { id: 4, col1: "MUI", col2: "" },
-  { id: 5, col1: "Joy UI", col2: "is awesome" },
-  { id: 6, col1: "MUI Base", col2: "is amazing" }
+  { id: 1, name: "Hello", roles: "World" },
+  { id: 2, name: "MUI X", roles: "is awesome" },
+  { id: 3, name: "Material UI", roles: "is amazing" },
+  { id: 4, name: "MUI", roles: "" },
+  { id: 5, name: "Joy UI", roles: "is awesome" },
+  { id: 6, name: "MUI Base", roles: "is amazing" },
 ];
 
 const columns: GridColDef[] = [
-  { field: "id"},
-  { field: "col1", headerName: "Column 1", width: 150 },
-  { field: "col2", headerName: "Column 2", width: 150 }
+  { field: "name", headerName: "Name", width: 150 },
+  { field: "roles", headerName: "Roles", width: 150 },
+  { field: "events", headerName: "Events", width: 150 },
+  { field: "activity", headerName: "Activity", width: 150 },
+  { field: "actions", headerName: "Actions", width: 150 },
 ];
 
 export default function ProfileDatabase() {
