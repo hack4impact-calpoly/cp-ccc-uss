@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Navbar from "@components/Navbar";
 import Calendar from "@components/Calendar";
 import CreateEvent from '@components/CreateEvent/CreateEvent';
+import { UserButton } from "@clerk/nextjs";
 
 export default function Home() {
   const [admin, setAdmin] = useState(false);
@@ -22,6 +23,9 @@ export default function Home() {
         <button onClick={() => (admin ? setAdmin(false) : setAdmin(true))}>
           secure button
         </button>
+        <div className="h-screen">
+        <UserButton/>
+        </div>
         <div style={{ width: "70%", margin: "20px" }}>
           <Calendar admin={admin} />
         </div>

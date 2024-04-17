@@ -3,6 +3,7 @@ import "./globals.css";
 import { NextAuthProvider } from "./components/NextAuthProvider";
 import { Providers } from "./providers";
 import { fonts } from "./styles/fonts";
+import { ClerkProvider } from '@clerk/nextjs'
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,14 +16,14 @@ export default function RootLayout({
   children: React.ReactNode;
 } ) {
   return (
-    <html lang="en" className={fonts.dmSans.className}>
-      <body>
-        <Providers>
-          <NextAuthProvider>
-            {children}
-          </NextAuthProvider>
-        </Providers>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" className={fonts.dmSans.className}>
+        <body>
+          <Providers>
+              {children}
+          </Providers>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
