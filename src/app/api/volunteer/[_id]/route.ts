@@ -28,9 +28,9 @@ export async function PUT(req: NextRequest, { params }: IParams) {
   try {
     // get Volunteer ID and structure
     const id = params._id;
-    const { name, email, languages, roles, entries }: IVolunteer =
+    const { name, email, languages, roles, entries, active }: IVolunteer =
       await req.json();
-    const volunteer = { name, email, languages, roles, entries };
+    const volunteer = { name, email, languages, roles, entries, ...(active !== undefined && {active}) };
 
     if (volunteer) {
       const updatedVolunteer = await Volunteers.findByIdAndUpdate(
@@ -55,15 +55,15 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
 
   const id = params._id;
   try {
-    const deleted = await Volunteers.findByIdAndDelete(id);
+    const updated = await Volunteers.findByIdAndUpdate(id, { active: false }, { new: true });
 
-    if (deleted) {
-      return NextResponse.json("Successfully deleted volunteer");
+    if (updated) {
+      return NextResponse.json("Successfully set volunteer inactive");
     } else {
-      return NextResponse.json("Unable to delete volunteer", { status: 400 });
+      return NextResponse.json("Unable to set inactive volunteer", { status: 400 });
     }
   } catch (err) {
     console.error(err);
-    return NextResponse.json("Could not delete the volunteer", { status: 400 });
+    return NextResponse.json("Could not set inactive volunteer", { status: 400 });
   }
 }
