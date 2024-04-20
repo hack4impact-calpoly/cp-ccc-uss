@@ -1,35 +1,30 @@
 "use client";
 import React, { useState } from 'react';
 import Navbar from "@components/Navbar";
-import { useSession, signIn, signOut } from 'next-auth/react';
-import Login from './Login';
 import Calendar from "@components/Calendar";
+import CreateEvent from '@components/CreateEvent/CreateEvent';
 
 export default function Home() {
-  const [apiResponse, setApiResponse] = useState('');
-  const { data, status } = useSession();
-
-  const handleApiCall = async () => {
-    try {
-      const response = await fetch('/api/example/');
-      const data = await response.json();
-      setApiResponse(data.message);
-    } catch (error) {
-      console.error('Error calling API:', error);
-      setApiResponse('Failed to call API');
-    }
-  };
-
+  const [admin, setAdmin] = useState(false);
+  
   return (
     <main>
-      <Navbar />
-      <h1>Home</h1>
-      <button onClick={handleApiCall}>Test Database Connection</button>
-      <p>API Response: {apiResponse}</p>
-      <Calendar />
-      <div style={{ width: "500px", margin: "0 auto", paddingTop: "30px" }}>
-        <h3>Login Website</h3>
-        <Login />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Navbar />
+        <div>i am the admin: {admin.toString()}</div>
+        <button onClick={() => (admin ? setAdmin(false) : setAdmin(true))}>
+          secure button
+        </button>
+        <div style={{ width: "70%", margin: "20px" }}>
+          <Calendar admin={admin} />
+        </div>
       </div>
     </main>
   );
