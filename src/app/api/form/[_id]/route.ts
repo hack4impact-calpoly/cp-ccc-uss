@@ -46,10 +46,10 @@ export async function PUT(req: NextRequest, { params }: IParams) {
     const volunteerForm = { eventId, questions };
 
     if (volunteerForm) {
-      const updatedVolunteerForm = await volunteerFormSchema.findOneAndUpdate(
-        { _id: _id },
-        volunteerForm,
+      const updatedVolunteerForm = await volunteerFormSchema.findByIdAndUpdate(
+        { _id },
         { new: true },
+        volunteerForm
       );
       return NextResponse.json(updatedVolunteerForm, { status: 201 });
     } else {
