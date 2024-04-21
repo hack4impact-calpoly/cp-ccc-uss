@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    const volunteer = { name, email, languages, roles, entries };
+    const volunteer = { name, email, languages, roles, entries, active: true };
 
     try {
       const createdVolunteer = await Volunteers.create(volunteer); // try to create volunteer in database

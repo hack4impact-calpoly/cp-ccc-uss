@@ -1,0 +1,88 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&display=swap");
+
+.modal {
+  border-radius: 20px;
+  /*width: fit-content; /* Adjusted width to fit the content */
+  width: 100%; /* Full width */
+  max-width: 48rem; /* Chakra UI 'md' modal size */
+  /*max-width: 90%; /* Added max-width for responsiveness */
+  padding: 25px;
+  font-family: sans-serif bold;
+  font-size: 25px;
+  margin: 0 auto; /* Centering horizontally */
+  text-align: center; /* Centering text */
+  border-radius: 20px;
+  background-color: rgb(255, 255, 255);
+}
+
+.info {
+  padding-top: 20px;
+  font-size: 16px;
+  text-align: left !important; /* Left align date, time, and location */
+  font-weight: 500 !important;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 100%;
+}
+
+.eventTitle {
+  font-size: 24px;
+  text-align: center;
+  color: #00aa9e;
+  font-weight: 500 !important;
+}
+
+.eventName {
+  font-size: 30px;
+  text-align: center;
+  color: black;
+  font-family: "Open Sans";
+  font-weight: 900 !important;
+}
+
+.description {
+  flex-shrink: 0;
+  border: 1px solid #706f6f; /* Gray border for the description */
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 20px;
+  font-size: 16px;
+  text-align: left !important; /* Left align description */
+  color: #706f6f; /* Gray text color */
+  height: 200px;
+  font-weight: 500 !important;
+}
+
+.descriptionContainer {
+  width: 463px;
+}
+
+.button {
+  margin: 0 auto;
+  margin-top: 20px !important; /* Adjust the space between the button and the description box */
+  width: 120px;
+
+  height: 48px;
+  font-size: 16px;
+  text-align: center;
+  line-height: 48px;
+  border-radius: 16px !important;
+  background-color: #00aa9e;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* Adjust the space between the button and the description box */
+}
+
+.button:hover {
+  background-color: #007f78;
+}
