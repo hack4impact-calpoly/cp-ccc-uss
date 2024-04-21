@@ -1,17 +1,27 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import ReactModal from "react-modal";
 import type { IEvent } from "../../database/eventSchema";
 import type {
   IVolunteerRole,
   IVolunteerRoleTimeslot,
 } from "../../database/volunteerRoleSchema";
-import { Input, Select, Stack, Button } from "@chakra-ui/react";
-// import { DefaultIcon } from "@chakra-ui/select";
+import {
+  Modal,
+  ModalOverlay,
+  useDisclosure,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  Input,
+  Select,
+  Stack,
+  Button,
+  Radio,
+  RadioGroup,
+} from "@chakra-ui/react";
 import style from "@styles/EventSignUp.module.css";
 import { IFormQuestion } from "@database/volunteerFormSchema";
 import { IFormAnswer } from "@database/volunteerEntrySchema";
-import { Radio, RadioGroup } from "@chakra-ui/react";
 
 type IParams = {
   id: string;
@@ -26,7 +36,6 @@ export default function EventSignUp({ id }: IParams) {
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<IVolunteerRole[]>([]);
   const [shifts, setShifts] = useState<IVolunteerRoleTimeslot[]>([]);
-  const [showModal, setShowModal] = useState(false);
   const [selectedShifts, setSelectedShifts] = useState<{
     [roleId: string]: IVolunteerRoleTimeslot[];
   }>({});
@@ -34,22 +43,13 @@ export default function EventSignUp({ id }: IParams) {
     [roleId: string]: IVolunteerRoleTimeslot[];
   }>({});
   const [questions, setQuestions] = useState<IFormQuestion[]>([]);
+  const [answers, setAnswers] = useState<IFormAnswer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleChangeDate = (e: any) => {
     setDate(e.target.value);
   };
-
-  const openModal = () => {
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-  };
-
-  /* as soon as event state is changed, whole page reloads  */
-  /*When looking to hide then show, check if event has been set, if not th4en don't show. If ithas, then show rest */
 
   async function fetchEvents() {
     try {
@@ -187,6 +187,7 @@ export default function EventSignUp({ id }: IParams) {
         );
       }
       const data = await response.json();
+
       return data._id; // Assuming the server returns the volunteer object with an _id field
     } catch (error) {
       console.error("Error fetching volunteer:", error);
@@ -216,17 +217,14 @@ export default function EventSignUp({ id }: IParams) {
   async function handleSubmission() {
     try {
       //const volunteerId = await getVolunteerId(name, email);
-      const volunteerId = "endpoints incomplete";
+      const volunteerId = getVolunteerId(name, email);
       if (!volunteerId) {
         throw new Error("Failed to get volunteerId");
       }
 
       // Need to get volunteerID in order to post to volunteer entries
 
-      const responses = questions.map((question) => ({
-        question: question?.question,
-        answer: "unsure how to get",
-      })) as Array<IFormAnswer>;
+      console.log(answers);
 
       const roleIDs = roles.map((role) => role._id);
 
@@ -240,7 +238,7 @@ export default function EventSignUp({ id }: IParams) {
           eventId: event?._id,
           roles: roleIDs,
           volunteerId: volunteerId,
-          responses: responses,
+          responses: answers,
         }),
       });
 
@@ -249,6 +247,9 @@ export default function EventSignUp({ id }: IParams) {
           `Failed to add volunteer entry. Status: ${response.status}`
         );
       }
+
+      const responseData = await response.json();
+      const entryId = responseData._id;
 
       // PUT to VolunteerRoles (selected timeslots/shifts)
       roles.map(async (role) => {
@@ -263,7 +264,7 @@ export default function EventSignUp({ id }: IParams) {
           );
 
           // Update the volunteers array for the found timeslot
-          if (timeslotIndex !== -1) {
+          if (timeslotIndex !== -1 && typeof volunteerId === "string") {
             role.timeslots[timeslotIndex].volunteers.push(volunteerId);
           }
         }
@@ -288,6 +289,41 @@ export default function EventSignUp({ id }: IParams) {
       });
 
       // PUT or PATCH to Volunteer (roles and entries arrays)
+      if (typeof volunteerId === "string") {
+        const respon = await fetch(`http://localhost:3000/api/volunteer/${id}`);
+
+        if (!respon.ok) {
+          throw new Error(
+            `Failed to fetch volunteer data. Status: ${respon.status}`
+          );
+        }
+
+        const volunteer = await response.json();
+        var entries = volunteer.entries;
+        var volRoles = volunteer.roles;
+        entries.push(entryId);
+        for (let i = 0; i < roles.length; i++) [volRoles.push(roles[i])]; // Push all new roles to roles array
+
+        const putResponse = await fetch(
+          `http://localhost:3000/api/volunteer/${volunteerId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              entries: entries,
+              roles: volRoles,
+            }),
+          }
+        );
+
+        if (!putResponse.ok) {
+          throw new Error(
+            `Failed to update volunteer entries and roles. Status: ${putResponse.status}`
+          );
+        }
+      }
     } catch (err: unknown) {
       console.error("Error:", err);
       setEvents([]);
@@ -302,7 +338,50 @@ export default function EventSignUp({ id }: IParams) {
     fetchForm(event);
   }, [event]);
 
-  function renderCustomQuestion(question: IFormQuestion) {
+  function renderCustomQuestion(question: IFormQuestion, index: number) {
+    const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newAnswers = [...answers];
+      newAnswers[index] = {
+        question: question.question,
+        answer: e.target.value,
+      };
+      setAnswers(newAnswers);
+    };
+
+    const handleMultiChoiceChange = (selectedOption: string) => {
+      const existingAnswerIndex = answers.findIndex(
+        (answer) => answer.question === question.question
+      );
+
+      // Convert the selected option to an array
+      const selectedOptions = [selectedOption];
+
+      if (selectedOption) {
+        // If an option is selected, update or add the answer
+        const updatedAnswer = {
+          question: question.question,
+          answer: selectedOption,
+        };
+
+        if (existingAnswerIndex !== -1) {
+          // Update existing answer
+          const newAnswers = [...answers];
+          newAnswers[existingAnswerIndex] = updatedAnswer;
+          setAnswers(newAnswers);
+        } else {
+          // Add new answer
+          setAnswers([...answers, updatedAnswer]);
+        }
+      } else {
+        // If no option is selected, remove the answer if it exists
+        if (existingAnswerIndex !== -1) {
+          const newAnswers = [...answers];
+          newAnswers.splice(existingAnswerIndex, 1);
+          setAnswers(newAnswers);
+        }
+      }
+    };
+
     switch (question.fieldType) {
       case "SHORT_ANSWER":
         return (
@@ -311,6 +390,7 @@ export default function EventSignUp({ id }: IParams) {
               placeholder="Answer"
               className={style.inputLine}
               borderColor="black"
+              onChange={handleAnswerChange}
             />
           </div>
         );
@@ -318,183 +398,180 @@ export default function EventSignUp({ id }: IParams) {
         return (
           <div>
             <Stack>
-              {question.options &&
-                question.options.map((option: String, index) => (
-                  <div key={index}>
-                    <Radio size="lg" name="1" colorScheme="teal">
-                      {option}
-                    </Radio>
-                  </div>
-                ))}
+              <RadioGroup onChange={handleMultiChoiceChange}>
+                {question.options &&
+                  question.options.map((option: string, index) => (
+                    <div key={index}>
+                      <Radio size="lg" value={option} colorScheme="teal">
+                        {option}
+                      </Radio>
+                    </div>
+                  ))}
+              </RadioGroup>
             </Stack>
           </div>
         );
+      default:
+        return null;
     }
   }
 
   return (
     <div>
-      <Button className={style.event} colorScheme="teal" onClick={openModal}>
+      <Button className={style.event} colorScheme="teal" onClick={onOpen}>
         Event Sign Up
       </Button>
-      <ReactModal
-        className={style.modal}
-        isOpen={showModal}
-        onRequestClose={closeModal}
-      >
-        <div className={style.content}>
-          <div className={style.comp}>
-            <Button
-              className={style.close}
-              colorScheme="teal"
-              onClick={closeModal}
-            >
-              X
-            </Button>
-            {events.length > 0 ? (
-              <div>
-                <h1 className={style.eventHeader}>Event Sign Up</h1>
-                <Input
-                  placeholder="Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className={style.inputLine}
-                  borderColor="black"
-                />
-                <Input
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={style.inputLine}
-                  borderColor="black"
-                />
-                <Input
-                  placeholder="Select Date and Time"
-                  type="date"
-                  colorScheme="teal"
-                  value={new Date(date).toLocaleDateString("en-CA")}
-                  onChange={handleChangeDate}
-                  borderColor="black"
-                  className={style.inputLine}
-                />
-                <Select
-                  className={style.inputLine}
-                  borderColor="black"
-                  placeholder="Select Event"
-                  onChange={(e) => {
-                    handleEventInput(e.target.value); //Once an event option is picked, call this function with the eventID as arg
-                  }}
-                >
-                  {events &&
-                    events.map((event) => (
-                      <option key={event._id} value={event._id}>
-                        {" "}
-                        {/* whatever value equals is what onChange e.target.value will be */}
-                        {event.name}
-                      </option>
-                    ))}
-                </Select>
-              </div>
-            ) : (
-              <div>
-                <h1>Event Sign Up</h1>
-                <h2>No events found to sign up for.</h2>
-              </div>
-            )}
-            {event ? ( //Do not show this section until there is an event picked
-              <div>
-                <Select
-                  variant={"filled"}
-                  bg="#54948c"
-                  className={`${style.inputLine} ${style.shortenedInput}`}
-                  colorScheme="teal"
-                  color="black"
-                  placeholder="Select Role"
-                  // icon={<DefaultIcon />}
-                  // iconSize="24px"
-                  onChange={(e) => {
-                    const selectedRoleID = e.target.value;
-                    handleRoleSelect(selectedRoleID);
-                  }}
-                >
-                  {roles.length > 0 &&
-                    roles.map((role) => (
-                      <option key={role._id} value={role._id}>
-                        {role.roleName}
-                      </option>
-                    ))}
-                </Select>
-              </div>
-            ) : (
-              <div></div>
-            )}
-            {selectedRoles.map((role) => (
-              <div key={role._id}>
-                <h3 className={style.smallHeader}>
-                  Select Shifts for {role.roleName}:
-                </h3>
-                {role.timeslots.map((shift, index) => (
-                  <div key={index}>
-                    <Radio
-                      type="checkbox"
-                      id={`shift-${index}`}
-                      value={`shift-${index}`}
-                      size="lg"
-                      colorScheme="teal"
-                      className={style.inputLine}
-                      onChange={() => handleShiftSelect(shift)}
-                      checked={selectedShifts[role._id]?.includes(shift)}
-                    />
-                    <label htmlFor={`shift-${index}`}>
-                      {`Shift ${index + 1}: ${new Date(
-                        shift.startTime
-                      ).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })} - ${new Date(shift.endTime).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}`}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            ))}
-
-            {event ? ( // Don't show this section until there is an event selected.
-              <div>
-                {questions.map((question: IFormQuestion, index) => (
-                  <div key={index}>
-                    <div className={style.smallHeader}>
-                      Question: {question.question}
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent className={style.modal}>
+          <div className={style.content}>
+            <div className={style.comp}>
+              <ModalCloseButton className={style.close} colorScheme="teal" />
+              {events.length > 0 ? (
+                <div>
+                  <h1 className={style.eventHeader}>Event Sign Up</h1>
+                  <Input
+                    placeholder="Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className={style.inputLine}
+                    borderColor="black"
+                  />
+                  <Input
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className={style.inputLine}
+                    borderColor="black"
+                  />
+                  <Input
+                    placeholder="Select Date and Time"
+                    type="date"
+                    colorScheme="teal"
+                    value={new Date(date).toLocaleDateString("en-CA")}
+                    onChange={handleChangeDate}
+                    borderColor="black"
+                    className={style.inputLine}
+                  />
+                  <Select
+                    className={style.inputLine}
+                    borderColor="black"
+                    placeholder="Select Event"
+                    onChange={(e) => {
+                      handleEventInput(e.target.value); //Once an event option is picked, call this function with the eventID as arg
+                    }}
+                  >
+                    {events &&
+                      events.map((event) => (
+                        <option key={event._id} value={event._id}>
+                          {" "}
+                          {/* whatever value equals is what onChange e.target.value will be */}
+                          {event.name}
+                        </option>
+                      ))}
+                  </Select>
+                </div>
+              ) : (
+                <div>
+                  <h1>Event Sign Up</h1>
+                  <h2>No events found to sign up for.</h2>
+                </div>
+              )}
+              {event ? ( //Do not show this section until there is an event picked
+                <div>
+                  <Select
+                    variant={"filled"}
+                    bg="#54948c"
+                    className={`${style.inputLine} ${style.shortenedInput}`}
+                    colorScheme="teal"
+                    color="black"
+                    placeholder="Select Role"
+                    // icon={<DefaultIcon />}
+                    // iconSize="24px"
+                    onChange={(e) => {
+                      const selectedRoleID = e.target.value;
+                      handleRoleSelect(selectedRoleID);
+                    }}
+                  >
+                    {roles.length > 0 &&
+                      roles.map((role) => (
+                        <option key={role._id} value={role._id}>
+                          {role.roleName}
+                        </option>
+                      ))}
+                  </Select>
+                </div>
+              ) : (
+                <div></div>
+              )}
+              {selectedRoles.map((role) => (
+                <div key={role._id}>
+                  <h3 className={style.smallHeader}>
+                    Select Shifts for {role.roleName}:
+                  </h3>
+                  {role.timeslots.map((shift, index) => (
+                    <div key={index}>
+                      <Radio
+                        type="checkbox"
+                        id={`shift-${index}`}
+                        value={`shift-${index}`}
+                        size="lg"
+                        colorScheme="teal"
+                        className={style.inputLine}
+                        onChange={() => handleShiftSelect(shift)}
+                        checked={selectedShifts[role._id]?.includes(shift)}
+                      />
+                      <label htmlFor={`shift-${index}`}>
+                        {`Shift ${index + 1}: ${new Date(
+                          shift.startTime
+                        ).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })} - ${new Date(shift.endTime).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}`}
+                      </label>
                     </div>
-                    <div> {renderCustomQuestion(question)} </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div></div>
-            )}
+                  ))}
+                </div>
+              ))}
 
-            {shifts ? (
-              <div className={style.centralize}>
-                <Button
-                  type="submit"
-                  className={style.submit}
-                  isLoading={isLoading}
-                  colorScheme="teal"
-                  variant="solid"
-                  onClick={() => handleSubmission()}
-                >
-                  Submit
-                </Button>
-              </div>
-            ) : (
-              <div></div>
-            )}
+              {event ? ( // Don't show this section until there is an event selected.
+                <div>
+                  {questions.map((question: IFormQuestion, index) => (
+                    <div key={index}>
+                      <div className={style.smallHeader}>
+                        Question: {question.question}
+                      </div>
+                      <div> {renderCustomQuestion(question, index)} </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div></div>
+              )}
+
+              {shifts ? (
+                <div className={style.centralize}>
+                  <Button
+                    type="submit"
+                    className={style.submit}
+                    isLoading={isLoading}
+                    colorScheme="teal"
+                    variant="solid"
+                    onClick={() => handleSubmission()}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              ) : (
+                <div></div>
+              )}
+            </div>
           </div>
-        </div>
-      </ReactModal>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
