@@ -320,13 +320,12 @@ export default function EventSignUp({ id }: IParams) {
   }, [event]);
 
   function renderCustomQuestion(question: IFormQuestion, index: number) {
-    const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newAnswers = answers;
-      newAnswers.push({
+    const handleAnswerBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+      const updatedAnswer = {
         question: question.question,
         answer: e.target.value,
-      });
-      setAnswers(newAnswers);
+      };
+      setAnswers([...answers, updatedAnswer]);
     };
 
     const handleMultiChoiceChange = (selectedOption: string) => {
@@ -371,7 +370,7 @@ export default function EventSignUp({ id }: IParams) {
               placeholder="Answer"
               className={style.inputLine}
               borderColor="black"
-              onChange={handleAnswerChange}
+              onBlur={handleAnswerBlur}
             />
           </div>
         );
