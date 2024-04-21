@@ -229,7 +229,7 @@ export default function EventSignUp({ id }: IParams) {
       const roleIDs = roles.map((role) => role._id);
 
       // Combine data from all input states (name, email, event, roles/shifts, questions) to POST to VolunteerEntry
-      const response = await fetch("http://localhost:3000/api/entry", {
+      const entryResp = await fetch("http://localhost:3000/api/entry", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -242,14 +242,14 @@ export default function EventSignUp({ id }: IParams) {
         }),
       });
 
-      if (!response.ok) {
+      if (!entryResp.ok) {
         throw new Error(
-          `Failed to add volunteer entry. Status: ${response.status}`
+          `Failed to add volunteer entry. Status: ${entryResp.status}`
         );
       }
 
-      const responseData = await response.json();
-      const entryId = responseData._id;
+      const entryData = await entryResp.json();
+      const entryId = entryData._id;
 
       // PUT to VolunteerRoles (selected timeslots/shifts)
       roles.map(async (role) => {
@@ -270,7 +270,7 @@ export default function EventSignUp({ id }: IParams) {
         }
 
         // Update the role on the server
-        const ret = await fetch(`http://localhost:3000/api/role/${role._id}`, {
+        const rolRes = await fetch(`http://localhost:3000/api/role/${role._id}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -281,24 +281,24 @@ export default function EventSignUp({ id }: IParams) {
           }),
         });
 
-        if (!ret.ok) {
+        if (!rolRes.ok) {
           throw new Error(
-            `Failed to update volunteer role with id: ${role._id}. Status: ${response.status}`
+            `Failed to update volunteer role with id: ${role._id}. Status: ${rolRes.status}`
           );
         }
       });
 
       // PUT or PATCH to Volunteer (roles and entries arrays)
       if (typeof volunteerId === "string") {
-        const respon = await fetch(`http://localhost:3000/api/volunteer/${id}`);
+        const volResp = await fetch(`http://localhost:3000/api/volunteer/${id}`);
 
-        if (!respon.ok) {
+        if (!volResp.ok) {
           throw new Error(
-            `Failed to fetch volunteer data. Status: ${respon.status}`
+            `Failed to fetch volunteer data. Status: ${volResp.status}`
           );
         }
 
-        const volunteer = await response.json();
+        const volunteer = await volResp.json();
         var entries = volunteer.entries;
         var volRoles = volunteer.roles;
         entries.push(entryId);
