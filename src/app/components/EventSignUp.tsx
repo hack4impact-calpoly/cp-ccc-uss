@@ -197,11 +197,11 @@ export default function EventSignUp({ id }: IParams) {
 
   async function handleSubmission() {
     try {
-      //const volunteerId = await getVolunteerId(name, email);
-      const volunteerId = getVolunteerId(name, email);
-      if (!volunteerId) {
-        throw new Error("Failed to get volunteerId");
-      }
+      const volunteerId = "no bueno :/";
+      // const volunteerId = getVolunteerId(name, email);
+      // if (!volunteerId) {
+      //   throw new Error("Failed to get volunteerId");
+      // }
 
       // Need to get volunteerID in order to post to volunteer entries
 
@@ -273,7 +273,7 @@ export default function EventSignUp({ id }: IParams) {
       });
 
       // PUT or PATCH to Volunteer (roles and entries arrays)
-      if (typeof volunteerId === "string") {
+      if (false && typeof volunteerId === "string") {
         const volResp = await fetch(
           `http://localhost:3000/api/volunteer/${id}`
         );
@@ -406,9 +406,9 @@ export default function EventSignUp({ id }: IParams) {
       <Button className={style.event} colorScheme="teal" onClick={onOpen}>
         Event Sign Up
       </Button>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
-        <ModalContent className={style.modal}>
+        <ModalContent className={style.modal} maxH="1000px" maxW="1000px">
           <div className={style.content}>
             <div className={style.comp}>
               <ModalCloseButton className={style.close} colorScheme="teal" />
