@@ -171,6 +171,7 @@ export default function EventSignUp({ id }: IParams) {
     return data;
   }
 
+<<<<<<< HEAD
   async function getVolunteerId(
     name: string,
     email: string
@@ -203,6 +204,14 @@ export default function EventSignUp({ id }: IParams) {
         throw new Error("Failed to get volunteerId");
       }
 
+=======
+  async function handleSubmission() {
+    try {
+      /*const resp = await fetch(`http://localhost:3000/api/volunteer`);
+      if (!resp.ok) {
+        throw new Error(`Failed to fetch events. Status: ${resp.status}`);
+      }*/
+>>>>>>> parent of eb1085b (fix: timeslot endpoint, feat: started Volunteer api)
       // Need to get volunteerID in order to post to volunteer entries
 
       console.log(answers);
@@ -218,8 +227,13 @@ export default function EventSignUp({ id }: IParams) {
         body: JSON.stringify({
           eventId: event?._id,
           roles: roleIDs,
+<<<<<<< HEAD
           volunteerId: volunteerId,
           responses: answers,
+=======
+          volunteerId: "dummy value :(",
+          responses: responses,
+>>>>>>> parent of eb1085b (fix: timeslot endpoint, feat: started Volunteer api)
         }),
       });
 
@@ -234,7 +248,9 @@ export default function EventSignUp({ id }: IParams) {
 
       // PUT to VolunteerRoles (selected timeslots/shifts)
       roles.map(async (role) => {
+        const originalShifts = role.timeslots;
         const newShifts = selectedShifts[role._id] || [];
+<<<<<<< HEAD
 
         for (const shift of newShifts) {
           // Find the corresponding timeslot in the role's timeslots array
@@ -252,13 +268,17 @@ export default function EventSignUp({ id }: IParams) {
 
         // Update the role on the server
         const rolRes = await fetch(`http://localhost:3000/api/role/${role._id}`, {
+=======
+        const updatedTimeslots = [...originalShifts, ...newShifts];
+        const ret = await fetch(`http://localhost:3000/api/role/${role._id}`, {
+>>>>>>> parent of eb1085b (fix: timeslot endpoint, feat: started Volunteer api)
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             fieldToUpdate: "timeslots",
-            value: role.timeslots,
+            value: updatedTimeslots,
           }),
         });
 
