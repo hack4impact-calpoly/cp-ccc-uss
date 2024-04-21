@@ -171,47 +171,12 @@ export default function EventSignUp({ id }: IParams) {
     return data;
   }
 
-<<<<<<< HEAD
-  async function getVolunteerId(
-    name: string,
-    email: string
-  ): Promise<string | null> {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/volunteer?name=${encodeURIComponent(
-          name
-        )}&email=${encodeURIComponent(email)}`
-      );
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch volunteer. Status: ${response.status}`
-        );
-      }
-      const data = await response.json();
-
-      return data._id; // Assuming the server returns the volunteer object with an _id field
-    } catch (error) {
-      console.error("Error fetching volunteer:", error);
-      return null;
-    }
-  }
-
-  async function handleSubmission() {
-    try {
-      //const volunteerId = await getVolunteerId(name, email);
-      const volunteerId = getVolunteerId(name, email);
-      if (!volunteerId) {
-        throw new Error("Failed to get volunteerId");
-      }
-
-=======
   async function handleSubmission() {
     try {
       /*const resp = await fetch(`http://localhost:3000/api/volunteer`);
       if (!resp.ok) {
         throw new Error(`Failed to fetch events. Status: ${resp.status}`);
       }*/
->>>>>>> parent of eb1085b (fix: timeslot endpoint, feat: started Volunteer api)
       // Need to get volunteerID in order to post to volunteer entries
 
       console.log(answers);
@@ -227,10 +192,6 @@ export default function EventSignUp({ id }: IParams) {
         body: JSON.stringify({
           eventId: event?._id,
           roles: roleIDs,
-<<<<<<< HEAD
-          volunteerId: volunteerId,
-          responses: answers,
-=======
           volunteerId: "dummy value :(",
           responses: responses,
 >>>>>>> parent of eb1085b (fix: timeslot endpoint, feat: started Volunteer api)
@@ -250,25 +211,6 @@ export default function EventSignUp({ id }: IParams) {
       roles.map(async (role) => {
         const originalShifts = role.timeslots;
         const newShifts = selectedShifts[role._id] || [];
-<<<<<<< HEAD
-
-        for (const shift of newShifts) {
-          // Find the corresponding timeslot in the role's timeslots array
-          const timeslotIndex = role.timeslots.findIndex(
-            (timeslot) =>
-              timeslot.startTime === shift.startTime &&
-              timeslot.endTime === shift.endTime
-          );
-
-          // Update the volunteers array for the found timeslot
-          if (timeslotIndex !== -1 && typeof volunteerId === "string") {
-            role.timeslots[timeslotIndex].volunteers.push(volunteerId);
-          }
-        }
-
-        // Update the role on the server
-        const rolRes = await fetch(`http://localhost:3000/api/role/${role._id}`, {
-=======
         const updatedTimeslots = [...originalShifts, ...newShifts];
         const ret = await fetch(`http://localhost:3000/api/role/${role._id}`, {
 >>>>>>> parent of eb1085b (fix: timeslot endpoint, feat: started Volunteer api)
