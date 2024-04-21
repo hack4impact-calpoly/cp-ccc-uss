@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
 import Volunteers, { IVolunteer } from "@database/volunteerSchema";
+import VolunteerEntries, { IVolunteerEntry } from "@database/volunteerEntrySchema";
 
 type IParams = {
   params: {
@@ -53,9 +54,17 @@ export async function PUT(req: NextRequest, { params }: IParams) {
 export async function DELETE(req: NextRequest, { params }: IParams) {
   await connectDB();
 
+
   const id = params._id;
   try {
     const deleted = await Volunteers.findByIdAndDelete(id);
+    const entries = await VolunteerEntries.find({ volunteerId: id }).orFail(); 
+    for (let i = 0; i < entries.length; i++)
+      [
+        await VolunteerEntries.findByIdAndDelete(entries[i]._id)
+      ];
+    
+    
 
     if (deleted) {
       return NextResponse.json("Successfully deleted volunteer");
