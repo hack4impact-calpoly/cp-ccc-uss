@@ -195,25 +195,6 @@ export default function EventSignUp({ id }: IParams) {
     }
   }
 
-  async function getVolunteer(id: string) {
-    try {
-      const response = await fetch(`http://localhost:3000/api/volunteer/${id}`);
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch volunteer data. Status: ${response.status}`
-        );
-      }
-
-      const volunteerData = await response.json();
-      console.log("Fetched Volunteer Data:", volunteerData);
-      return volunteerData;
-    } catch (error) {
-      console.error("Error fetching volunteer data:", error);
-      return null;
-    }
-  }
-
   async function handleSubmission() {
     try {
       //const volunteerId = await getVolunteerId(name, email);
@@ -340,11 +321,11 @@ export default function EventSignUp({ id }: IParams) {
 
   function renderCustomQuestion(question: IFormQuestion, index: number) {
     const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newAnswers = [...answers];
-      newAnswers[index] = {
+      const newAnswers = answers;
+      newAnswers.push({
         question: question.question,
         answer: e.target.value,
-      };
+      });
       setAnswers(newAnswers);
     };
 
