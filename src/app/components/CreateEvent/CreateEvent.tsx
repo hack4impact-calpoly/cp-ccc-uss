@@ -19,6 +19,7 @@ import {
 import AddQuestions from "@components/AddQuestions/AddQuestions";
 import { IEvent } from "@database/eventSchema";
 import { set } from "mongoose";
+import AddVolunteerRoles from "@components/VolunteerRoles/VolunteerRoles";
 
 interface CreateEventProps {
   events: IEvent[];
@@ -51,7 +52,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
     // Adjusting for time zone offset
     const timezoneOffset = selectedDate.getTimezoneOffset();
     selectedDate.setMinutes(selectedDate.getMinutes() + timezoneOffset);
-    
+
     setDate(selectedDate);
   };
 
@@ -145,37 +146,38 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
 
   return (
     <div className={styles.event}>
-        <h2 className={styles.eventHeader}>Create Event</h2>
-        <ModalCloseButton/>
-        <Input
-            placeholder="Event Name"
-            value={eventName}
-            onChange={handleChangeName}
-            borderColor="black"
-        />
-        <Input
-            placeholder="Select Date and Time"
-            type="date"
-            value={new Date(date).toLocaleDateString("en-CA")}
-            onChange={handleChangeDate}
-            borderColor="black"
-        />
-        <Textarea
-            placeholder="Event Description"
-            value={description}
-            onChange={handleChangeDesc}
-            width="463px"
-            height="197px"
-            borderColor="black"
-        />
-        <div>
-            <AddQuestions questions={questions} setQuestions={setQuestions} />
-        </div>
-        <div className={styles.createEventButton}>
-            <Button colorScheme="teal" onClick={handleSubmit}>
-                Create Event
-            </Button>
-        </div>
+      <h2 className={styles.eventHeader}>Create Event</h2>
+      <ModalCloseButton />
+      <Input
+        placeholder="Event Name"
+        value={eventName}
+        onChange={handleChangeName}
+        borderColor="black"
+      />
+      <Input
+        placeholder="Select Date and Time"
+        type="date"
+        value={new Date(date).toLocaleDateString("en-CA")}
+        onChange={handleChangeDate}
+        borderColor="black"
+      />
+      <Textarea
+        placeholder="Event Description"
+        value={description}
+        onChange={handleChangeDesc}
+        width="463px"
+        height="197px"
+        borderColor="black"
+      />
+      <div>
+        <AddQuestions questions={questions} setQuestions={setQuestions} />
+        <AddVolunteerRoles roles={questions} setRoles={setRoles} />
+      </div>
+      <div className={styles.createEventButton}>
+        <Button colorScheme="teal" onClick={handleSubmit}>
+          Create Event
+        </Button>
+      </div>
     </div>
   );
 }
