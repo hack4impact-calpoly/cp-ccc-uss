@@ -4,6 +4,9 @@ import type {} from '@mui/x-data-grid/themeAugmentation';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Chip, Stack } from "@mui/material";
 import style from './ProfileDatabase.module.css';
+import { IVolunteer } from "@database/volunteerSchema";
+import { useEffect, useState } from "react";
+import { fail } from "assert";
 
 // const generateData = () => {
 //   const data = [];
@@ -21,6 +24,24 @@ import style from './ProfileDatabase.module.css';
 // };
 
 // const rows: GridRowsProp = generateData();
+// get event by id
+
+//get all volunteers
+async function getVolunteers() {
+  try {
+    const res = await fetch(`http://localhost:3000/api/volunteer/`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch volunteers");
+    }
+    return res.json();
+  } catch (err: unknown) {
+    console.log(`error: ${err}`);
+    return null;
+  }
+}
 
 const rows: GridRowsProp = [
   {id: 1,
@@ -58,6 +79,27 @@ const columns: GridColDef[] = [
 ];
 
 export default function ProfileDatabase() {
+  const [volunteers, setVolunteers] = useState<IVolunteer[] | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const setVolunteersData = async () => { 
+      try {
+        const data = await getVolunteers();
+        if (data) {
+          setVolunteers(data);
+        } else {  
+          setError(true);
+          console.log("failed to fetch data");
+        }
+      } catch (err) {
+        console.error("Error fetching volunteers:", err);
+      }
+    };
+
+    setVolunteersData();
+  }, []);
+
   return (
     <div style={{ height: 1000, width: "100%" }}>
         <ThemeProvider theme={createTheme()}>
