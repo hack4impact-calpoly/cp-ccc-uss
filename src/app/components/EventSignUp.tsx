@@ -162,6 +162,15 @@ export default function EventSignUp({ id }: IParams) {
     }));
   }
 
+  // clear modal info when close modal (resets)
+  function handleClose() {
+    setName("");
+    setEmail("");
+    setDate(new Date());
+    handleEventInput("");
+    onClose();
+  }
+
   async function getRole(roleID: String) {
     const response = await fetch(`http://localhost:3000/role/${roleID}`);
     if (!response.ok) {
@@ -408,7 +417,7 @@ export default function EventSignUp({ id }: IParams) {
       <Button className={style.event} colorScheme="teal" onClick={onOpen}>
         Event Sign Up
       </Button>
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal isOpen={isOpen} onClose={handleClose} size="xl">
         <ModalOverlay />
         <ModalContent className={style.modal} maxH="1000px" maxW="1000px">
           <div className={style.content}>
