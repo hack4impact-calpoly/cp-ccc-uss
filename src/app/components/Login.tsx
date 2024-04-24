@@ -1,3 +1,4 @@
+import { Button } from "@chakra-ui/react";
 import {
     ClerkProvider,
     SignedIn,
@@ -24,7 +25,11 @@ export default function Login() {
             </SignedIn>
             <SignedOut>
                 {/* Signed out users get sign in button */}
-                <SignInButton/>
+                <SignInButton>
+                    <Button>
+                        Login
+                    </Button>
+                </SignInButton>
             </SignedOut>
         </div>
       </>
