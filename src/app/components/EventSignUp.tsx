@@ -44,7 +44,7 @@ export default function EventSignUp({ id }: IParams) {
   }>({});
   const [questions, setQuestions] = useState<IFormQuestion[]>([]);
   const [answers, setAnswers] = useState<IFormAnswer[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleChangeDate = (e: any) => {
@@ -208,6 +208,8 @@ export default function EventSignUp({ id }: IParams) {
       console.log(answers);
 
       const roleIDs = roles.map((role) => role._id);
+
+      setIsLoading(true);
 
       // Combine data from all input states (name, email, event, roles/shifts, questions) to POST to VolunteerEntry
       const entryResp = await fetch("http://localhost:3000/api/entry", {
