@@ -171,7 +171,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
       />
       <div>
         <AddQuestions questions={questions} setQuestions={setQuestions} />
-        <AddVolunteerRoles roles={questions} setRoles={setRoles} />
+        <AddVolunteerRoles roles={roles} setRoles={setRoles} />
       </div>
       <div className={styles.createEventButton}>
         <Button colorScheme="teal" onClick={handleSubmit}>
