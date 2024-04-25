@@ -49,6 +49,9 @@ export default function AddVolunteerRoles(props: {
     const updatedRoles = [...props.roles];
     updatedRoles.splice(index, 1);
     props.setRoles(updatedRoles);
+    if (index === selectedRoleIndex) {
+      setSelectedRoleIndex(null);
+    }
 
   };
 
@@ -89,6 +92,7 @@ export default function AddVolunteerRoles(props: {
     const shift = updatedRoles[roleIndex].timeslots[shiftIndex];
     if (field === "startTime" || field === "endTime") {
       const timeValue = e.target.value;
+      console.log(timeValue)
       const [hours, minutes] = timeValue.split(":").map(Number);
   
       let existingDate = shift[field];
@@ -97,16 +101,15 @@ export default function AddVolunteerRoles(props: {
         existingDate = props.date;
 
       }
-      //console.log(existingDate.toISOString())
-      let nonmilhours = hours
-      if (hours > 12){
-        nonmilhours = hours - 12
-      }
-      existingDate.setHours(nonmilhours);
+  
+      existingDate.setHours(hours);
       existingDate.setMinutes(minutes);
       existingDate.setSeconds(0);
-  
-      shift[field] = existingDate;
+      const timezoneOffset = existingDate.getTimezoneOffset();
+      existingDate.setMinutes(existingDate.getMinutes() + timezoneOffset);
+
+
+      updatedRoles[roleIndex].timeslots[shiftIndex][field] = existingDate;
     } 
     props.setRoles(updatedRoles);
   };
