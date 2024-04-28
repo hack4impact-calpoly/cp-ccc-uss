@@ -159,6 +159,7 @@ export default function EventSignUp({ id }: IParams) {
       setShifts([]);
     }
   }
+
   function handleShiftSelect(shift: IVolunteerRoleTimeslot) {
     setIsLoading(false);
     setSelectedShifts((prevSelectedShifts) => ({
@@ -338,7 +339,7 @@ export default function EventSignUp({ id }: IParams) {
       setEvents([]);
     }
   }
-  
+
   function renderCustomQuestion(question: IFormQuestion, index: number) {
     const handleAnswerChange = (value: string) => {
       const newAnswers = [...answers];
@@ -445,7 +446,8 @@ export default function EventSignUp({ id }: IParams) {
                   <h2>No events found to sign up for.</h2>
                 </div>
               )}
-              {event ? ( //Do not show this section until there is an event picked
+              
+              {event && (
                 <div>
                   <Select
                     variant={"filled"}
@@ -469,9 +471,8 @@ export default function EventSignUp({ id }: IParams) {
                       ))}
                   </Select>
                 </div>
-              ) : (
-                <div></div>
               )}
+
               {selectedRoles.map((role) => (
                 <div key={role._id}>
                   <h3 className={style.smallHeader}>
@@ -505,7 +506,7 @@ export default function EventSignUp({ id }: IParams) {
                 </div>
               ))}
 
-              {event ? ( // Don't show this section until there is an event selected.
+              {event && (
                 <div>
                   {questions.map((question: IFormQuestion, index) => (
                     <div key={index}>
@@ -516,11 +517,9 @@ export default function EventSignUp({ id }: IParams) {
                     </div>
                   ))}
                 </div>
-              ) : (
-                <div></div>
               )}
 
-              {shifts ? (
+              {shifts && (
                 <div className={style.centralize}>
                   <Button
                     type="submit"
@@ -533,8 +532,6 @@ export default function EventSignUp({ id }: IParams) {
                     Submit
                   </Button>
                 </div>
-              ) : (
-                <div></div>
               )}
             </div>
           </div>
