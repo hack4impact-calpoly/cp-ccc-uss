@@ -47,6 +47,14 @@ export default function EventSignUp({ id }: IParams) {
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  useEffect(() => {
+    fetchForm(event);
+  }, [event]);
+
   const handleChangeDate = (e: any) => {
     setDate(e.target.value);
   };
@@ -326,14 +334,6 @@ export default function EventSignUp({ id }: IParams) {
       setEvents([]);
     }
   }
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  useEffect(() => {
-    fetchForm(event);
-  }, [event]);
 
   function renderCustomQuestion(question: IFormQuestion, index: number) {
     const handleAnswerBlur = (e: React.FocusEvent<HTMLInputElement>) => {
