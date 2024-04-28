@@ -83,31 +83,35 @@ export default function EventSignUp({ id }: IParams) {
         setEvent(selectedEvent);
 
         const fetchRoles = async () => {
-          try {
-            const rolesData = await Promise.all(
-              selectedEvent.roles.map(async (roleID) => {
+          const rolesData = await Promise.all(
+            selectedEvent.roles.map(async (roleID) => {
+              try {
                 const response = await fetch(
                   `http://localhost:3000/api/role/${roleID}`
                 );
                 if (!response.ok) {
-                  throw new Error(
+                  console.error(
                     `Failed to fetch role ${roleID}. Status: ${response.status}`
                   );
+                  return null;
                 }
                 return response.json();
-              })
-            );
-
-            setRoles(rolesData);
-          } catch (error) {
-            console.error("Error:", error);
-            setRoles([]);
-          }
+              } catch (error) {
+                console.error("Error fetching role:", error);
+                return null;
+              }
+            })
+          );
+          const filteredRoles = rolesData.filter(
+            (role) => role !== null
+          );
+          setRoles(filteredRoles);
         };
 
         fetchRoles();
       } else {
         setRoles([]);
+        setEvent(null);
       }
     } catch (err: unknown) {
       console.error("Error:", err);
