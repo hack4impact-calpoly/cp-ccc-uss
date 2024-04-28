@@ -1,0 +1,85 @@
+.inputLine {
+  border-radius: 10px;
+  border: 5 solid black;
+  margin-bottom: 20px;
+}
+
+.smallHeader {
+  margin-bottom: 10px;
+  border-bottom: 2px solid black;
+}
+
+.submit {
+  margin-top: 20px;
+  margin-bottom: -10px;
+  display: flex;
+  justify-content: center;
+}
+
+.comp {
+  background-color: white;
+  opacity: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: space-between;
+  width: 50%;
+  padding: 56px;
+  background-color: white;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  border-radius: 20px;
+  background-color: rgb(255, 255, 255);
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.shortenedInput {
+  width: 50%;
+}
+
+.chakra-select__icon-wrapper {
+  margin-left: -20px; /* Adjust as needed */
+  margin-top: 5px; /* Adjust as needed */
+}
+
+.eventHeader {
+  font-family: "Helvetica";
+  font-size: 32px;
+  font-weight: 550;
+  line-height: 100%;
+  letter-spacing: 0em;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.centralize {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.event {
+  margin-top: 20px;
+  margin-left: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.modal {
+  border: none;
+  background: none;
+}
+
+.content {
+  padding: 20px;
+  max-width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.close {
+  width: 10%;
+  display: flex;
+  left: 90%;
+  bottom: 10px;
+}
