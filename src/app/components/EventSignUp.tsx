@@ -52,7 +52,7 @@ export default function EventSignUp({ id }: IParams) {
   }, []);
 
   useEffect(() => {
-    fetchForm(event);
+    fetchForm();
   }, [event]);
 
   const handleChangeDate = (e: any) => {
@@ -119,14 +119,14 @@ export default function EventSignUp({ id }: IParams) {
     }
   }
 
-  async function fetchForm(event: IEvent | null) {
+  async function fetchForm() {
     try {
-      if (event === null) {
+      if (!event || !event.form) {
         setQuestions([]);
+        console.error("Unable to fetch form due to missing event/event.form");
         return;
       }
       const formID = event?.form;
-      console.log("FormID: " + formID);
       const response = await fetch(`http://localhost:3000/api/form/${formID}`);
       if (!response.ok) {
         throw new Error(
@@ -136,10 +136,9 @@ export default function EventSignUp({ id }: IParams) {
 
       const data = await response.json();
       setQuestions(data.questions);
-      console.log("Event Form: " + data);
-      console.log("Event Questions: " + data.questions);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error fetching form data:", error);
+      setQuestions([]);
       return null;
     }
   }
