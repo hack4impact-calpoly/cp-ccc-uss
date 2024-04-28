@@ -81,6 +81,7 @@ export default function EventSignUp({ id }: IParams) {
       );
       if (selectedEvent) {
         setEvent(selectedEvent);
+        setAnswers([]);
 
         const fetchRoles = async () => {
           const rolesData = await Promise.all(
@@ -102,9 +103,7 @@ export default function EventSignUp({ id }: IParams) {
               }
             })
           );
-          const filteredRoles = rolesData.filter(
-            (role) => role !== null
-          );
+          const filteredRoles = rolesData.filter((role) => role !== null);
           setRoles(filteredRoles);
         };
 
@@ -112,10 +111,12 @@ export default function EventSignUp({ id }: IParams) {
       } else {
         setRoles([]);
         setEvent(null);
+        setAnswers([]);
       }
     } catch (err: unknown) {
       console.error("Error:", err);
       setEvent(null);
+      setAnswers([]);
     }
   }
 
@@ -337,48 +338,15 @@ export default function EventSignUp({ id }: IParams) {
       setEvents([]);
     }
   }
-
+  
   function renderCustomQuestion(question: IFormQuestion, index: number) {
-    const handleAnswerBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      const updatedAnswer = {
+    const handleAnswerChange = (value: string) => {
+      const newAnswers = [...answers];
+      newAnswers[index] = {
         question: question.question,
-        answer: e.target.value,
+        answer: value,
       };
-      setAnswers([...answers, updatedAnswer]);
-    };
-
-    const handleMultiChoiceChange = (selectedOption: string) => {
-      const existingAnswerIndex = answers.findIndex(
-        (answer) => answer.question === question.question
-      );
-
-      // Convert the selected option to an array
-      const selectedOptions = [selectedOption];
-
-      if (selectedOption) {
-        // If an option is selected, update or add the answer
-        const updatedAnswer = {
-          question: question.question,
-          answer: selectedOption,
-        };
-
-        if (existingAnswerIndex !== -1) {
-          // Update existing answer
-          const newAnswers = [...answers];
-          newAnswers[existingAnswerIndex] = updatedAnswer;
-          setAnswers(newAnswers);
-        } else {
-          // Add new answer
-          setAnswers([...answers, updatedAnswer]);
-        }
-      } else {
-        // If no option is selected, remove the answer if it exists
-        if (existingAnswerIndex !== -1) {
-          const newAnswers = [...answers];
-          newAnswers.splice(existingAnswerIndex, 1);
-          setAnswers(newAnswers);
-        }
-      }
+      setAnswers(newAnswers);
     };
 
     switch (question.fieldType) {
@@ -389,7 +357,8 @@ export default function EventSignUp({ id }: IParams) {
               placeholder="Answer"
               className={style.inputLine}
               borderColor="black"
-              onBlur={handleAnswerBlur}
+              value={answers[index]?.answer || ""}
+              onChange={(e) => handleAnswerChange(e.target.value)}
             />
           </div>
         );
@@ -397,15 +366,15 @@ export default function EventSignUp({ id }: IParams) {
         return (
           <div>
             <Stack>
-              <RadioGroup onChange={handleMultiChoiceChange}>
-                {question.options &&
-                  question.options.map((option: string, index) => (
-                    <div key={index}>
-                      <Radio size="lg" value={option} colorScheme="teal">
-                        {option}
-                      </Radio>
-                    </div>
-                  ))}
+              <RadioGroup
+                value={answers[index]?.answer || ""}
+                onChange={(e) => handleAnswerChange(e)}
+              >
+                {question.options?.map((option, idx) => (
+                  <Radio key={idx} size="lg" value={option} colorScheme="teal">
+                    {option}
+                  </Radio>
+                ))}
               </RadioGroup>
             </Stack>
           </div>
