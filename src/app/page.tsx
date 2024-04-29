@@ -24,6 +24,8 @@ export default function Home() {
           secure button
         </button>
         <EventSignUp id={"test"} />
+        <div className="h-screen">
+        </div>
         <div style={{ width: "70%", margin: "20px" }}>
           <Calendar admin={admin} />
         </div>
