@@ -57,6 +57,15 @@ export default function EventSignUp({ id }: IParams) {
     fetchForm();
   }, [event]);
 
+  // clear modal info when close modal (resets)
+  function handleClose() {
+    setName("");
+    setEmail("");
+    setDate(new Date());
+    handleEventInput("");
+    onClose();
+  }
+
   const handleChangeDate = (e: any) => {
     setDate(e.target.value);
   };
@@ -192,13 +201,49 @@ export default function EventSignUp({ id }: IParams) {
     });
   }
 
-  // clear modal info when close modal (resets)
-  function handleClose() {
-    setName("");
-    setEmail("");
-    setDate(new Date());
-    handleEventInput("");
-    onClose();
+  function renderCustomQuestion(question: IFormQuestion, index: number) {
+    const handleAnswerChange = (value: string) => {
+      const newAnswers = [...answers];
+      newAnswers[index] = {
+        question: question.question,
+        answer: value,
+      };
+      setAnswers(newAnswers);
+    };
+
+    switch (question.fieldType) {
+      case "SHORT_ANSWER":
+        return (
+          <div>
+            <Input
+              placeholder="Answer"
+              className={style.inputLine}
+              borderColor="black"
+              value={answers[index]?.answer || ""}
+              onChange={(e) => handleAnswerChange(e.target.value)}
+            />
+          </div>
+        );
+      case "MULTI_CHOICE":
+        return (
+          <div>
+            <Stack>
+              <RadioGroup
+                value={answers[index]?.answer || ""}
+                onChange={(e) => handleAnswerChange(e)}
+              >
+                {question.options?.map((option, idx) => (
+                  <Radio key={idx} size="lg" value={option} colorScheme="teal">
+                    {option}
+                  </Radio>
+                ))}
+              </RadioGroup>
+            </Stack>
+          </div>
+        );
+      default:
+        return null;
+    }
   }
 
   async function getRole(roleID: String) {
@@ -354,51 +399,6 @@ export default function EventSignUp({ id }: IParams) {
     } catch (err: unknown) {
       console.error("Error:", err);
       setEvents([]);
-    }
-  }
-
-  function renderCustomQuestion(question: IFormQuestion, index: number) {
-    const handleAnswerChange = (value: string) => {
-      const newAnswers = [...answers];
-      newAnswers[index] = {
-        question: question.question,
-        answer: value,
-      };
-      setAnswers(newAnswers);
-    };
-
-    switch (question.fieldType) {
-      case "SHORT_ANSWER":
-        return (
-          <div>
-            <Input
-              placeholder="Answer"
-              className={style.inputLine}
-              borderColor="black"
-              value={answers[index]?.answer || ""}
-              onChange={(e) => handleAnswerChange(e.target.value)}
-            />
-          </div>
-        );
-      case "MULTI_CHOICE":
-        return (
-          <div>
-            <Stack>
-              <RadioGroup
-                value={answers[index]?.answer || ""}
-                onChange={(e) => handleAnswerChange(e)}
-              >
-                {question.options?.map((option, idx) => (
-                  <Radio key={idx} size="lg" value={option} colorScheme="teal">
-                    {option}
-                  </Radio>
-                ))}
-              </RadioGroup>
-            </Stack>
-          </div>
-        );
-      default:
-        return null;
     }
   }
 
