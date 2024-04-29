@@ -5,13 +5,15 @@ import Calendar from "@components/Calendar";
 import CreateEvent from '@components/CreateEvent/CreateEvent';
 import EventSignUp from "@components/EventSignUp";
 import ProfileDatabase from '@components/ProfileDatabase';
+import { Button, Box } from '@chakra-ui/react';
 
 export default function Home() {
   const [admin, setAdmin] = useState(false);
+  const [showProfileDatabase, setShowProfileDatabase] = useState(false);
   
   return (
     <main>
-      <div
+      <Box
         style={{
           display: "flex",
           flexDirection: "column",
@@ -20,20 +22,21 @@ export default function Home() {
         }}
       >
         <Navbar />
-        <div>i am the admin: {admin.toString()}</div>
-        <button onClick={() => (admin ? setAdmin(false) : setAdmin(true))}>
-          secure button
-        </button>
+        <Box>Am I the admin? {admin.toString()}</Box>
+        <Button onClick={() => (admin ? setAdmin(false) : setAdmin(true))}>
+          Secure Button
+        </Button>
         <EventSignUp id={"test"} />
-        <div className="h-screen">
-        </div>
-        <div style={{ width: "70%", margin: "20px" }}>
-          {/* <Calendar admin={admin} /> */}
-        </div>
-        <div>
-          <ProfileDatabase />
-        </div>
-      </div>
+        <Box className="h-screen">
+        </Box>
+        <Box style={{ width: "70%", margin: "20px" }}>
+          <Calendar admin={admin} />
+        </Box>
+        <Box>
+          <Button onClick={() => setShowProfileDatabase(!showProfileDatabase)}> Show Profile Database </Button>
+          {showProfileDatabase && <ProfileDatabase />}
+        </Box>
+      </Box>
     </main>
   );
 }
