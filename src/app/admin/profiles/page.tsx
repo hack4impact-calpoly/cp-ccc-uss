@@ -1,3 +1,4 @@
+"use client"
 import * as React from "react";
 import { DataGrid, GridRowsProp, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import type {} from '@mui/x-data-grid/themeAugmentation';
@@ -6,6 +7,8 @@ import { Chip, Stack } from "@mui/material";
 import style from './ProfileDatabase.module.css';
 import { IVolunteer } from "@database/volunteerSchema";
 import { useEffect, useState } from "react";
+import Navbar from "@components/Navbar";
+import { Heading } from "@chakra-ui/react";
 
 //get all volunteers
 async function getVolunteers() {
@@ -76,24 +79,35 @@ export default function ProfileDatabase() {
   if (error) return <div>Error loading volunteers.</div>;
 
   return (
-    <div style={{ height: 1000, width: "100%" }}>
-        <ThemeProvider theme={createTheme()}>
-            <DataGrid 
-              rows={volunteers} 
-              getRowId={(row)=> row._id}
-              rowHeight={70}
-              columns={columns}
-              slots={
-                {
-                  toolbar: GridToolbar
-              }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true
-              }
-              }}
-            />
-        </ThemeProvider>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      <Navbar />
+      <Heading p={3}>Volunteers</Heading>
+      <div style={{ height: "75%", width: "75%" }}>
+          <ThemeProvider theme={createTheme()}>
+              <DataGrid 
+                rows={volunteers} 
+                getRowId={(row)=> row._id}
+                rowHeight={70}
+                columns={columns}
+                slots={
+                  {
+                    toolbar: GridToolbar
+                }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true
+                }
+                }}
+              />
+          </ThemeProvider>
+      </div>
     </div>
   );
 }
