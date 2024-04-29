@@ -26,7 +26,7 @@ type Props = {
 
 type VolunteerEntry = {
   name: string;
-  role: IVolunteerRole;
+  roles: IVolunteerRole[];
   timeslot: IVolunteerRoleTimeslot;
   responses: IFormAnswer[];
 };
@@ -54,7 +54,9 @@ export default function VolunteerDetails({ _id }: Props) {
     const filteredItems = volunteerEntries.filter(
       (entry) =>
         entry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        entry.role.roleName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        entry.roles.map((role: IVolunteerRole) =>
+          role.roleName.toLowerCase().includes(searchTerm.toLowerCase())
+        ) ||
         parseDate(entry.timeslot.startTime)
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
@@ -122,7 +124,7 @@ export default function VolunteerDetails({ _id }: Props) {
                 <li key={Index}>
                   <DisplayVolunteerInformation
                     name={entry.name}
-                    role={entry.role}
+                    roles={entry.roles}
                     timeslot={entry.timeslot}
                     responses={entry.responses}
                   />
