@@ -12,14 +12,14 @@ import style from "./AdminEventDetails.module.css";
 
 type Props = {
   name: string;
-  role: IVolunteerRole;
+  roles: IVolunteerRole[];
   timeslot: IVolunteerRoleTimeslot;
   responses: IFormAnswer[];
 };
 
 export default function VolunteerDetails({
   name,
-  role,
+  roles,
   timeslot,
   responses,
 }: Props) {
@@ -33,14 +33,18 @@ export default function VolunteerDetails({
   return (
     <div>
       <h2>{name}</h2>
-      <h3>{role.roleName} - </h3>
-      <div className={style.openTime}>
-        {parseDate(timeslot.startTime)} - {parseDate(timeslot.endTime)} |
-      </div>
-      {responses.map((response: IFormAnswer, Index) => (
+      {roles.map((role, Index) => (
         <div key={Index}>
-          <p>{response.question}</p>
-          <p>{response.answer}</p>
+          <h3>{role.roleName} - </h3>
+          <div className={style.openTime}>
+            {parseDate(timeslot.startTime)} - {parseDate(timeslot.endTime)} |
+          </div>
+          {responses.map((response: IFormAnswer, Index2) => (
+            <div key={Index2}>
+              <p>{response.question}</p>
+              <p>{response.answer}</p>
+            </div>
+          ))}
         </div>
       ))}
     </div>
