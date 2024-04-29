@@ -448,32 +448,6 @@ export default function EventSignUp({ id }: IParams) {
                 </div>
               )}
 
-              {/* {event && (
-                <div>
-                  <Select
-                    variant={"filled"}
-                    bg="#54948c"
-                    className={`${style.inputLine} ${style.shortenedInput}`}
-                    colorScheme="teal"
-                    color="black"
-                    placeholder="Select Role"
-                    // icon={<DefaultIcon />}
-                    // iconSize="24px"
-                    onChange={(e) => {
-                      const selectedRoleID = e.target.value;
-                      handleRoleSelect(selectedRoleID);
-                    }}
-                  >
-                    {roles.length > 0 &&
-                      roles.map((role) => (
-                        <option key={role._id} value={role._id}>
-                          {role.roleName}
-                        </option>
-                      ))}
-                  </Select>
-                </div>
-              )} */}
-
               {event && (
                 <div>
                   <ChakraReactSelect
