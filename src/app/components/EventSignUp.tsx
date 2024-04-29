@@ -18,10 +18,12 @@ import {
   Button,
   Radio,
   RadioGroup,
+  Checkbox,
 } from "@chakra-ui/react";
 import style from "@styles/EventSignUp.module.css";
 import { IFormQuestion } from "@database/volunteerFormSchema";
 import { IFormAnswer } from "@database/volunteerEntrySchema";
+import { Select as ChakraReactSelect } from "chakra-react-select";
 
 type IParams = {
   id: string;
@@ -144,34 +146,33 @@ export default function EventSignUp({ id }: IParams) {
     }
   }
 
-  async function handleRoleSelect(roleID: string) {
-    try {
-      const selectedRole: IVolunteerRole | undefined = roles.find(
-        (role) => role?._id === roleID
-      );
+  async function handleMultiRoleSelect(roleIDs: string[]) {
+    const newSelectedRoles = roles.filter((role) => roleIDs.includes(role._id));
+    setSelectedRoles(newSelectedRoles);
 
-      if (selectedRole && !selectedRoles.some((role) => role._id === roleID)) {
-        setSelectedRoles([...selectedRoles, selectedRole]); // Add selected role to the array if it doesn't already exist
-        setShifts(selectedRole.timeslots);
+    const newSelectedShifts = { ...selectedShifts };
+    newSelectedRoles.forEach((role) => {
+      if (!newSelectedShifts[role._id]) {
+        newSelectedShifts[role._id] = [];
       }
-    } catch (error) {
-      console.error("Error fetching shifts:", error);
-      setShifts([]);
-    }
+    });
+
+    // Remove unselected roles from selectedShifts
+    Object.keys(newSelectedShifts).forEach((key) => {
+      if (!newSelectedRoles.find((role) => role._id === key)) {
+        delete newSelectedShifts[key];
+      }
+    });
+
+    setSelectedShifts(newSelectedShifts);
   }
 
-  function handleShiftSelect(shift: IVolunteerRoleTimeslot) {
-    setIsLoading(false);
-    setSelectedShifts((prevSelectedShifts) => ({
-      ...prevSelectedShifts,
-      [selectedRoles[selectedRoles.length - 1]._id]: prevSelectedShifts[
-        selectedRoles[selectedRoles.length - 1]._id
-      ]
-        ? [
-            ...prevSelectedShifts[selectedRoles[selectedRoles.length - 1]._id],
-            shift,
-          ]
-        : [shift],
+  function handleShiftSelect(roleId: string, shift: IVolunteerRoleTimeslot) {
+    setSelectedShifts((prev) => ({
+      ...prev,
+      [roleId]: prev[roleId]?.includes(shift)
+        ? prev[roleId].filter((s) => s !== shift) // Remove shift
+        : [...(prev[roleId] || []), shift], // Add shift
     }));
   }
 
@@ -446,8 +447,8 @@ export default function EventSignUp({ id }: IParams) {
                   <h2>No events found to sign up for.</h2>
                 </div>
               )}
-              
-              {event && (
+
+              {/* {event && (
                 <div>
                   <Select
                     variant={"filled"}
@@ -471,6 +472,36 @@ export default function EventSignUp({ id }: IParams) {
                       ))}
                   </Select>
                 </div>
+              )} */}
+
+              {event && (
+                <div>
+                  <ChakraReactSelect
+                    isMulti
+                    name="roles"
+                    options={roles.map((role) => ({
+                      value: role._id,
+                      label: role.roleName,
+                    }))}
+                    placeholder="Select Roles"
+                    closeMenuOnSelect={false}
+                    onChange={(selectedOptions) =>
+                      handleMultiRoleSelect(
+                        selectedOptions.map((option) => option.value)
+                      )
+                    }
+                    chakraStyles={{
+                      control: (provided, state) => ({
+                        ...provided,
+                        borderColor: state.isFocused ? "teal.500" : "black",
+                      }),
+                      multiValue: (provided) => ({
+                        ...provided,
+                        backgroundColor: "teal.200",
+                      }),
+                    }}
+                  />
+                </div>
               )}
 
               {selectedRoles.map((role) => (
@@ -480,17 +511,13 @@ export default function EventSignUp({ id }: IParams) {
                   </h3>
                   {role.timeslots.map((shift, index) => (
                     <div key={index}>
-                      <Radio
-                        type="checkbox"
-                        id={`shift-${index}`}
-                        value={`shift-${index}`}
+                      <Checkbox
+                        id={`shift-${role._id}-${index}`}
                         size="lg"
                         colorScheme="teal"
-                        className={style.inputLine}
-                        onChange={() => handleShiftSelect(shift)}
-                        checked={selectedShifts[role._id]?.includes(shift)}
-                      />
-                      <label htmlFor={`shift-${index}`}>
+                        onChange={() => handleShiftSelect(role._id, shift)}
+                        isChecked={selectedShifts[role._id]?.includes(shift)}
+                      >
                         {`Shift ${index + 1}: ${new Date(
                           shift.startTime
                         ).toLocaleTimeString([], {
@@ -500,7 +527,7 @@ export default function EventSignUp({ id }: IParams) {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}`}
-                      </label>
+                      </Checkbox>
                     </div>
                   ))}
                 </div>
