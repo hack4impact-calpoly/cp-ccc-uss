@@ -25,7 +25,6 @@ type Props = {
 };
 
 type VolunteerEntry = {
-  volunteerId: string;
   name: string;
   role: IVolunteerRole;
   timeslot: IVolunteerRoleTimeslot;
@@ -112,8 +111,8 @@ export default function VolunteerDetails({ _id }: Props) {
               placeholder="Type to search"
             />
             <ul>
-              {volunteerEntries.map((entry) => (
-                <li key={entry.volunteerId}>
+              {volunteerEntries.map((entry, Index) => (
+                <li key={Index}>
                   <DisplayVolunteerInformation
                     name={entry.name}
                     role={entry.role}
