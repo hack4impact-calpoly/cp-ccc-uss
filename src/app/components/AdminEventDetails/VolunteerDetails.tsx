@@ -38,10 +38,33 @@ export default function VolunteerDetails({ _id }: Props) {
   );
   const [searchItem, setSearchItem] = useState<string>("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [filteredEntries, setFilteredEntries] = useState(volunteerEntries);
+
+  function parseDate(date: Date) {
+    return new Date(date).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
     setSearchItem(searchTerm);
+
+    const filteredItems = volunteerEntries.filter(
+      (entry) =>
+        entry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        entry.role.roleName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        parseDate(entry.timeslot.startTime).toLowerCase().includes(searchTerm.toLowerCase()) ||
+        parseDate(entry.timeslot.endTime).toLowerCase().includes(searchTerm.toLowerCase()) ||
+        entry.responses.map((resp: IFormAnswer) =>
+            resp.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            resp.answer.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+    );
+
+    setFilteredEntries(filteredItems);
   };
 
   async function fetchEntries() {
@@ -56,6 +79,7 @@ export default function VolunteerDetails({ _id }: Props) {
 
       const data = await response.json();
       setVolunteerEntries(data);
+      setFilteredEntries(data);
     } catch (err: unknown) {
       console.error("Error:", err);
       setVolunteerEntries([]);
@@ -90,7 +114,7 @@ export default function VolunteerDetails({ _id }: Props) {
               placeholder="Type to search"
             />
             <ul>
-              {volunteerEntries.map((entry) => (
+              {filteredEntries.map((entry) => (
                 <li key={entry.volunteerId}>
                   <DisplayVolunteerInformation
                     name={entry.name}
