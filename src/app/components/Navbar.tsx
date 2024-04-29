@@ -1,5 +1,4 @@
-import Login from '../Login';
-
+import Login from "./Login";
 
 export default function Navbar() {
   return (
@@ -13,7 +12,7 @@ export default function Navbar() {
           width: "100%",
         }}
       >
-        <Login />
+        <Login /> 
       </div>
     </>
   );
