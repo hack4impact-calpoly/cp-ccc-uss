@@ -38,7 +38,6 @@ export default function VolunteerDetails({ _id }: Props) {
   );
   const [searchItem, setSearchItem] = useState<string>("");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [filteredEntries, setFilteredEntries] = useState(volunteerEntries);
 
   function parseDate(date: Date) {
     return new Date(date).toLocaleTimeString("en-US", {
@@ -64,7 +63,7 @@ export default function VolunteerDetails({ _id }: Props) {
         )
     );
 
-    setFilteredEntries(filteredItems);
+    setVolunteerEntries(filteredItems);
   };
 
   async function fetchEntries() {
@@ -79,7 +78,6 @@ export default function VolunteerDetails({ _id }: Props) {
 
       const data = await response.json();
       setVolunteerEntries(data);
-      setFilteredEntries(data);
     } catch (err: unknown) {
       console.error("Error:", err);
       setVolunteerEntries([]);
@@ -114,7 +112,7 @@ export default function VolunteerDetails({ _id }: Props) {
               placeholder="Type to search"
             />
             <ul>
-              {filteredEntries.map((entry) => (
+              {volunteerEntries.map((entry) => (
                 <li key={entry.volunteerId}>
                   <DisplayVolunteerInformation
                     name={entry.name}
