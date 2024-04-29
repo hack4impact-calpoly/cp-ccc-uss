@@ -39,10 +39,10 @@ export default function EventSignUp({ id }: IParams) {
   const [selectedRoles, setSelectedRoles] = useState<IVolunteerRole[]>([]);
   const [shifts, setShifts] = useState<IVolunteerRoleTimeslot[]>([]);
   const [selectedShifts, setSelectedShifts] = useState<{
-    [roleId: string]: IVolunteerRoleTimeslot[];
-  }>({});
-  const [originalShifts, setOriginalShifts] = useState<{
-    [roleId: string]: IVolunteerRoleTimeslot[];
+    [roleId: string]: {
+      shift: IVolunteerRoleTimeslot;
+      isSelected: boolean;
+    }[];
   }>({});
   const [questions, setQuestions] = useState<IFormQuestion[]>([]);
   const [answers, setAnswers] = useState<IFormAnswer[]>([]);
@@ -146,6 +146,12 @@ export default function EventSignUp({ id }: IParams) {
     }
   }
 
+  // useEffect on selected role and shifts for testing
+  useEffect(() => {
+    console.log(selectedRoles);
+    console.log(selectedShifts);
+  }, [selectedRoles, selectedShifts]);
+
   async function handleMultiRoleSelect(roleIDs: string[]) {
     const newSelectedRoles = roles.filter((role) => roleIDs.includes(role._id));
     setSelectedRoles(newSelectedRoles);
@@ -153,7 +159,10 @@ export default function EventSignUp({ id }: IParams) {
     const newSelectedShifts = { ...selectedShifts };
     newSelectedRoles.forEach((role) => {
       if (!newSelectedShifts[role._id]) {
-        newSelectedShifts[role._id] = [];
+        newSelectedShifts[role._id] = role.timeslots.map((shift) => ({
+          shift,
+          isSelected: false,
+        }));
       }
     });
 
@@ -167,13 +176,20 @@ export default function EventSignUp({ id }: IParams) {
     setSelectedShifts(newSelectedShifts);
   }
 
-  function handleShiftSelect(roleId: string, shift: IVolunteerRoleTimeslot) {
-    setSelectedShifts((prev) => ({
-      ...prev,
-      [roleId]: prev[roleId]?.includes(shift)
-        ? prev[roleId].filter((s) => s !== shift) // Remove shift
-        : [...(prev[roleId] || []), shift], // Add shift
-    }));
+  function handleShiftSelect(roleId: string, shiftIndex: number) {
+    setSelectedShifts((prevSelectedShifts) => {
+      const updatedShifts = {
+        ...prevSelectedShifts,
+        [roleId]: [...prevSelectedShifts[roleId]]
+      };
+
+      updatedShifts[roleId][shiftIndex] = {
+        ...updatedShifts[roleId][shiftIndex],
+        isSelected: !updatedShifts[roleId][shiftIndex].isSelected
+      };
+
+      return updatedShifts;
+    });
   }
 
   // clear modal info when close modal (resets)
@@ -483,21 +499,23 @@ export default function EventSignUp({ id }: IParams) {
                   <h3 className={style.smallHeader}>
                     Select Shifts for {role.roleName}:
                   </h3>
-                  {role.timeslots.map((shift, index) => (
+                  {selectedShifts[role._id]?.map((shiftData, index) => (
                     <div key={index}>
                       <Checkbox
                         id={`shift-${role._id}-${index}`}
                         size="lg"
                         colorScheme="teal"
-                        onChange={() => handleShiftSelect(role._id, shift)}
-                        isChecked={selectedShifts[role._id]?.includes(shift)}
+                        onChange={() => handleShiftSelect(role._id, index)}
+                        isChecked={shiftData.isSelected}
                       >
                         {`Shift ${index + 1}: ${new Date(
-                          shift.startTime
+                          shiftData.shift.startTime
                         ).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
-                        })} - ${new Date(shift.endTime).toLocaleTimeString([], {
+                        })} - ${new Date(
+                          shiftData.shift.endTime
+                        ).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}`}
