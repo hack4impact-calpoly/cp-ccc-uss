@@ -37,6 +37,7 @@ export default function VolunteerDetails({ _id }: Props) {
   );
   const [searchItem, setSearchItem] = useState<string>("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [filteredEntries, setFilteredEntries] = useState<VolunteerEntry[]>([]);
 
   function parseDate(date: Date) {
     return new Date(date).toLocaleTimeString("en-US", {
@@ -54,15 +55,20 @@ export default function VolunteerDetails({ _id }: Props) {
       (entry) =>
         entry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         entry.role.roleName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        parseDate(entry.timeslot.startTime).toLowerCase().includes(searchTerm.toLowerCase()) ||
-        parseDate(entry.timeslot.endTime).toLowerCase().includes(searchTerm.toLowerCase()) ||
-        entry.responses.map((resp: IFormAnswer) =>
+        parseDate(entry.timeslot.startTime)
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        parseDate(entry.timeslot.endTime)
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        entry.responses.map(
+          (resp: IFormAnswer) =>
             resp.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
             resp.answer.toLowerCase().includes(searchTerm.toLowerCase())
         )
     );
 
-    setVolunteerEntries(filteredItems);
+    setFilteredEntries(filteredItems);
   };
 
   async function fetchEntries() {
@@ -77,6 +83,7 @@ export default function VolunteerDetails({ _id }: Props) {
 
       const data = await response.json();
       setVolunteerEntries(data);
+      setFilteredEntries(data);
     } catch (err: unknown) {
       console.error("Error:", err);
       setVolunteerEntries([]);
@@ -111,7 +118,7 @@ export default function VolunteerDetails({ _id }: Props) {
               placeholder="Type to search"
             />
             <ul>
-              {volunteerEntries.map((entry, Index) => (
+              {filteredEntries.map((entry, Index) => (
                 <li key={Index}>
                   <DisplayVolunteerInformation
                     name={entry.name}
