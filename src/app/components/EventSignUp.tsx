@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import type { IEvent } from "../../database/eventSchema";
 import type {
   IVolunteerRole,
@@ -24,6 +24,7 @@ import style from "@styles/EventSignUp.module.css";
 import { IFormQuestion } from "@database/volunteerFormSchema";
 import { IFormAnswer } from "@database/volunteerEntrySchema";
 import { Select as ChakraReactSelect } from "chakra-react-select";
+import { useUser } from "@clerk/nextjs";
 
 type IParams = {
   id: string;
@@ -37,7 +38,6 @@ export default function EventSignUp({ id }: IParams) {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<IVolunteerRole[]>([]);
-  const [shifts, setShifts] = useState<IVolunteerRoleTimeslot[]>([]);
   const [selectedShifts, setSelectedShifts] = useState<{
     [roleId: string]: {
       shift: IVolunteerRoleTimeslot;
@@ -48,6 +48,7 @@ export default function EventSignUp({ id }: IParams) {
   const [answers, setAnswers] = useState<IFormAnswer[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const user = useUser();
 
   useEffect(() => {
     fetchEvents();
@@ -224,6 +225,7 @@ export default function EventSignUp({ id }: IParams) {
             />
           </div>
         );
+      case "MULTI_SELECT":
       case "MULTI_CHOICE":
         return (
           <div>
@@ -246,52 +248,42 @@ export default function EventSignUp({ id }: IParams) {
     }
   }
 
-  async function getRole(roleID: String) {
-    const response = await fetch(`http://localhost:3000/role/${roleID}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch event role. Status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
-  }
-
-  async function getVolunteerId(
-    name: string,
-    email: string
-  ): Promise<string | null> {
+  async function getVolunteerIdByEmail(email: string): Promise<string | null> {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/volunteer?name=${encodeURIComponent(
-          name
-        )}&email=${encodeURIComponent(email)}`
-      );
+      const response = await fetch(`http://localhost:3000/api/volunteer`);
       if (!response.ok) {
         throw new Error(
           `Failed to fetch volunteer. Status: ${response.status}`
         );
       }
-      const data = await response.json();
+      const allVolunteers = await response.json();
+      const targetVolunteer = allVolunteers.find((volunteer: { email: string }) => volunteer.email === email);
 
-      return data._id; // Assuming the server returns the volunteer object with an _id field
+      return targetVolunteer._id;
     } catch (error) {
       console.error("Error fetching volunteer:", error);
       return null;
     }
   }
 
+  async function getExistingRoles(volunteerId: string) {
+    const response = await fetch(`http://localhost:3000/api/volunteer/${volunteerId}`);
+    const data = await response.json();
+    return data.roles || [];
+  }
+  
+  async function getExistingEntries(volunteerId: string) {
+    const response = await fetch(`http://localhost:3000/api/volunteer/${volunteerId}`);
+    const data = await response.json();
+    return data.entries || [];
+  }
+
   async function handleSubmission() {
     try {
-      const volunteerId = "no bueno :/";
-      // const volunteerId = getVolunteerId(name, email);
-      // if (!volunteerId) {
-      //   throw new Error("Failed to get volunteerId");
-      // }
+      const volunteerId = await getVolunteerIdByEmail(user.user?.primaryEmailAddress?.toString() || "");   
+      const roleIDs = selectedRoles.map((role) => role._id);   
 
-      // Need to get volunteerID in order to post to volunteer entries
-
-      console.log(answers);
-
-      const roleIDs = roles.map((role) => role._id);
+      console.log("Adding to volunteer: ", volunteerId);
 
       setIsLoading(true);
 
@@ -317,85 +309,54 @@ export default function EventSignUp({ id }: IParams) {
 
       const entryData = await entryResp.json();
       const entryId = entryData._id;
+      console.log("Created entry:", entryData);
+      
+      for (const role of selectedRoles) {
+        const selectedShiftsForRole = selectedShifts[role._id].filter(shiftData => shiftData.isSelected);
 
-      // PUT to VolunteerRoles (selected timeslots/shifts)
-      roles.map(async (role) => {
-        const newShifts = selectedShifts[role._id] || [];
-
-        for (const shift of newShifts) {
-          // Find the corresponding timeslot in the role's timeslots array
-          const timeslotIndex = role.timeslots.findIndex(
-            (timeslot) =>
-              timeslot.startTime === shift.startTime &&
-              timeslot.endTime === shift.endTime
+        const selectedTimeslots = role.timeslots.map(timeslot => {
+          const isSelected = selectedShiftsForRole.some(shiftData =>
+            shiftData.shift.startTime === timeslot.startTime && shiftData.shift.endTime === timeslot.endTime
           );
-
-          // Update the volunteers array for the found timeslot
-          if (timeslotIndex !== -1 && typeof volunteerId === "string") {
-            role.timeslots[timeslotIndex].volunteers.push(volunteerId);
+          
+          if (isSelected) {
+            return { ...timeslot, volunteers: [...timeslot.volunteers, volunteerId] };
           }
+          return timeslot;
+        });
+
+        const roleUpdateResponse = await fetch(`http://localhost:3000/api/role/${role._id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fieldToUpdate: "timeslots", value: selectedTimeslots }),
+        });
+
+        if (!roleUpdateResponse.ok) {
+          throw new Error(`Failed to update volunteer role with id: ${role._id}. Status: ${roleUpdateResponse.status}`);
         }
 
-        // Update the role on the server
-        const rolRes = await fetch(
-          `http://localhost:3000/api/role/${role._id}`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              fieldToUpdate: "timeslots",
-              value: role.timeslots,
-            }),
-          }
-        );
+        const roleData = await roleUpdateResponse.json();
+        console.log("Updated role:", roleData);
+      }
 
-        if (!rolRes.ok) {
-          throw new Error(
-            `Failed to update volunteer role with id: ${role._id}. Status: ${rolRes.status}`
-          );
-        }
+      const existingRoles = await getExistingRoles(volunteerId || "");
+      const existingEntries = await getExistingEntries(volunteerId  || "");
+
+      const volunteerUpdateResponse = await fetch(`http://localhost:3000/api/volunteer/${volunteerId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          roles: Array.from(new Set([...roleIDs, ...existingRoles])),
+          entries: [...existingEntries, entryId]
+        }),
       });
 
-      // PUT or PATCH to Volunteer (roles and entries arrays)
-      if (false && typeof volunteerId === "string") {
-        const volResp = await fetch(
-          `http://localhost:3000/api/volunteer/${id}`
-        );
-
-        if (!volResp.ok) {
-          throw new Error(
-            `Failed to fetch volunteer data. Status: ${volResp.status}`
-          );
-        }
-
-        const volunteer = await volResp.json();
-        var entries = volunteer.entries;
-        var volRoles = volunteer.roles;
-        entries.push(entryId);
-        for (let i = 0; i < roles.length; i++) [volRoles.push(roles[i])]; // Push all new roles to roles array
-
-        const putResponse = await fetch(
-          `http://localhost:3000/api/volunteer/${volunteerId}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              entries: entries,
-              roles: volRoles,
-            }),
-          }
-        );
-
-        if (!putResponse.ok) {
-          throw new Error(
-            `Failed to update volunteer entries and roles. Status: ${putResponse.status}`
-          );
-        }
+      if (!volunteerUpdateResponse.ok) {
+        throw new Error(`Failed to update volunteer data. Status: ${volunteerUpdateResponse.status}`);
       }
+  
+      setIsLoading(false);
+      console.log('Submission successful!');
     } catch (err: unknown) {
       console.error("Error:", err);
       setEvents([]);
@@ -538,7 +499,7 @@ export default function EventSignUp({ id }: IParams) {
                 </div>
               )}
 
-              {shifts && (
+              {events && (
                 <div className={style.centralize}>
                   <Button
                     type="submit"
