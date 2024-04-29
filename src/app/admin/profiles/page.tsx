@@ -31,7 +31,7 @@ const columns: GridColDef[] = [
   { field: "name", headerName: "Name", width: 300 },
   { field: "email", headerName: "Email", width: 300 },
   { field: "tags", headerName: "Tags", width: 300,
-    renderCell: (params) => (
+    renderCell: (params) => ( // map volunteer tags to UI chips or "No Tags" chip
       <Stack direction="row" spacing={1} className={style.tags}>
         {params.value && Array.isArray(params.value) ? params.value.map((tag, index) => (
           <Chip key={`${params.id}-tag-${index}`} label={tag} />
@@ -40,7 +40,7 @@ const columns: GridColDef[] = [
     )
   },
   { field: "event-type", headerName: "Event Type", width: 300,
-    renderCell: (params) => (
+    renderCell: (params) => ( // map event prefs to UI chips or "No Event Types" chip
       <Stack direction="row" spacing={1} className={style.eventPreferences}>
         {params.value && Array.isArray(params.value) ? params.value.map((eventType, index) => (
           <Chip key={`${params.id}-event-${index}`} label={eventType} />
