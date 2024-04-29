@@ -37,7 +37,12 @@ export default function VolunteerDetails({
       <div className={style.openTime}>
         {parseDate(timeslot.startTime)} - {parseDate(timeslot.endTime)} |
       </div>
-      <p>responses.map()</p>
+      {responses.map((response: IFormAnswer, Index) => (
+        <div key={Index}>
+          <p>{response.question}</p>
+          <p>{response.answer}</p>
+        </div>
+      ))}
     </div>
   );
 }

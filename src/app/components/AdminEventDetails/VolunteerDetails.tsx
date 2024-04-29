@@ -38,7 +38,6 @@ export default function VolunteerDetails({ _id }: Props) {
   );
   const [searchItem, setSearchItem] = useState<string>("");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [volunteers, setVolunteers] = useState<IVolunteerEntry[]>([]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
