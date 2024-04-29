@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { IEvent } from '@database/eventSchema';
 import { IVolunteerRole } from '@database/volunteerRoleSchema';
 import { IVolunteerRoleTimeslot } from '@database/volunteerRoleSchema';
+import VolunteerDetails from "./VolunteerDetails"
 
 type Props = {
   _id: string ;
@@ -72,29 +73,6 @@ function parseDate(date: Date) {
   });
 }
 
-function AdminEventDetailsButton() {
-  const handleClick = () => {
-    console.log("Button clicked!");
-  };
-
-  return (
-    <button
-      onClick={handleClick}
-      style={{
-        background: "transparent",
-        border: "none",
-        textDecoration: "underline",
-        color: "black",
-        cursor: "pointer",
-        fontFamily: "Avenir",
-        fontSize: "16px",
-      }}
-    >
-      more details
-    </button>
-  );
-}
-
 export default function AdminEventDetails({ _id }: Props) {
   const [event, setEvent] = useState<IEvent | null>(null);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
@@ -154,7 +132,7 @@ export default function AdminEventDetails({ _id }: Props) {
             ></PeopleOutlineIcon>
             Volunteers
           </div>
-          <AdminEventDetailsButton />
+          <VolunteerDetails _id={event._id} />
         </div>
         {/* Later implement all volunteers for an event here */}
         <div className={style.eventRoles}></div>

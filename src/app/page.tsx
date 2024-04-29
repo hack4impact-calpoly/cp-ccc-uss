@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 import Navbar from "@components/Navbar";
 import Calendar from "@components/Calendar";
 import CreateEvent from '@components/CreateEvent/CreateEvent';
+import AdminEventDetails from '@components/AdminEventDetails/AdminEventDetails';
 
 export default function Home() {
-  const [admin, setAdmin] = useState(false);
+  const [admin, setAdmin] = useState(true);
   
   return (
     <main>
@@ -19,6 +20,7 @@ export default function Home() {
       >
         <Navbar />
         <div>i am the admin: {admin.toString()}</div>
+        <AdminEventDetails _id="65bc1a5d8c0336cb5f0cf967"/>
         <button onClick={() => (admin ? setAdmin(false) : setAdmin(true))}>
           secure button
         </button>
