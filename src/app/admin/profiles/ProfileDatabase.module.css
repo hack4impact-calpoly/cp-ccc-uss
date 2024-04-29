@@ -1,0 +1,16 @@
+.tags {
+    display: flex; 
+    flex-wrap: wrap;
+    padding-top: 10px;
+    width: 300px;
+    justify-content: left;
+}
+
+.eventPreferences {
+    display: flex; 
+    flex-wrap: wrap;
+    padding-top: 10px;
+    width: 300px;
+    justify-content: left;
+}
+
