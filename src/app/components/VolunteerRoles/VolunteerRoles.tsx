@@ -96,17 +96,19 @@ export default function AddVolunteerRoles(props: {
       const [hours, minutes] = timeValue.split(":").map(Number);
   
       let existingDate = shift[field];
+    
       if (!existingDate) {
 
         existingDate = props.date;
 
       }
+      
   
       existingDate.setHours(hours);
       existingDate.setMinutes(minutes);
       existingDate.setSeconds(0);
       const timezoneOffset = existingDate.getTimezoneOffset();
-      existingDate.setMinutes(existingDate.getMinutes() + timezoneOffset);
+      existingDate.setMinutes(existingDate.getMinutes() - timezoneOffset);
 
 
       updatedRoles[roleIndex].timeslots[shiftIndex][field] = existingDate;
