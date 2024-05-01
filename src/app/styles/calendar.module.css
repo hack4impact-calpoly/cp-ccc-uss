@@ -2,6 +2,11 @@
   padding-bottom: 5%;
 }
 
+.buttonContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .modal {
   display: flex;
   flex-direction: column;
