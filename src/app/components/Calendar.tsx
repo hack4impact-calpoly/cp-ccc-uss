@@ -4,10 +4,9 @@ import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import type { IEvent } from "@database/eventSchema";
-import Link from "next/link";
-import { useRef } from "react";
+import style from "@styles/calendar.module.css";
+import { useDisclosure } from "@chakra-ui/react";
 import { EventClickArg } from "@fullcalendar/core/index.js";
-import { EventInstance } from "@fullcalendar/core/internal";
 import {
   Modal,
   ModalOverlay,
@@ -19,8 +18,8 @@ import {
   Button,
 } from "@chakra-ui/react";
 import UserEventDetails from "./UserEventDetails";
-import style from "../styles/Calendar.module.css";
 import AdminEventDetails from "./AdminEventDetails/AdminEventDetails";
+import CreateEvent from "./CreateEvent/CreateEvent";
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
@@ -36,6 +35,10 @@ const Calendar = ({ admin = false }) => {
   >([]);
   const [selectedEventId, setSelectedEventId] = useState("");
   const [detailModalOpen, setDetailModalOpen] = useState(false);
+
+  //for event modal
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const btnRef = React.useRef(null);
 
   //get all events on first render
   useEffect(() => {
@@ -79,8 +82,34 @@ const Calendar = ({ admin = false }) => {
   }, [events]);
 
   return (
-    <div className={style.wrapper}>
-      <style>{calendarStyles}</style>
+      <div className={style.wrapper}>
+        <style>{calendarStyles}</style>
+        <>
+        <div className={style.buttonContainer}>
+          <Button mt={3} ref={btnRef} onClick={onOpen} colorScheme="teal">
+            Add Event
+          </Button>
+        </div>
+        <Modal
+          onClose={onClose}
+          finalFocusRef={btnRef}
+          isOpen={isOpen}
+          scrollBehavior={"inside"}
+          size={"xl"}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <div>
+              <ModalCloseButton />
+              <CreateEvent 
+                events={events} 
+                setEvents={setEvents} 
+                onOpen={onOpen}
+                onClose={onClose}/>
+            </div>
+          </ModalContent>
+        </Modal>
+      </>
       <FullCalendar
         aspectRatio={style ? 1.5 : 2.0}
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
@@ -98,7 +127,7 @@ const Calendar = ({ admin = false }) => {
         eventClick={handleEventClick}
       />
 
-      <Modal size="md" isOpen={detailModalOpen} onClose={handleCloseModal}>
+      <Modal size="2xl" isOpen={detailModalOpen} onClose={handleCloseModal}>
         <ModalOverlay />
         <ModalContent className={style.modal}>
           <ModalBody>
