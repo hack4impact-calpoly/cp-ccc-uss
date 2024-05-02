@@ -20,6 +20,8 @@ import {
 import UserEventDetails from "./UserEventDetails";
 import AdminEventDetails from "./AdminEventDetails/AdminEventDetails";
 import CreateEvent from "./CreateEvent/CreateEvent";
+import { useUser } from '@clerk/nextjs';
+import Link from "next/link";
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
@@ -35,6 +37,16 @@ const Calendar = ({ admin = false }) => {
   >([]);
   const [selectedEventId, setSelectedEventId] = useState("");
   const [detailModalOpen, setDetailModalOpen] = useState(false);
+
+  //User Session Data
+  const { isLoaded, isSignedIn, user } = useUser();
+  const admins = process.env.NEXT_PUBLIC_ADMIN_EMAIL_ADDRESSES?.split(",");
+  if (user && isSignedIn && isLoaded && user.primaryEmailAddress) {
+    if (admins?.includes(user.primaryEmailAddress.emailAddress)) {
+      admin = true;
+    } 
+  }
+
 
   //for event modal
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -86,9 +98,15 @@ const Calendar = ({ admin = false }) => {
         <style>{calendarStyles}</style>
         <>
         <div className={style.buttonContainer}>
-          <Button mt={3} ref={btnRef} onClick={onOpen} colorScheme="teal">
-            Add Event
-          </Button>
+          {admin ? (
+            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+            <Button mt={3} colorScheme="teal">
+              <Link href="/admin/profiles">Profile Database</Link>
+            </Button>
+            <Button mt={3} ref={btnRef} onClick={onOpen} colorScheme="teal">
+              Add Event
+            </Button>
+          </div>) : null}
         </div>
         <Modal
           onClose={onClose}
@@ -101,6 +119,7 @@ const Calendar = ({ admin = false }) => {
           <ModalContent>
             <div>
               <ModalCloseButton />
+
               <CreateEvent 
                 events={events} 
                 setEvents={setEvents} 

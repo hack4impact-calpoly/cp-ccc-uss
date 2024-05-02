@@ -4,6 +4,7 @@ import style from "@styles/UserEventDetails.module.css";
 import { Icon } from '@chakra-ui/react'
 import { LuCalendarDays, LuText } from "react-icons/lu";
 import { IoLocationOutline } from "react-icons/io5";
+import { useUser } from "@clerk/nextjs";
 
 type IParams = {
   id: string;
@@ -11,6 +12,9 @@ type IParams = {
 
 export default function UserEventDetails({ id }: IParams) {
   const [eventData, setEventData] = useState<IEvent | null>(null);
+  
+  //User Session Data
+  const { isLoaded, isSignedIn, user } = useUser();
 
   async function fetchEventData() {
     try {
@@ -72,7 +76,12 @@ export default function UserEventDetails({ id }: IParams) {
               </div>
             </div>
             <div className={style.buttonContainer}>
+              {(user && isSignedIn && isLoaded) ? (
               <button className={style.button}>Sign Up</button>
+              ) : 
+              (
+              <button className={style.button}>Sign In</button>
+              )}
             </div>
           </div>
         </div>
