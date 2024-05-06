@@ -68,6 +68,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
   const handleSubmit = async () => {
     let formIdTemp = "";
     let eventIdTemp = "";
+    let roleIdTemp = "";
     // Create form with placeholder eventId
     // Create event with new formId
     // Update form with new eventId
@@ -102,7 +103,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         body: JSON.stringify({
           name: eventName,
           date: date,
-          roles: ["roleId1", "roleId2"],
+          roles: roleIdTemp,
           description: description,
           location: location,
           form: formIdTemp,
