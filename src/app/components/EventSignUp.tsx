@@ -10,7 +10,6 @@ import {
   ModalOverlay,
   useDisclosure,
   ModalContent,
-  ModalHeader,
   ModalCloseButton,
   Input,
   Select,
@@ -61,14 +60,9 @@ export default function EventSignUp({ id }: IParams) {
   function handleClose() {
     setName("");
     setEmail("");
-    setDate(new Date());
     handleEventInput("");
     onClose();
   }
-
-  const handleChangeDate = (e: any) => {
-    setDate(e.target.value);
-  };
 
   async function fetchEvents() {
     try {
