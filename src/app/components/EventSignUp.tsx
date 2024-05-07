@@ -34,7 +34,6 @@ export default function EventSignUp({ id }: IParams) {
   const [event, setEvent] = useState<IEvent | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [date, setDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<IEvent[]>([]);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<IVolunteerRole[]>([]);
@@ -390,15 +389,6 @@ export default function EventSignUp({ id }: IParams) {
                     onChange={(e) => setEmail(e.target.value)}
                     className={style.inputLine}
                     borderColor="black"
-                  />
-                  <Input
-                    placeholder="Select Date and Time"
-                    type="date"
-                    colorScheme="teal"
-                    value={new Date(date).toLocaleDateString("en-CA")}
-                    onChange={handleChangeDate}
-                    borderColor="black"
-                    className={style.inputLine}
                   />
                   <Select
                     className={style.inputLine}
