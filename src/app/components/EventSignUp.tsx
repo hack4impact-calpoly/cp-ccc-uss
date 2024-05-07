@@ -153,12 +153,6 @@ export default function EventSignUp({ id }: IParams) {
     }
   }
 
-  // useEffect on selected role and shifts for testing
-  useEffect(() => {
-    console.log(selectedRoles);
-    console.log(selectedShifts);
-  }, [selectedRoles, selectedShifts]);
-
   async function handleMultiRoleSelect(roleIDs: string[]) {
     const newSelectedRoles = roles.filter((role) => roleIDs.includes(role._id));
     setSelectedRoles(newSelectedRoles);
@@ -295,8 +289,6 @@ export default function EventSignUp({ id }: IParams) {
       );
       const roleIDs = selectedRoles.map((role) => role._id);
 
-      console.log("Adding to volunteer: ", volunteerId);
-
       setIsLoading(true);
 
       // Combine data from all input states (name, email, event, roles/shifts, questions) to POST to VolunteerEntry
@@ -321,7 +313,6 @@ export default function EventSignUp({ id }: IParams) {
 
       const entryData = await entryResp.json();
       const entryId = entryData._id;
-      console.log("Created entry:", entryData);
 
       for (const role of selectedRoles) {
         const selectedShiftsForRole = selectedShifts[role._id].filter(
@@ -363,7 +354,6 @@ export default function EventSignUp({ id }: IParams) {
         }
 
         const roleData = await roleUpdateResponse.json();
-        console.log("Updated role:", roleData);
       }
 
       const existingRoles = await getExistingRoles(volunteerId || "");
