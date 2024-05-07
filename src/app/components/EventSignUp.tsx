@@ -6,6 +6,7 @@ import type {
   IVolunteerRoleTimeslot,
 } from "../../database/volunteerRoleSchema";
 import {
+  Box,
   Modal,
   ModalOverlay,
   useDisclosure,
@@ -18,6 +19,9 @@ import {
   Radio,
   RadioGroup,
   Checkbox,
+  Text,
+  Textarea,
+  Heading,
 } from "@chakra-ui/react";
 import style from "@styles/EventSignUp.module.css";
 import { IFormQuestion } from "@database/volunteerFormSchema";
@@ -183,12 +187,12 @@ export default function EventSignUp({ id }: IParams) {
     setSelectedShifts((prevSelectedShifts) => {
       const updatedShifts = {
         ...prevSelectedShifts,
-        [roleId]: [...prevSelectedShifts[roleId]]
+        [roleId]: [...prevSelectedShifts[roleId]],
       };
 
       updatedShifts[roleId][shiftIndex] = {
         ...updatedShifts[roleId][shiftIndex],
-        isSelected: !updatedShifts[roleId][shiftIndex].isSelected
+        isSelected: !updatedShifts[roleId][shiftIndex].isSelected,
       };
 
       return updatedShifts;
@@ -208,33 +212,40 @@ export default function EventSignUp({ id }: IParams) {
     switch (question.fieldType) {
       case "SHORT_ANSWER":
         return (
-          <div>
-            <Input
-              placeholder="Answer"
-              className={style.inputLine}
-              borderColor="black"
+          <Box>
+            <Textarea
+              placeholder="Short Answer"
               value={answers[index]?.answer || ""}
+              maxLength={500}
               onChange={(e) => handleAnswerChange(e.target.value)}
+              className={style.inputLine}
             />
-          </div>
+          </Box>
         );
       case "MULTI_SELECT":
       case "MULTI_CHOICE":
         return (
-          <div>
+          <Box>
             <Stack>
               <RadioGroup
                 value={answers[index]?.answer || ""}
                 onChange={(e) => handleAnswerChange(e)}
               >
-                {question.options?.map((option, idx) => (
-                  <Radio key={idx} size="lg" value={option} colorScheme="teal">
-                    {option}
-                  </Radio>
-                ))}
+                <Stack direction="column" spacing={2}>
+                  {question.options?.map((option, idx) => (
+                    <Radio
+                      key={idx}
+                      size="lg"
+                      value={option}
+                      colorScheme="teal"
+                    >
+                      {option}
+                    </Radio>
+                  ))}
+                </Stack>
               </RadioGroup>
             </Stack>
-          </div>
+          </Box>
         );
       default:
         return null;
@@ -250,7 +261,9 @@ export default function EventSignUp({ id }: IParams) {
         );
       }
       const allVolunteers = await response.json();
-      const targetVolunteer = allVolunteers.find((volunteer: { email: string }) => volunteer.email === email);
+      const targetVolunteer = allVolunteers.find(
+        (volunteer: { email: string }) => volunteer.email === email
+      );
 
       return targetVolunteer._id;
     } catch (error) {
@@ -260,21 +273,27 @@ export default function EventSignUp({ id }: IParams) {
   }
 
   async function getExistingRoles(volunteerId: string) {
-    const response = await fetch(`http://localhost:3000/api/volunteer/${volunteerId}`);
+    const response = await fetch(
+      `http://localhost:3000/api/volunteer/${volunteerId}`
+    );
     const data = await response.json();
     return data.roles || [];
   }
-  
+
   async function getExistingEntries(volunteerId: string) {
-    const response = await fetch(`http://localhost:3000/api/volunteer/${volunteerId}`);
+    const response = await fetch(
+      `http://localhost:3000/api/volunteer/${volunteerId}`
+    );
     const data = await response.json();
     return data.entries || [];
   }
 
   async function handleSubmission() {
     try {
-      const volunteerId = await getVolunteerIdByEmail(user.user?.primaryEmailAddress?.toString() || "");   
-      const roleIDs = selectedRoles.map((role) => role._id);   
+      const volunteerId = await getVolunteerIdByEmail(
+        user.user?.primaryEmailAddress?.toString() || ""
+      );
+      const roleIDs = selectedRoles.map((role) => role._id);
 
       console.log("Adding to volunteer: ", volunteerId);
 
@@ -303,29 +322,44 @@ export default function EventSignUp({ id }: IParams) {
       const entryData = await entryResp.json();
       const entryId = entryData._id;
       console.log("Created entry:", entryData);
-      
-      for (const role of selectedRoles) {
-        const selectedShiftsForRole = selectedShifts[role._id].filter(shiftData => shiftData.isSelected);
 
-        const selectedTimeslots = role.timeslots.map(timeslot => {
-          const isSelected = selectedShiftsForRole.some(shiftData =>
-            shiftData.shift.startTime === timeslot.startTime && shiftData.shift.endTime === timeslot.endTime
+      for (const role of selectedRoles) {
+        const selectedShiftsForRole = selectedShifts[role._id].filter(
+          (shiftData) => shiftData.isSelected
+        );
+
+        const selectedTimeslots = role.timeslots.map((timeslot) => {
+          const isSelected = selectedShiftsForRole.some(
+            (shiftData) =>
+              shiftData.shift.startTime === timeslot.startTime &&
+              shiftData.shift.endTime === timeslot.endTime
           );
-          
+
           if (isSelected) {
-            return { ...timeslot, volunteers: [...timeslot.volunteers, volunteerId] };
+            return {
+              ...timeslot,
+              volunteers: [...timeslot.volunteers, volunteerId],
+            };
           }
           return timeslot;
         });
 
-        const roleUpdateResponse = await fetch(`http://localhost:3000/api/role/${role._id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ fieldToUpdate: "timeslots", value: selectedTimeslots }),
-        });
+        const roleUpdateResponse = await fetch(
+          `http://localhost:3000/api/role/${role._id}`,
+          {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              fieldToUpdate: "timeslots",
+              value: selectedTimeslots,
+            }),
+          }
+        );
 
         if (!roleUpdateResponse.ok) {
-          throw new Error(`Failed to update volunteer role with id: ${role._id}. Status: ${roleUpdateResponse.status}`);
+          throw new Error(
+            `Failed to update volunteer role with id: ${role._id}. Status: ${roleUpdateResponse.status}`
+          );
         }
 
         const roleData = await roleUpdateResponse.json();
@@ -333,23 +367,28 @@ export default function EventSignUp({ id }: IParams) {
       }
 
       const existingRoles = await getExistingRoles(volunteerId || "");
-      const existingEntries = await getExistingEntries(volunteerId  || "");
+      const existingEntries = await getExistingEntries(volunteerId || "");
 
-      const volunteerUpdateResponse = await fetch(`http://localhost:3000/api/volunteer/${volunteerId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          roles: Array.from(new Set([...roleIDs, ...existingRoles])),
-          entries: [...existingEntries, entryId]
-        }),
-      });
+      const volunteerUpdateResponse = await fetch(
+        `http://localhost:3000/api/volunteer/${volunteerId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            roles: Array.from(new Set([...roleIDs, ...existingRoles])),
+            entries: [...existingEntries, entryId],
+          }),
+        }
+      );
 
       if (!volunteerUpdateResponse.ok) {
-        throw new Error(`Failed to update volunteer data. Status: ${volunteerUpdateResponse.status}`);
+        throw new Error(
+          `Failed to update volunteer data. Status: ${volunteerUpdateResponse.status}`
+        );
       }
-  
+
       setIsLoading(false);
-      console.log('Submission successful!');
+      console.log("Submission successful!");
     } catch (err: unknown) {
       console.error("Error:", err);
       setEvents([]);
@@ -357,95 +396,112 @@ export default function EventSignUp({ id }: IParams) {
   }
 
   return (
-    <div>
-      <Button className={style.event} colorScheme="teal" onClick={onOpen}>
+    <Box m={4}>
+      <Button colorScheme="teal" onClick={onOpen}>
         Event Sign Up
       </Button>
       <Modal isOpen={isOpen} onClose={handleClose} size="xl">
         <ModalOverlay />
-        <ModalContent className={style.modal} maxH="1000px" maxW="1000px">
-          <div className={style.content}>
-            <div className={style.comp}>
-              <ModalCloseButton className={style.close} colorScheme="teal" />
-              {events.length > 0 ? (
-                <div>
-                  <h1 className={style.eventHeader}>Event Sign Up</h1>
-                  <Input
-                    placeholder="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className={style.inputLine}
-                    borderColor="black"
-                  />
-                  <Input
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={style.inputLine}
-                    borderColor="black"
-                  />
-                  <Select
-                    className={style.inputLine}
-                    borderColor="black"
-                    placeholder="Select Event"
-                    onChange={(e) => {
-                      handleEventInput(e.target.value); //Once an event option is picked, call this function with the eventID as arg
-                    }}
-                  >
-                    {events &&
-                      events.map((event) => (
-                        <option key={event._id} value={event._id}>
-                          {" "}
-                          {/* whatever value equals is what onChange e.target.value will be */}
-                          {event.name}
-                        </option>
-                      ))}
-                  </Select>
-                </div>
-              ) : (
-                <div>
-                  <h1>Event Sign Up</h1>
-                  <h2>No events found to sign up for.</h2>
-                </div>
-              )}
+        <ModalContent
+          className={style.modal}
+          maxH="80vh"
+          maxW="1000px"
+          border="none"
+          bg="none"
+          boxShadow="none"
+        >
+          <Box className={style.comp}>
+            <ModalCloseButton colorScheme="teal" />
+            {events.length > 0 ? (
+              <>
+                <Heading
+                  as="h1"
+                  size="lg"
+                  mb={5}
+                  fontWeight="normal"
+                  textAlign="center"
+                >
+                  Event Sign Up
+                </Heading>
+                <Input
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className={style.inputLine}
+                />
+                <Input
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={style.inputLine}
+                />
+                <Select
+                  placeholder="Select Event"
+                  onChange={(e) => {
+                    handleEventInput(e.target.value);
+                  }}
+                  className={style.inputLine}
+                >
+                  {events &&
+                    events.map((event) => (
+                      <option key={event._id} value={event._id}>
+                        {" "}
+                        {/* whatever value equals is what onChange e.target.value will be */}
+                        {event.name}
+                      </option>
+                    ))}
+                </Select>
+              </>
+            ) : (
+              <Box>
+                <Text>No events found to sign up for.</Text>
+              </Box>
+            )}
 
-              {event && (
-                <div>
-                  <ChakraReactSelect
-                    isMulti
-                    name="roles"
-                    options={roles.map((role) => ({
-                      value: role._id,
-                      label: role.roleName,
-                    }))}
-                    placeholder="Select Roles"
-                    closeMenuOnSelect={false}
-                    onChange={(selectedOptions) =>
-                      handleMultiRoleSelect(
-                        selectedOptions.map((option) => option.value)
-                      )
-                    }
-                    chakraStyles={{
-                      control: (provided, state) => ({
-                        ...provided,
-                        borderColor: state.isFocused ? "teal.500" : "black",
-                      }),
-                      multiValue: (provided) => ({
-                        ...provided,
-                        backgroundColor: "teal.200",
-                      }),
-                    }}
-                  />
-                </div>
-              )}
+            {events.length > 0 && (
+              <Box>
+                <ChakraReactSelect
+                  isMulti
+                  name="roles"
+                  options={roles.map((role) => ({
+                    value: role._id,
+                    label: role.roleName,
+                  }))}
+                  placeholder="Select Roles"
+                  closeMenuOnSelect={false}
+                  onChange={(selectedOptions) =>
+                    handleMultiRoleSelect(
+                      selectedOptions.map((option) => option.value)
+                    )
+                  }
+                  chakraStyles={{
+                    control: (provided, state) => ({
+                      ...provided,
+                      borderColor: "black",
+                      borderRadius: "10px",
+                      marginBottom: "15px",
+                    }),
+                    multiValue: (provided) => ({
+                      ...provided,
+                      backgroundColor: "teal.200",
+                    }),
+                  }}
+                />
+              </Box>
+            )}
 
-              {selectedRoles.map((role) => (
-                <div key={role._id}>
-                  <h3 className={style.smallHeader}>
-                    Select Shifts for {role.roleName}:
-                  </h3>
+            {selectedRoles.map((role) => (
+              <Box key={role._id}>
+                <Text
+                  as="h3"
+                  borderBottom="1px solid black"
+                  mb={2}
+                >
+                  Select Shifts for {role.roleName}:
+                </Text>
+                <Box mb={4}>
                   {selectedShifts[role._id]?.map((shiftData, index) => (
-                    <div key={index}>
+                    <Box key={index}>
                       <Checkbox
                         id={`shift-${role._id}-${index}`}
                         size="lg"
@@ -465,42 +521,45 @@ export default function EventSignUp({ id }: IParams) {
                           minute: "2-digit",
                         })}`}
                       </Checkbox>
-                    </div>
+                    </Box>
                   ))}
-                </div>
-              ))}
+                </Box>
+              </Box>
+            ))}
 
-              {event && (
-                <div>
-                  {questions.map((question: IFormQuestion, index) => (
-                    <div key={index}>
-                      <div className={style.smallHeader}>
-                        Question: {question.question}
-                      </div>
-                      <div> {renderCustomQuestion(question, index)} </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+            {events.length > 0 && (
+              <Box>
+                {questions.map((question: IFormQuestion, index) => (
+                  <Box key={index} mb={4}>
+                    <Text
+                      as="h4"
+                      borderBottom="1px solid black"
+                      mb={2}
+                    >
+                      Question: {question.question}
+                    </Text>
+                    <Box> {renderCustomQuestion(question, index)} </Box>
+                  </Box>
+                ))}
+              </Box>
+            )}
 
-              {events && (
-                <div className={style.centralize}>
-                  <Button
-                    type="submit"
-                    className={style.submit}
-                    isLoading={isLoading}
-                    colorScheme="teal"
-                    variant="solid"
-                    onClick={() => handleSubmission()}
-                  >
-                    Submit
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
+            {events.length > 0 && (
+              <Button
+                type="submit"
+                className={style.submit}
+                isLoading={isLoading}
+                colorScheme="teal"
+                variant="solid"
+                alignSelf="center"
+                onClick={() => handleSubmission()}
+              >
+                Submit
+              </Button>
+            )}
+          </Box>
         </ModalContent>
       </Modal>
-    </div>
+    </Box>
   );
 }
