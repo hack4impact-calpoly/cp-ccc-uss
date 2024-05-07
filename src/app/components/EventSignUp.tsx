@@ -133,7 +133,6 @@ export default function EventSignUp({ id }: IParams) {
     try {
       if (!event || !event.form) {
         setQuestions([]);
-        console.error("Unable to fetch form due to missing event/event.form");
         return;
       }
       const formID = event?.form;
