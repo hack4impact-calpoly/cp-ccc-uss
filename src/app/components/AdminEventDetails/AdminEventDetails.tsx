@@ -1,14 +1,14 @@
 "use client";
 import style from './AdminEventDetails.module.css';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import SegmentIcon from '@mui/icons-material/Segment';
-import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
-import ImportContactsIcon from '@mui/icons-material/ImportContacts';
 import { useEffect, useState } from 'react';
 import { IEvent } from '@database/eventSchema';
 import { IVolunteerRole } from '@database/volunteerRoleSchema';
 import { IVolunteerRoleTimeslot } from '@database/volunteerRoleSchema';
+import { Icon } from '@chakra-ui/react'
+import { LuCalendarDays, LuText, LuUsers, LuBookOpen } from "react-icons/lu";
+import { IoLocationOutline } from "react-icons/io5";
+
+
 
 type Props = {
   _id: string ;
@@ -49,21 +49,6 @@ async function getRoles(_id: string) {
   }
 }
 
-function getDayName(date: Date) {
-  const days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const eventDay = new Date(date).getDay();
-  const eventDayName = days[eventDay];
-  return eventDayName;
-}
-
 function parseDate(date: Date) {
   return new Date(date).toLocaleTimeString("en-US", {
     hour: "2-digit",
@@ -84,10 +69,10 @@ function AdminEventDetailsButton() {
         background: "transparent",
         border: "none",
         textDecoration: "underline",
-        color: "black",
+        color: "#00aa9e",
         cursor: "pointer",
-        fontFamily: "Avenir",
-        fontSize: "16px",
+        fontFamily: "sans-serif",
+        fontSize: "20px",
       }}
     >
       more details
@@ -124,46 +109,51 @@ export default function AdminEventDetails({ _id }: Props) {
   if (event && roles) {
     return (
       <div className={style.adminEventDetails}>
+        <div className={style.eventHeader}>Event Details: Admin</div>
         <div className={style.eventName}>{event.name}</div>
-        <div className={style.eventDay}>
-          <AccessTimeIcon
+        <div className={style.eventDay} >
+          <Icon as={LuCalendarDays}
             className={style.icon}
-            sx={{ fontSize: 40 }}
-          ></AccessTimeIcon>
-          {getDayName(event.date)}
+            sx={{ fontSize: 50 }}/>
+          <div style={{marginTop: "10px"}}>
+            <strong>Date:</strong>
+            {" " + new Date(event.date).toDateString()}
+          </div>
         </div>
         <div className={style.eventLocation}>
-          <LocationOnOutlinedIcon
+          <Icon as={IoLocationOutline}
             className={style.icon}
-            sx={{ fontSize: 40 }}
-          ></LocationOnOutlinedIcon>
-          {event.location}
+            sx={{ fontSize: 50 }}/>
+          <div style={{marginTop: "10px"}}>
+            <strong>Location:</strong>
+            {" " + event.location}
+          </div>
         </div>
         <div className={style.eventDescription}>
-          <SegmentIcon
+          <Icon as={LuText}
             className={style.icon}
-            sx={{ fontSize: 40 }}
-          ></SegmentIcon>
-          {event.description}
-        </div>
-        <div className={style.headerContainer}>
-          <div>
-            <PeopleOutlineIcon
-              className={style.icon}
-              sx={{ fontSize: 40 }}
-            ></PeopleOutlineIcon>
-            Volunteers
+            sx={{ fontSize: 50 }}/>
+          <div style={{marginTop: "10px", overflow: 'scroll', maxHeight: '400px'}}>
+            <strong>Description:{" "}</strong>
+            {" " +event.description}
           </div>
-          <AdminEventDetailsButton />
+        </div>
+        <div className={style.volunteersHeaderContainer}>
+          <div style={{display: "flex", alignItems: "center"}}>
+            <Icon as={LuUsers}
+              className={style.icon}
+              sx={{ fontSize: 50 }}/>
+            <div style={{marginTop: "6px"}}><strong>Volunteers</strong></div>
+          </div>
+          <div style={{marginTop: "6px"}}><AdminEventDetailsButton /></div>
         </div>
         {/* Later implement all volunteers for an event here */}
         <div className={style.eventRoles}></div>
         <div className={style.openVolunteerSlots}>
-          <ImportContactsIcon
+          <Icon as={LuBookOpen}
             className={style.icon}
-            sx={{ fontSize: 40 }}
-          ></ImportContactsIcon>
-          Open Volunteer Slots
+            sx={{ fontSize: 50 }}/>
+          <strong>Open Volunteer Slots</strong>
         </div>
         <div className={style.eventOpenSlots}>
           {/* Lists all roles for an event with corresponding timeslots */}
@@ -175,8 +165,8 @@ export default function AdminEventDetails({ _id }: Props) {
                   (timeslot: IVolunteerRoleTimeslot, Index2) => (
                     <div key={Index2}>
                       <div className={style.openTime}>
-                        {parseDate(timeslot.startTime)} -{" "}
-                        {parseDate(timeslot.endTime)} | Volunteers Signed Up:{" "}
+                        {parseDate(timeslot.startTime)} - {" "}
+                        {parseDate(timeslot.endTime)} | Volunteers Signed Up: {" "}
                         {timeslot.volunteers.length}
                       </div>
                     </div>
