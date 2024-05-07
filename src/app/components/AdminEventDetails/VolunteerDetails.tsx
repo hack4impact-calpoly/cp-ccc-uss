@@ -38,6 +38,8 @@ export default function VolunteerDetails({ _id }: Props) {
   const [searchItem, setSearchItem] = useState<string>("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [filteredEntries, setFilteredEntries] = useState<VolunteerEntry[]>([]);
+  const [loading, setLoading] = useState<Boolean>(true);
+  const [error, setError] = useState(null);
 
   function parseDate(date: Date) {
     return new Date(date).toLocaleTimeString("en-US", {
@@ -53,20 +55,20 @@ export default function VolunteerDetails({ _id }: Props) {
 
     const filteredItems = volunteerEntries.filter(
       (entry) =>
-        entry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        entry.roles.map((role: IVolunteerRole) =>
-          role.roleName.toLowerCase().includes(searchTerm.toLowerCase())
+        entry.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        entry.roles?.map((role: IVolunteerRole) =>
+          role.roleName?.toLowerCase().includes(searchTerm.toLowerCase())
         ) ||
-        parseDate(entry.timeslot.startTime)
+        parseDate(entry.timeslot?.startTime)
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-        parseDate(entry.timeslot.endTime)
+        parseDate(entry.timeslot?.endTime)
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-        entry.responses.map(
+        entry.responses?.map(
           (resp: IFormAnswer) =>
-            resp.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            resp.answer.toLowerCase().includes(searchTerm.toLowerCase())
+            resp.question?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            resp.answer?.toLowerCase().includes(searchTerm.toLowerCase())
         )
     );
 
@@ -84,13 +86,28 @@ export default function VolunteerDetails({ _id }: Props) {
       }
 
       const data = await response.json();
-      setVolunteerEntries(data);
-      setFilteredEntries(data);
+      return data;
     } catch (err: unknown) {
       console.error("Error:", err);
       setVolunteerEntries([]);
+      setFilteredEntries([]);
     }
   }
+
+  useEffect(() => {
+    fetchEntries()
+      .then((data) => {
+        setVolunteerEntries(data);
+        setFilteredEntries(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        setError(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div>
@@ -119,18 +136,24 @@ export default function VolunteerDetails({ _id }: Props) {
               onChange={handleSearchChange}
               placeholder="Type to search"
             />
-            <ul>
-              {filteredEntries.map((entry, Index) => (
-                <li key={Index}>
-                  <DisplayVolunteerInformation
-                    name={entry.name}
-                    roles={entry.roles}
-                    timeslot={entry.timeslot}
-                    responses={entry.responses}
-                  />
-                </li>
-              ))}
-            </ul>
+            {loading && <p>Loading...</p>}
+            {error && <p>There was an error loading the volunteer details.</p>}
+            {!loading && !error && filteredEntries.length === 0 ? (
+              <p>No volunteers found.</p>
+            ) : (
+              <ul>
+                {filteredEntries.map((entry, Index) => (
+                  <li key={Index}>
+                    <DisplayVolunteerInformation
+                      name={entry.name}
+                      roles={entry.roles}
+                      timeslot={entry.timeslot}
+                      responses={entry.responses}
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
           </ModalBody>
         </ModalContent>
       </Modal>

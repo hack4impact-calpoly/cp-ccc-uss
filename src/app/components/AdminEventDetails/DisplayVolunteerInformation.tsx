@@ -30,6 +30,9 @@ export default function VolunteerDetails({
       hour12: true,
     });
   }
+  console.log(name);
+  console.log(roles);
+  console.log(responses);
   return (
     <div>
       <h2>{name}</h2>
@@ -37,7 +40,7 @@ export default function VolunteerDetails({
         <div key={Index}>
           <h3>{role.roleName} - </h3>
           <div className={style.openTime}>
-            {parseDate(timeslot.startTime)} - {parseDate(timeslot.endTime)} |
+            {/*parseDate(timeslot.startTime)} - {parseDate(timeslot.endTime)*/} |
           </div>
           {responses.map((response: IFormAnswer, Index2) => (
             <div key={Index2}>

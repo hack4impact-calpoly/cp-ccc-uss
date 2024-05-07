@@ -20,7 +20,7 @@ export default function Home() {
       >
         <Navbar />
         <div>i am the admin: {admin.toString()}</div>
-        <AdminEventDetails _id="65bc1a5d8c0336cb5f0cf967"/>
+        <AdminEventDetails _id="662f43dcb8ba8d2cc31373b5"/>
         <button onClick={() => (admin ? setAdmin(false) : setAdmin(true))}>
           secure button
         </button>
