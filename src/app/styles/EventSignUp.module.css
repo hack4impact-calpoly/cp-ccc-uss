@@ -1,8 +1,7 @@
 .inputLine {
-  border-radius: 10px;
-  border: 5 solid black;
   margin-bottom: 20px;
-  border-color: black;
+  border-color: black !important;
+  border-radius: 10px !important;
 }
 
 .comp {
