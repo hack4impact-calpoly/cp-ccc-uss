@@ -43,15 +43,15 @@ const columns: GridColDef[] = [
     renderCell: (
       params // map volunteer tags to UI chips or "No Tags" chip
     ) => (
-      <Stack direction="row" spacing={1} className={style.tags}>
-        {params.value && Array.isArray(params.value) ? (
-          params.value.map((tag, index) => (
-            <Chip key={`${params.id}-tag-${index}`} label={tag} />
-          ))
-        ) : (
-          <Chip label="No Tags" />
-        )}
-      </Stack>
+        <Stack direction="row" spacing={1} className={style.tags}>
+          {params.value && Array.isArray(params.value) ? (
+            params.value.map((tag, index) => (
+              <Chip key={`${params.id}-tag-${index}`} label={tag} />
+            ))
+          ) : (
+            <Chip label="No Tags" />
+          )}
+        </Stack>
     ),
   },
   {
@@ -121,7 +121,7 @@ export default function ProfileDatabase() {
       }}
     >
       <Navbar />
-      <Heading p={3} fontFamily={"Roboto"}>
+      <Heading p={3} fontFamily={"Sans-serif"}>
         Volunteers
       </Heading>
       <div style={{ height: "75%", width: "75%" }}>
@@ -131,6 +131,8 @@ export default function ProfileDatabase() {
             getRowId={(row) => row._id}
             rowHeight={70}
             columns={columns}
+            disableColumnSelector={true}
+            disableDensitySelector={true}
             slots={{
               toolbar: GridToolbar,
             }}
