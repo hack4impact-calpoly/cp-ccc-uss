@@ -14,7 +14,9 @@
   justify-content: left;
 }
 
-.toolbarContainer {
-    align-items: center;
-    margin-right: 20px;
+.customToolbarContainer {
+  display: flex;
+  justify-content: space-between;
 }
+
+

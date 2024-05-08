@@ -81,10 +81,14 @@ const columns: GridColDef[] = [
 
 function CustomToolbar() {
   return (
-    <GridToolbarContainer className="toolbarContainer">
-      <GridToolbarQuickFilter />
-      <GridToolbarFilterButton />
-      <GridToolbarExport />
+    <GridToolbarContainer className={style.customToolbarContainer}>
+      <div className={style.customToolbarSearch}>
+        <GridToolbarQuickFilter />
+      </div>
+      <div className={style.customToolbarFilterandExport}>
+        <GridToolbarFilterButton />
+        <GridToolbarExport />
+      </div>
     </GridToolbarContainer>
   );
 }
@@ -157,6 +161,11 @@ export default function ProfileDatabase() {
                 showQuickFilter: true,
               },
             }}
+            // sx={{
+            //   "MuiDataGrid-toolbarContainer": {
+            //     alignItems: "center",
+            //   },
+            // }}
           />
         </ThemeProvider>
       </div>
