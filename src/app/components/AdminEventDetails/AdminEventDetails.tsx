@@ -7,7 +7,8 @@ import { IVolunteerRoleTimeslot } from '@database/volunteerRoleSchema';
 import { Icon } from '@chakra-ui/react'
 import { LuCalendarDays, LuText, LuUsers, LuBookOpen } from "react-icons/lu";
 import { IoLocationOutline } from "react-icons/io5";
-
+import { IconButton, Button } from '@chakra-ui/react';
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 
 
 type Props = {
@@ -109,6 +110,20 @@ export default function AdminEventDetails({ _id }: Props) {
   if (event && roles) {
     return (
       <div className={style.adminEventDetails}>
+        <div className={style.editAndDelete}>
+          <IconButton
+            variant='outline'
+            colorScheme='teal'
+            aria-label='Edit event'
+            icon={<EditIcon />}
+          />
+          <IconButton
+            variant='outline'
+            colorScheme='teal'
+            aria-label='Delete event'
+            icon={<DeleteIcon />}
+          />        
+        </div>
         <div className={style.eventHeader}>Event Details: Admin</div>
         <div className={style.eventName}>{event.name}</div>
         <div className={style.eventDay} >
