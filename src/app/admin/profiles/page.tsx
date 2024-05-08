@@ -161,11 +161,10 @@ export default function ProfileDatabase() {
                 showQuickFilter: true,
               },
             }}
-            // sx={{
-            //   "MuiDataGrid-toolbarContainer": {
-            //     alignItems: "center",
-            //   },
-            // }}
+            localeText={{
+              toolbarQuickFilterPlaceholder:
+                "Search by volunteer name, role, past event",
+            }}
           />
         </ThemeProvider>
       </div>
