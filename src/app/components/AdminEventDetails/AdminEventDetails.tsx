@@ -8,6 +8,17 @@ import { Icon, IconButton, useToast } from '@chakra-ui/react'
 import { LuCalendarDays, LuText, LuUsers, LuBookOpen } from "react-icons/lu";
 import { IoLocationOutline } from "react-icons/io5";
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import {
+  Modal,
+  useDisclosure,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from "@chakra-ui/react";
+import EditEvent from '@components/EditEvent';
 
 type Props = {
   _id: string ;
@@ -117,6 +128,9 @@ export default function AdminEventDetails({ _id }: Props) {
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [error, setError] = useState(false);
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure(); // for edit modal
+
+
   //fetch event, then roles for that event
   useEffect(() => {
     const setEventData = async () => {
@@ -146,8 +160,28 @@ export default function AdminEventDetails({ _id }: Props) {
             variant='outline'
             colorScheme='teal'
             aria-label='Edit event'
-            icon={<EditIcon />}
+            icon={<EditIcon/>}
+            onClick={onOpen}
           />
+          <Modal
+            onClose={onClose}
+            // finalFocusRef={btnRef}
+            isOpen={isOpen}
+            scrollBehavior={"inside"}
+            size={"xl"}
+          >
+            <ModalOverlay />
+            <ModalContent>
+                <ModalCloseButton />
+                <EditEvent
+                  events={[event]}
+                  setEvents={setEvent}
+                  setRoles={setRoles}
+                  onClose={onClose}
+                />
+                {/* content here */}
+            </ModalContent>
+          </Modal>
           <IconButton
             variant='outline'
             colorScheme='teal'

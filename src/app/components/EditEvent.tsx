@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styles from "./CreateEvent.module.css";
+import styles from "./CreateEvent/CreateEvent.module.css";
 import { Input } from "@chakra-ui/react";
 import { Textarea } from "@chakra-ui/react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
@@ -149,7 +149,7 @@ function EditEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
 
   return (
     <div className={styles.event}>
-        <h2 className={styles.eventHeader}>Create Event</h2>
+        <h2 className={styles.eventHeader}>Edit Event</h2>
         <ModalCloseButton/>
         <Input
             placeholder="Event Name"
