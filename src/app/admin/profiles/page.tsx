@@ -1,14 +1,20 @@
-"use client"
+"use client";
 import * as React from "react";
-import { DataGrid, GridRowsProp, GridColDef, GridToolbar } from "@mui/x-data-grid";
-import type {} from '@mui/x-data-grid/themeAugmentation';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { Chip, Stack } from "@mui/material";
-import style from './ProfileDatabase.module.css';
+import {
+  DataGrid,
+  GridRowsProp,
+  GridColDef,
+  GridToolbar,
+} from "@mui/x-data-grid";
+import type {} from "@mui/x-data-grid/themeAugmentation";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { Chip, Stack, Typography } from "@mui/material";
+import style from "./ProfileDatabase.module.css";
 import { IVolunteer } from "@database/volunteerSchema";
 import { useEffect, useState } from "react";
 import Navbar from "@components/Navbar";
 import { Heading } from "@chakra-ui/react";
+import { create } from "@mui/material/styles/createTransitions";
 
 //get all volunteers
 async function getVolunteers() {
@@ -30,23 +36,41 @@ async function getVolunteers() {
 const columns: GridColDef[] = [
   { field: "name", headerName: "Name", width: 300 },
   { field: "email", headerName: "Email", width: 300 },
-  { field: "tags", headerName: "Tags", width: 300,
-    renderCell: (params) => ( // map volunteer tags to UI chips or "No Tags" chip
+  {
+    field: "tags",
+    headerName: "Tags",
+    width: 300,
+    renderCell: (
+      params // map volunteer tags to UI chips or "No Tags" chip
+    ) => (
       <Stack direction="row" spacing={1} className={style.tags}>
-        {params.value && Array.isArray(params.value) ? params.value.map((tag, index) => (
-          <Chip key={`${params.id}-tag-${index}`} label={tag} />
-        )) : <Chip label="No Tags" />}  
+        {params.value && Array.isArray(params.value) ? (
+          params.value.map((tag, index) => (
+            <Chip key={`${params.id}-tag-${index}`} label={tag} />
+          ))
+        ) : (
+          <Chip label="No Tags" />
+        )}
       </Stack>
-    )
+    ),
   },
-  { field: "event-type", headerName: "Event Type", width: 300,
-    renderCell: (params) => ( // map event prefs to UI chips or "No Event Types" chip
+  {
+    field: "event-type",
+    headerName: "Event Type",
+    width: 300,
+    renderCell: (
+      params // map event prefs to UI chips or "No Event Types" chip
+    ) => (
       <Stack direction="row" spacing={1} className={style.eventPreferences}>
-        {params.value && Array.isArray(params.value) ? params.value.map((eventType, index) => (
-          <Chip key={`${params.id}-event-${index}`} label={eventType} />
-        )) : <Chip label="No Event Types" />} 
+        {params.value && Array.isArray(params.value) ? (
+          params.value.map((eventType, index) => (
+            <Chip key={`${params.id}-event-${index}`} label={eventType} />
+          ))
+        ) : (
+          <Chip label="No Event Types" />
+        )}
       </Stack>
-    )
+    ),
   },
 ];
 
@@ -55,14 +79,23 @@ export default function ProfileDatabase() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  // const pageTheme = createTheme();
+  const pageTheme = createTheme({
+    typography: {
+      button: {
+        fontFamily: "Sans-serif",
+      },
+    },
+  });
+
   useEffect(() => {
-    const setVolunteersData = async () => { 
+    const setVolunteersData = async () => {
       setLoading(true);
       try {
         const data = await getVolunteers();
         if (data) {
           setVolunteers(data);
-        } else {  
+        } else {
           setError(true);
           console.log("failed to fetch data");
         }
@@ -88,25 +121,26 @@ export default function ProfileDatabase() {
       }}
     >
       <Navbar />
-      <Heading p={3}>Volunteers</Heading>
+      <Heading p={3} fontFamily={"Roboto"}>
+        Volunteers
+      </Heading>
       <div style={{ height: "75%", width: "75%" }}>
-          <ThemeProvider theme={createTheme()}>
-              <DataGrid 
-                rows={volunteers} 
-                getRowId={(row)=> row._id}
-                rowHeight={70}
-                columns={columns}
-                slots={
-                  {
-                    toolbar: GridToolbar
-                }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true
-                }
-                }}
-              />
-          </ThemeProvider>
+        <ThemeProvider theme={pageTheme}>
+          <DataGrid
+            rows={volunteers}
+            getRowId={(row) => row._id}
+            rowHeight={70}
+            columns={columns}
+            slots={{
+              toolbar: GridToolbar,
+            }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+          />
+        </ThemeProvider>
       </div>
     </div>
   );
