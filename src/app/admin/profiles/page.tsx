@@ -5,10 +5,15 @@ import {
   GridRowsProp,
   GridColDef,
   GridToolbar,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+  GridToolbarExportContainer,
+  GridToolbarExport,
+  GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import type {} from "@mui/x-data-grid/themeAugmentation";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Chip, Stack, Typography } from "@mui/material";
+import { Chip, Stack, Toolbar, Typography } from "@mui/material";
 import style from "./ProfileDatabase.module.css";
 import { IVolunteer } from "@database/volunteerSchema";
 import { useEffect, useState } from "react";
@@ -43,15 +48,15 @@ const columns: GridColDef[] = [
     renderCell: (
       params // map volunteer tags to UI chips or "No Tags" chip
     ) => (
-        <Stack direction="row" spacing={1} className={style.tags}>
-          {params.value && Array.isArray(params.value) ? (
-            params.value.map((tag, index) => (
-              <Chip key={`${params.id}-tag-${index}`} label={tag} />
-            ))
-          ) : (
-            <Chip label="No Tags" />
-          )}
-        </Stack>
+      <Stack direction="row" spacing={1} className={style.tags}>
+        {params.value && Array.isArray(params.value) ? (
+          params.value.map((tag, index) => (
+            <Chip key={`${params.id}-tag-${index}`} label={tag} />
+          ))
+        ) : (
+          <Chip label="No Tags" />
+        )}
+      </Stack>
     ),
   },
   {
@@ -73,6 +78,16 @@ const columns: GridColDef[] = [
     ),
   },
 ];
+
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer className="toolbarContainer">
+      <GridToolbarQuickFilter />
+      <GridToolbarFilterButton />
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
+}
 
 export default function ProfileDatabase() {
   const [volunteers, setVolunteers] = useState<IVolunteer[] | null>(null);
@@ -134,7 +149,8 @@ export default function ProfileDatabase() {
             disableColumnSelector={true}
             disableDensitySelector={true}
             slots={{
-              toolbar: GridToolbar,
+              // toolbar: GridToolbar,
+              toolbar: CustomToolbar,
             }}
             slotProps={{
               toolbar: {
