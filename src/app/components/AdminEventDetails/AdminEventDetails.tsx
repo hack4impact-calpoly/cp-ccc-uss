@@ -4,10 +4,9 @@ import { useEffect, useState } from 'react';
 import { IEvent } from '@database/eventSchema';
 import { IVolunteerRole } from '@database/volunteerRoleSchema';
 import { IVolunteerRoleTimeslot } from '@database/volunteerRoleSchema';
-import { Icon } from '@chakra-ui/react'
+import { Icon, IconButton, useToast } from '@chakra-ui/react'
 import { LuCalendarDays, LuText, LuUsers, LuBookOpen } from "react-icons/lu";
 import { IoLocationOutline } from "react-icons/io5";
-import { IconButton, Button } from '@chakra-ui/react';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 
 type Props = {
@@ -50,7 +49,7 @@ async function getRoles(_id: string) {
 }
 
 // delete event by id
-async function handleDeleteEvent(_id: string) {
+async function handleDeleteEvent(_id: string, toast: any) {
   try {
     const res = await fetch(`http://localhost:3000/api/event/${_id}`, {
       method: 'DELETE',
@@ -63,8 +62,22 @@ async function handleDeleteEvent(_id: string) {
     const data = await res.json();
 
     console.log(data);
+    toast({
+      title: 'Event deleted.',
+      description: 'The event has been deleted successfully.',
+      status: 'success',
+      duration: 9000,
+      isClosable: true,
+    })
   } catch (err: unknown) {
     console.error('Error deleting event:', err);
+    toast({
+      title: 'Error deleting event',
+      description: 'An error occurred while deleting the event',
+      status: 'error',
+      duration: 9000,
+      isClosable: true,
+    });
   }
 }
 
@@ -103,7 +116,7 @@ export default function AdminEventDetails({ _id }: Props) {
   const [event, setEvent] = useState<IEvent | null>(null);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [error, setError] = useState(false);
-
+  const toast = useToast();
   //fetch event, then roles for that event
   useEffect(() => {
     const setEventData = async () => {
@@ -140,7 +153,7 @@ export default function AdminEventDetails({ _id }: Props) {
             colorScheme='teal'
             aria-label='Delete event'
             icon={<DeleteIcon />}
-            onClick={() => handleDeleteEvent(_id)}
+            onClick={() => handleDeleteEvent(_id, toast)}
             />        
         </div>
         <div className={style.eventHeader}>Event Details: Admin</div>
