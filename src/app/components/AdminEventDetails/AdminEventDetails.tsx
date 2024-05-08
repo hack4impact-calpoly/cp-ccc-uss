@@ -10,7 +10,6 @@ import { IoLocationOutline } from "react-icons/io5";
 import { IconButton, Button } from '@chakra-ui/react';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 
-
 type Props = {
   _id: string ;
 };
@@ -47,6 +46,25 @@ async function getRoles(_id: string) {
   } catch (err: unknown) {
     console.log(`error: ${err}`);
     return null;
+  }
+}
+
+// delete event by id
+async function handleDeleteEvent(_id: string) {
+  try {
+    const res = await fetch(`http://localhost:3000/api/event/${_id}`, {
+      method: 'DELETE',
+    });
+
+    if (!res.ok) {
+      throw new Error('Failed to delete event');
+    }
+
+    const data = await res.json();
+
+    console.log(data);
+  } catch (err: unknown) {
+    console.error('Error deleting event:', err);
   }
 }
 
@@ -122,7 +140,8 @@ export default function AdminEventDetails({ _id }: Props) {
             colorScheme='teal'
             aria-label='Delete event'
             icon={<DeleteIcon />}
-          />        
+            onClick={() => handleDeleteEvent(_id)}
+            />        
         </div>
         <div className={style.eventHeader}>Event Details: Admin</div>
         <div className={style.eventName}>{event.name}</div>
