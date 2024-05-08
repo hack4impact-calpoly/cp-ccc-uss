@@ -1,0 +1,25 @@
+.avatar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 1;
+}
+
+/* Heading styles */
+.heading {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+/* DataGrid styles */
+.data-grid-container {
+  height: 400px;
+  width: 100%;
+}
+
+/* Loading and error styles */
+.loading-error {
+  font-size: 1.2rem;
+  color: red;
+  margin-top: 20px;
+}

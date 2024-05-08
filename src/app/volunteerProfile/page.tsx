@@ -14,6 +14,8 @@ import { useEffect, useState } from "react";
 import Navbar from "@components/Navbar";
 import { Heading } from "@chakra-ui/react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { useUser } from "@clerk/clerk-react";
+import { Avatar } from "@mui/material";
 
 async function getVolunteers() {
   try {
@@ -74,6 +76,7 @@ const columns: GridColDef[] = [
 ];
 
 export default function VolunteerProfile() {
+  const user = useUser();
   const [events, setEvents] = useState<GridRowsProp>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -129,15 +132,17 @@ export default function VolunteerProfile() {
     },
   });
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error loading volunteers.</div>;
+  if (loading) return <div className={style.loadingError}>Loading...</div>;
+  if (error) return <div className={style.loadingError}>Error loading volunteers.</div>;
   return (
     <ThemeProvider theme={theme}>
-      {" "}
-      {/* Provide the theme object to ThemeProvider */}
-      <div style={{ height: 400, width: "100%" }}>
+      <div className={style.dataGridContainer}>
         <Navbar />
-        <Heading as="h1" size="xl">
+        <Avatar
+          src={user.user?.imageUrl}
+          sx={{ position: "absolute", top: 16, left: 16, zIndex: 1 }} // Position the Avatar in the top left corner
+        />
+        <Heading as="h1" size="xl" className={style.heading}>
           Upcoming Events
         </Heading>
         <div>
