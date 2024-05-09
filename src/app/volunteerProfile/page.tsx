@@ -125,26 +125,34 @@ export default function VolunteerProfile() {
   }, []);
   const theme = createTheme({
     palette: {
-      mode: "light", // Specify light or dark mode
+      mode: "light",
       primary: {
-        main: "#1976d2", // Example primary color
+        main: "#1976d2",
       },
     },
   });
 
   if (loading) return <div className={style.loadingError}>Loading...</div>;
-  if (error) return <div className={style.loadingError}>Error loading volunteers.</div>;
+  if (error)
+    return <div className={style.loadingError}>Error loading volunteers.</div>;
   return (
     <ThemeProvider theme={theme}>
-      <div className={style.dataGridContainer}>
+      <div className={style.mainContainer}>
         <Navbar />
-        <Avatar
-          src={user.user?.imageUrl}
-          sx={{ position: "absolute", top: 16, left: 16, zIndex: 1 }} // Position the Avatar in the top left corner
-        />
-        <Heading as="h1" size="xl" className={style.heading}>
-          Upcoming Events
-        </Heading>
+        <div className={style.userInfo}>
+          <Avatar
+            src={user.user?.imageUrl}
+            sx={{ width: 100, height: 100 }}
+            className={style.avatar}
+          />
+          <h1 className={style.userName}>Volunteer Profile</h1>
+        </div>
+        <div className={style.headingContainer}>
+          <Heading as="h2" size="xl" className={style.heading}>
+            Upcoming Events
+          </Heading>
+        </div>
+        <div className={style.yellowBar}></div>{" "}
         <div>
           <DataGrid
             initialState={{

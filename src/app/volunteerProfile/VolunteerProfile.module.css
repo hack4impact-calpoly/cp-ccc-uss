@@ -1,25 +1,58 @@
 .avatar {
   position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 1;
+  margin-right: 20px;
+  width: 100px;
+  height: 100px;
 }
 
-/* Heading styles */
+.userInfo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px; 
+}
+
+.userName {
+  font-size: 2rem;
+}
+
+.mainContainer {
+  margin: 0 auto; 
+  max-width: 1200px; 
+  padding: 0 20px; 
+}
+
+
 .heading {
   font-size: 2rem;
   margin-bottom: 20px;
 }
 
-/* DataGrid styles */
+
 .data-grid-container {
   height: 400px;
   width: 100%;
 }
 
-/* Loading and error styles */
+
 .loading-error {
   font-size: 1.2rem;
   color: red;
   margin-top: 20px;
+}
+
+
+.headingContainer {
+  margin-top: 20px;
+}
+
+.heading {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+
+.yellowBar {
+  height: 10px;
+  background-color: #ffd700;
+  margin-bottom: 20px;
 }
