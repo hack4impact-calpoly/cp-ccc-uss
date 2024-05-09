@@ -5,6 +5,9 @@ import { Icon } from '@chakra-ui/react'
 import { LuCalendarDays, LuText } from "react-icons/lu";
 import { IoLocationOutline } from "react-icons/io5";
 import { useUser } from "@clerk/nextjs";
+import {
+    SignInButton,
+  } from "@clerk/nextjs";
 
 type IParams = {
   id: string;
@@ -80,7 +83,11 @@ export default function UserEventDetails({ id }: IParams) {
               <button className={style.button}>Sign Up</button>
               ) : 
               (
-              <button className={style.button}>Sign In</button>
+              <SignInButton>
+              <button className={style.button}>
+                  Sign In
+              </button>
+              </SignInButton>
               )}
             </div>
           </div>
