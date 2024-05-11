@@ -127,11 +127,16 @@ export default function EventSignUp({ id }: IParams) {
         setRoles([]);
         setEvent(null);
         setAnswers([]);
+        setQuestions([]);
+        setSelectedRoles([]);
       }
     } catch (err: unknown) {
       console.error("Error:", err);
+      setRoles([]);
       setEvent(null);
       setAnswers([]);
+      setQuestions([]);
+      setSelectedRoles([]);
     }
   }
 
@@ -467,7 +472,7 @@ export default function EventSignUp({ id }: IParams) {
                     label: role.roleName,
                   }))}
                   placeholder="Select Roles"
-                  closeMenuOnSelect={false}
+                  closeMenuOnSelect={true}
                   onChange={(selectedOptions) =>
                     handleMultiRoleSelect(
                       selectedOptions.map((option) => option.value)
