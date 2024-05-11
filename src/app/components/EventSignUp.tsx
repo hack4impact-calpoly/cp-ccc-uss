@@ -12,7 +12,6 @@ import {
   useDisclosure,
   ModalContent,
   ModalCloseButton,
-  Input,
   Select,
   Stack,
   Button,
@@ -28,6 +27,7 @@ import { IFormQuestion } from "@database/volunteerFormSchema";
 import { IFormAnswer } from "@database/volunteerEntrySchema";
 import { Select as ChakraReactSelect } from "chakra-react-select";
 import { useUser } from "@clerk/nextjs";
+import { set } from "mongoose";
 
 type IParams = {
   id: string;
@@ -35,7 +35,7 @@ type IParams = {
 
 export default function EventSignUp({ id }: IParams) {
   const [event, setEvent] = useState<IEvent | null>(null);
-  const [events, setEvents] = useState<IEvent[]>([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<IEvent[]>([]);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<IVolunteerRole[]>([]);
   const [selectedShifts, setSelectedShifts] = useState<{
@@ -73,16 +73,25 @@ export default function EventSignUp({ id }: IParams) {
       }
 
       const data = await response.json();
-      setEvents(data);
+
+      // filter out events that have already passed and sort in chronological order
+      const currentDate = new Date();
+      const upcomingEvents = data.filter(
+        (event: IEvent) => new Date(event.date) >= currentDate
+      );
+      upcomingEvents.sort((a: IEvent, b: IEvent) => {
+        return new Date(a.date) > new Date(b.date) ? 1 : -1;
+      });
+      setUpcomingEvents(upcomingEvents);
     } catch (err: unknown) {
       console.error("Error:", err);
-      setEvents([]);
+      setUpcomingEvents([]);
     }
   }
 
   async function handleEventInput(eventID: String) {
     try {
-      const selectedEvent: IEvent | undefined = events.find(
+      const selectedEvent: IEvent | undefined = upcomingEvents.find(
         (e) => e._id === eventID
       );
       if (selectedEvent) {
@@ -392,7 +401,7 @@ export default function EventSignUp({ id }: IParams) {
       console.log("Submission successful!");
     } catch (err: unknown) {
       console.error("Error:", err);
-      setEvents([]);
+      setUpcomingEvents([]);
     }
   }
 
@@ -413,7 +422,7 @@ export default function EventSignUp({ id }: IParams) {
         >
           <Box className={style.comp}>
             <ModalCloseButton colorScheme="teal" />
-            {events.length > 0 ? (
+            {upcomingEvents.length > 0 ? (
               <>
                 <Heading
                   as="h1"
@@ -431,8 +440,8 @@ export default function EventSignUp({ id }: IParams) {
                   }}
                   className={style.inputLine}
                 >
-                  {events &&
-                    events.map((event) => (
+                  {upcomingEvents &&
+                    upcomingEvents.map((event) => (
                       <option key={event._id} value={event._id}>
                         {" "}
                         {/* whatever value equals is what onChange e.target.value will be */}
@@ -447,7 +456,7 @@ export default function EventSignUp({ id }: IParams) {
               </Box>
             )}
 
-            {events.length > 0 && (
+            {upcomingEvents.length > 0 && (
               <Box>
                 <ChakraReactSelect
                   isMulti
@@ -512,7 +521,7 @@ export default function EventSignUp({ id }: IParams) {
               </Box>
             ))}
 
-            {events.length > 0 && (
+            {upcomingEvents.length > 0 && (
               <Box>
                 {questions.map((question: IFormQuestion, index) => (
                   <Box key={index} mb={4}>
@@ -531,7 +540,7 @@ export default function EventSignUp({ id }: IParams) {
               </Text>
             )}
 
-            {events.length > 0 && (
+            {upcomingEvents.length > 0 && (
               <Button
                 type="submit"
                 className={style.submit}
