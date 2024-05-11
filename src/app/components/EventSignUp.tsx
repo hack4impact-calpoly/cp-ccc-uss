@@ -282,105 +282,109 @@ export default function EventSignUp({ id }: IParams) {
   }
 
   async function handleSubmission() {
-    try {
-      const volunteerId = await getVolunteerIdByEmail(
-        user.user?.primaryEmailAddress?.toString() || ""
-      );
-      const roleIDs = selectedRoles.map((role) => role._id);
-
-      setIsLoading(true);
-
-      // Combine data from all input states (name, email, event, roles/shifts, questions) to POST to VolunteerEntry
-      const entryResp = await fetch("http://localhost:3000/api/entry", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          eventId: event?._id,
-          roles: roleIDs,
-          volunteerId: volunteerId,
-          responses: answers,
-        }),
-      });
-
-      if (!entryResp.ok) {
-        throw new Error(
-          `Failed to add volunteer entry. Status: ${entryResp.status}`
+    if (user.isSignedIn) {
+      try {
+        const volunteerId = await getVolunteerIdByEmail(
+          user.user?.primaryEmailAddress?.toString() || ""
         );
-      }
+        const roleIDs = selectedRoles.map((role) => role._id);
 
-      const entryData = await entryResp.json();
-      const entryId = entryData._id;
+        setIsLoading(true);
 
-      for (const role of selectedRoles) {
-        const selectedShiftsForRole = selectedShifts[role._id].filter(
-          (shiftData) => shiftData.isSelected
-        );
-
-        const selectedTimeslots = role.timeslots.map((timeslot) => {
-          const isSelected = selectedShiftsForRole.some(
-            (shiftData) =>
-              shiftData.shift.startTime === timeslot.startTime &&
-              shiftData.shift.endTime === timeslot.endTime
-          );
-
-          if (isSelected) {
-            return {
-              ...timeslot,
-              volunteers: [...timeslot.volunteers, volunteerId],
-            };
-          }
-          return timeslot;
+        // Combine data from all input states (name, email, event, roles/shifts, questions) to POST to VolunteerEntry
+        const entryResp = await fetch("http://localhost:3000/api/entry", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            eventId: event?._id,
+            roles: roleIDs,
+            volunteerId: volunteerId,
+            responses: answers,
+          }),
         });
 
-        const roleUpdateResponse = await fetch(
-          `http://localhost:3000/api/role/${role._id}`,
+        if (!entryResp.ok) {
+          throw new Error(
+            `Failed to add volunteer entry. Status: ${entryResp.status}`
+          );
+        }
+
+        const entryData = await entryResp.json();
+        const entryId = entryData._id;
+
+        for (const role of selectedRoles) {
+          const selectedShiftsForRole = selectedShifts[role._id].filter(
+            (shiftData) => shiftData.isSelected
+          );
+
+          const selectedTimeslots = role.timeslots.map((timeslot) => {
+            const isSelected = selectedShiftsForRole.some(
+              (shiftData) =>
+                shiftData.shift.startTime === timeslot.startTime &&
+                shiftData.shift.endTime === timeslot.endTime
+            );
+
+            if (isSelected) {
+              return {
+                ...timeslot,
+                volunteers: [...timeslot.volunteers, volunteerId],
+              };
+            }
+            return timeslot;
+          });
+
+          const roleUpdateResponse = await fetch(
+            `http://localhost:3000/api/role/${role._id}`,
+            {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                fieldToUpdate: "timeslots",
+                value: selectedTimeslots,
+              }),
+            }
+          );
+
+          if (!roleUpdateResponse.ok) {
+            throw new Error(
+              `Failed to update volunteer role with id: ${role._id}. Status: ${roleUpdateResponse.status}`
+            );
+          }
+
+          const roleData = await roleUpdateResponse.json();
+        }
+
+        const existingRoles = await getExistingRoles(volunteerId || "");
+        const existingEntries = await getExistingEntries(volunteerId || "");
+
+        const volunteerUpdateResponse = await fetch(
+          `http://localhost:3000/api/volunteer/${volunteerId}`,
           {
-            method: "PATCH",
+            method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              fieldToUpdate: "timeslots",
-              value: selectedTimeslots,
+              roles: Array.from(new Set([...roleIDs, ...existingRoles])),
+              entries: [...existingEntries, entryId],
             }),
           }
         );
 
-        if (!roleUpdateResponse.ok) {
+        if (!volunteerUpdateResponse.ok) {
           throw new Error(
-            `Failed to update volunteer role with id: ${role._id}. Status: ${roleUpdateResponse.status}`
+            `Failed to update volunteer data. Status: ${volunteerUpdateResponse.status}`
           );
         }
 
-        const roleData = await roleUpdateResponse.json();
+        setIsLoading(false);
+        console.log("Submission successful!");
+      } catch (err: unknown) {
+        console.error("Error:", err);
+        setEvents([]);
       }
-
-      const existingRoles = await getExistingRoles(volunteerId || "");
-      const existingEntries = await getExistingEntries(volunteerId || "");
-
-      const volunteerUpdateResponse = await fetch(
-        `http://localhost:3000/api/volunteer/${volunteerId}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            roles: Array.from(new Set([...roleIDs, ...existingRoles])),
-            entries: [...existingEntries, entryId],
-          }),
-        }
-      );
-
-      if (!volunteerUpdateResponse.ok) {
-        throw new Error(
-          `Failed to update volunteer data. Status: ${volunteerUpdateResponse.status}`
-        );
-      }
-
-      setIsLoading(false);
-      console.log("Submission successful!");
-    } catch (err: unknown) {
-      console.error("Error:", err);
-      setEvents([]);
+    } else {
+      console.error("User is not signed in.");
     }
   }
 
