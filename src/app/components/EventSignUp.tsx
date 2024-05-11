@@ -398,6 +398,7 @@ export default function EventSignUp({ id }: IParams) {
       }
 
       setIsLoading(false);
+      handleClose();
       console.log("Submission successful!");
     } catch (err: unknown) {
       console.error("Error:", err);
