@@ -50,6 +50,7 @@ export default function EventSignUp({ id }: IParams) {
   const [answers, setAnswers] = useState<IFormAnswer[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [errorMessage, setErrorMessage] = useState("");
   const user = useUser();
 
   useEffect(() => {
@@ -282,109 +283,121 @@ export default function EventSignUp({ id }: IParams) {
   }
 
   async function handleSubmission() {
-    if (user.isSignedIn) {
-      try {
-        const volunteerId = await getVolunteerIdByEmail(
-          user.user?.primaryEmailAddress?.toString() || ""
+    setErrorMessage("");
+
+    if (!user.isSignedIn) {
+      setErrorMessage("You need to be logged in to complete this operation.");
+      return;
+    }
+
+    if (
+      !event ||
+      selectedRoles.length === 0 ||
+      !answers.every((answer) => answer.answer.trim() !== "")
+    ) {
+      setErrorMessage("Please fill out all fields before submitting.");
+      return;
+    }
+
+    try {
+      const volunteerId = await getVolunteerIdByEmail(
+        user.user?.primaryEmailAddress?.toString() || ""
+      );
+      const roleIDs = selectedRoles.map((role) => role._id);
+
+      setIsLoading(true);
+
+      // Combine data from all input states (name, email, event, roles/shifts, questions) to POST to VolunteerEntry
+      const entryResp = await fetch("http://localhost:3000/api/entry", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          eventId: event?._id,
+          roles: roleIDs,
+          volunteerId: volunteerId,
+          responses: answers,
+        }),
+      });
+
+      if (!entryResp.ok) {
+        throw new Error(
+          `Failed to add volunteer entry. Status: ${entryResp.status}`
         );
-        const roleIDs = selectedRoles.map((role) => role._id);
+      }
 
-        setIsLoading(true);
+      const entryData = await entryResp.json();
+      const entryId = entryData._id;
 
-        // Combine data from all input states (name, email, event, roles/shifts, questions) to POST to VolunteerEntry
-        const entryResp = await fetch("http://localhost:3000/api/entry", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            eventId: event?._id,
-            roles: roleIDs,
-            volunteerId: volunteerId,
-            responses: answers,
-          }),
+      for (const role of selectedRoles) {
+        const selectedShiftsForRole = selectedShifts[role._id].filter(
+          (shiftData) => shiftData.isSelected
+        );
+
+        const selectedTimeslots = role.timeslots.map((timeslot) => {
+          const isSelected = selectedShiftsForRole.some(
+            (shiftData) =>
+              shiftData.shift.startTime === timeslot.startTime &&
+              shiftData.shift.endTime === timeslot.endTime
+          );
+
+          if (isSelected) {
+            return {
+              ...timeslot,
+              volunteers: [...timeslot.volunteers, volunteerId],
+            };
+          }
+          return timeslot;
         });
 
-        if (!entryResp.ok) {
-          throw new Error(
-            `Failed to add volunteer entry. Status: ${entryResp.status}`
-          );
-        }
-
-        const entryData = await entryResp.json();
-        const entryId = entryData._id;
-
-        for (const role of selectedRoles) {
-          const selectedShiftsForRole = selectedShifts[role._id].filter(
-            (shiftData) => shiftData.isSelected
-          );
-
-          const selectedTimeslots = role.timeslots.map((timeslot) => {
-            const isSelected = selectedShiftsForRole.some(
-              (shiftData) =>
-                shiftData.shift.startTime === timeslot.startTime &&
-                shiftData.shift.endTime === timeslot.endTime
-            );
-
-            if (isSelected) {
-              return {
-                ...timeslot,
-                volunteers: [...timeslot.volunteers, volunteerId],
-              };
-            }
-            return timeslot;
-          });
-
-          const roleUpdateResponse = await fetch(
-            `http://localhost:3000/api/role/${role._id}`,
-            {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                fieldToUpdate: "timeslots",
-                value: selectedTimeslots,
-              }),
-            }
-          );
-
-          if (!roleUpdateResponse.ok) {
-            throw new Error(
-              `Failed to update volunteer role with id: ${role._id}. Status: ${roleUpdateResponse.status}`
-            );
-          }
-
-          const roleData = await roleUpdateResponse.json();
-        }
-
-        const existingRoles = await getExistingRoles(volunteerId || "");
-        const existingEntries = await getExistingEntries(volunteerId || "");
-
-        const volunteerUpdateResponse = await fetch(
-          `http://localhost:3000/api/volunteer/${volunteerId}`,
+        const roleUpdateResponse = await fetch(
+          `http://localhost:3000/api/role/${role._id}`,
           {
-            method: "PUT",
+            method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              roles: Array.from(new Set([...roleIDs, ...existingRoles])),
-              entries: [...existingEntries, entryId],
+              fieldToUpdate: "timeslots",
+              value: selectedTimeslots,
             }),
           }
         );
 
-        if (!volunteerUpdateResponse.ok) {
+        if (!roleUpdateResponse.ok) {
           throw new Error(
-            `Failed to update volunteer data. Status: ${volunteerUpdateResponse.status}`
+            `Failed to update volunteer role with id: ${role._id}. Status: ${roleUpdateResponse.status}`
           );
         }
 
-        setIsLoading(false);
-        console.log("Submission successful!");
-      } catch (err: unknown) {
-        console.error("Error:", err);
-        setEvents([]);
+        const roleData = await roleUpdateResponse.json();
       }
-    } else {
-      console.error("User is not signed in.");
+
+      const existingRoles = await getExistingRoles(volunteerId || "");
+      const existingEntries = await getExistingEntries(volunteerId || "");
+
+      const volunteerUpdateResponse = await fetch(
+        `http://localhost:3000/api/volunteer/${volunteerId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            roles: Array.from(new Set([...roleIDs, ...existingRoles])),
+            entries: [...existingEntries, entryId],
+          }),
+        }
+      );
+
+      if (!volunteerUpdateResponse.ok) {
+        throw new Error(
+          `Failed to update volunteer data. Status: ${volunteerUpdateResponse.status}`
+        );
+      }
+
+      setIsLoading(false);
+      console.log("Submission successful!");
+    } catch (err: unknown) {
+      console.error("Error:", err);
+      setEvents([]);
     }
   }
 
@@ -485,11 +498,7 @@ export default function EventSignUp({ id }: IParams) {
 
             {selectedRoles.map((role) => (
               <Box key={role._id}>
-                <Text
-                  as="h3"
-                  borderBottom="1px solid black"
-                  mb={2}
-                >
+                <Text as="h3" borderBottom="1px solid black" mb={2}>
                   Select Shifts for {role.roleName}:
                 </Text>
                 <Box mb={4}>
@@ -524,17 +533,19 @@ export default function EventSignUp({ id }: IParams) {
               <Box>
                 {questions.map((question: IFormQuestion, index) => (
                   <Box key={index} mb={4}>
-                    <Text
-                      as="h4"
-                      borderBottom="1px solid black"
-                      mb={2}
-                    >
+                    <Text as="h4" borderBottom="1px solid black" mb={2}>
                       Question: {question.question}
                     </Text>
                     <Box> {renderCustomQuestion(question, index)} </Box>
                   </Box>
                 ))}
               </Box>
+            )}
+
+            {errorMessage && (
+              <Text color="red.500" mb={1}>
+                {errorMessage}
+              </Text>
             )}
 
             {events.length > 0 && (
