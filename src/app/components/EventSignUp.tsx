@@ -35,8 +35,6 @@ type IParams = {
 
 export default function EventSignUp({ id }: IParams) {
   const [event, setEvent] = useState<IEvent | null>(null);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [events, setEvents] = useState<IEvent[]>([]);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<IVolunteerRole[]>([]);
@@ -63,8 +61,6 @@ export default function EventSignUp({ id }: IParams) {
 
   // clear modal info when close modal (resets)
   function handleClose() {
-    setName("");
-    setEmail("");
     handleEventInput("");
     onClose();
   }
@@ -307,7 +303,6 @@ export default function EventSignUp({ id }: IParams) {
 
       setIsLoading(true);
 
-      // Combine data from all input states (name, email, event, roles/shifts, questions) to POST to VolunteerEntry
       const entryResp = await fetch("http://localhost:3000/api/entry", {
         method: "POST",
         headers: {
@@ -429,18 +424,6 @@ export default function EventSignUp({ id }: IParams) {
                 >
                   Event Sign Up
                 </Heading>
-                <Input
-                  placeholder="Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className={style.inputLine}
-                />
-                <Input
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={style.inputLine}
-                />
                 <Select
                   placeholder="Select Event"
                   onChange={(e) => {
