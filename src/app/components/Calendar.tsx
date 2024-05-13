@@ -38,16 +38,6 @@ const Calendar = ({ admin = false }) => {
   const [selectedEventId, setSelectedEventId] = useState("");
   const [detailModalOpen, setDetailModalOpen] = useState(false);
 
-  //User Session Data
-  const { isLoaded, isSignedIn, user } = useUser();
-  const admins = process.env.NEXT_PUBLIC_ADMIN_EMAIL_ADDRESSES?.split(",");
-  if (user && isSignedIn && isLoaded && user.primaryEmailAddress) {
-    if (admins?.includes(user.primaryEmailAddress.emailAddress)) {
-      admin = true;
-    } 
-  }
-
-
   //for event modal
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef(null);
