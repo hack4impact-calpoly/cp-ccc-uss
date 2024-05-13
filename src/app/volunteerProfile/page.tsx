@@ -8,7 +8,6 @@ import {
   GridColDef,
   GridToolbar,
 } from "@mui/x-data-grid";
-//import type {} from "@mui/x-data-grid/themeAugmentation";
 import style from "./VolunteerProfile.module.css";
 import { useEffect, useState } from "react";
 import Navbar from "@components/Navbar";
@@ -17,14 +16,39 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useUser } from "@clerk/clerk-react";
 import { Avatar } from "@mui/material";
 
-async function getVolunteers() {
+async function getVolunteerID(email: string): Promise<string | null> {
   try {
-    const res = await fetch(`http://localhost:3000/api/volunteer/`, {
+    const res = await fetch(`http://localhost:3000/api/volunteer`, {
       cache: "no-store",
     });
 
     if (!res.ok) {
       throw new Error("Failed to fetch volunteers");
+    }
+
+    const allVolunteers = await res.json();
+    const targetVolunteer = allVolunteers.find(
+      (volunteer: { email: string }) => volunteer.email === email
+    );
+    if (!targetVolunteer) {
+      throw new Error("Volunteer not found");
+    }
+    console.log(targetVolunteer._id);
+    return targetVolunteer._id;
+  } catch (error) {
+    console.error("Error fetching volunteer:", error);
+    return null;
+  }
+}
+
+async function getVolunteerData(volunteerId: string) {
+  try {
+    const res = await fetch(
+      `http://localhost:3000/api/volunteer/${volunteerId}`,
+      { cache: "no-store" }
+    );
+    if (!res.ok) {
+      throw new Error("Failed to fetch volunteer data");
     }
     return res.json();
   } catch (err: unknown) {
@@ -35,12 +59,9 @@ async function getVolunteers() {
 
 async function getEntryDetails(entryId: string) {
   try {
-    const res = await fetch(
-      `http://localhost:3000/api/volunteer-entry/${entryId}`,
-      {
-        cache: "no-store",
-      }
-    );
+    const res = await fetch(`http://localhost:3000/api/entry/${entryId}`, {
+      cache: "no-store",
+    });
 
     if (!res.ok) {
       throw new Error("Failed to fetch entry details");
@@ -77,52 +98,58 @@ const columns: GridColDef[] = [
 
 export default function VolunteerProfile() {
   const user = useUser();
+
   const [events, setEvents] = useState<GridRowsProp>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [volunteers, setVolunteers] = useState<IVolunteer[] | null>(null);
+  const userEmail = user?.user?.primaryEmailAddress?.toString() ?? "";
 
   useEffect(() => {
+    console.log("Fetching events...");
     const fetchEvents = async () => {
       setLoading(true);
       try {
-        const data = await getVolunteers();
-        if (data) {
-          setVolunteers(data);
-          volunteers?.forEach((volunteer) => {
-            volunteer.entries.forEach((entry) => {
-              getEntryDetails(entry).then((entryDetails) => {
-                if (entryDetails) {
-                  getEventDetails(entryDetails.eventId).then((eventDetails) => {
-                    if (eventDetails) {
-                      setEvents((prevEvents) => [
-                        ...prevEvents,
-                        {
-                          id: entry,
-                          event: eventDetails.name,
-                          email: volunteer.email,
-                          date: eventDetails.date,
-                          description: eventDetails.description,
-                        },
-                      ]);
-                    }
-                  });
-                }
-              });
-            });
+        const volunteerId = await getVolunteerID(userEmail);
+        console.log("email: ", userEmail);
+        console.log("ID: ", volunteerId);
+        if (volunteerId) {
+          // Get volunteer entries using volunteer ID
+          const volunteer = await getVolunteerData(volunteerId);
+          const eventPromises = volunteer.entries.map(async (entry: string) => {
+            const entryDetails = await getEntryDetails(entry);
+            if (entryDetails) {
+              const eventDetails = await getEventDetails(entryDetails.eventId);
+              if (eventDetails) {
+                return {
+                  id: entry,
+                  event: eventDetails.name,
+                  email: volunteer.email,
+                  date: new Date(eventDetails.date).toLocaleString(),
+                  description: eventDetails.description,
+                };
+              }
+            }
+            return null;
           });
+          const eventResults = await Promise.all(eventPromises);
+          const filteredEvents = eventResults.filter((event) => event !== null);
+          setEvents(filteredEvents);
         } else {
           setError(true);
-          console.log("failed to fetch data");
+          console.error("Volunteer ID not found.");
         }
       } catch (err) {
-        console.error("Error fetching volunteers:", err);
+        console.error("Error fetching events:", err);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
-    fetchEvents();
-  }, []);
+    if (userEmail) {
+      fetchEvents();
+    }
+  }, [userEmail]);
   const theme = createTheme({
     palette: {
       mode: "light",
@@ -149,7 +176,7 @@ export default function VolunteerProfile() {
         </div>
         <div className={style.headingContainer}>
           <Heading as="h2" size="xl" className={style.heading}>
-            Upcoming Events
+            Events
           </Heading>
         </div>
         <div className={style.yellowBar}></div>{" "}
