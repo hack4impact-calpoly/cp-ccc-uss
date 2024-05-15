@@ -3,11 +3,8 @@ import React, { useState } from 'react';
 import Navbar from "@components/Navbar";
 import Calendar from "@components/Calendar";
 import CreateEvent from '@components/CreateEvent/CreateEvent';
-<<<<<<< HEAD
 import AdminEventDetails from '@components/AdminEventDetails/AdminEventDetails';
 
-=======
->>>>>>> ad32defdba945cab80db2111241cd848b5220004
 export default function Home() {
   const [admin, setAdmin] = useState(true);
   

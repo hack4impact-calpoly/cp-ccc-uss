@@ -4,15 +4,12 @@ import { useEffect, useState } from 'react';
 import { IEvent } from '@database/eventSchema';
 import { IVolunteerRole } from '@database/volunteerRoleSchema';
 import { IVolunteerRoleTimeslot } from '@database/volunteerRoleSchema';
-<<<<<<< HEAD
 import VolunteerDetails from "./VolunteerDetails"
-=======
 import { Icon } from '@chakra-ui/react'
 import { LuCalendarDays, LuText, LuUsers, LuBookOpen } from "react-icons/lu";
 import { IoLocationOutline } from "react-icons/io5";
 
 
->>>>>>> ad32defdba945cab80db2111241cd848b5220004
 
 type Props = {
   _id: string ;
@@ -61,8 +58,6 @@ function parseDate(date: Date) {
   });
 }
 
-<<<<<<< HEAD
-=======
 function AdminEventDetailsButton() {
   const handleClick = () => {
     console.log("Button clicked!");
@@ -86,7 +81,6 @@ function AdminEventDetailsButton() {
   );
 }
 
->>>>>>> ad32defdba945cab80db2111241cd848b5220004
 export default function AdminEventDetails({ _id }: Props) {
   const [event, setEvent] = useState<IEvent | null>(null);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
@@ -144,9 +138,7 @@ export default function AdminEventDetails({ _id }: Props) {
             <strong>Description:{" "}</strong>
             {" " +event.description}
           </div>
-<<<<<<< HEAD
           <VolunteerDetails _id={event._id} />
-=======
         </div>
         <div className={style.volunteersHeaderContainer}>
           <div style={{display: "flex", alignItems: "center"}}>
@@ -156,7 +148,6 @@ export default function AdminEventDetails({ _id }: Props) {
             <div style={{marginTop: "6px"}}><strong>Volunteers</strong></div>
           </div>
           <div style={{marginTop: "6px"}}><AdminEventDetailsButton /></div>
->>>>>>> ad32defdba945cab80db2111241cd848b5220004
         </div>
         {/* Later implement all volunteers for an event here */}
         <div className={style.eventRoles}></div>
