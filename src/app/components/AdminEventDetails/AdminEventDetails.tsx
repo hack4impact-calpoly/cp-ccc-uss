@@ -138,7 +138,6 @@ export default function AdminEventDetails({ _id }: Props) {
             <strong>Description:{" "}</strong>
             {" " +event.description}
           </div>
-          <VolunteerDetails _id={event._id} />
         </div>
         <div className={style.volunteersHeaderContainer}>
           <div style={{display: "flex", alignItems: "center"}}>
@@ -147,7 +146,7 @@ export default function AdminEventDetails({ _id }: Props) {
               sx={{ fontSize: 50 }}/>
             <div style={{marginTop: "6px"}}><strong>Volunteers</strong></div>
           </div>
-          <div style={{marginTop: "6px"}}><AdminEventDetailsButton /></div>
+          <div style={{marginTop: "6px"}}><VolunteerDetails _id={event._id} /></div>
         </div>
         {/* Later implement all volunteers for an event here */}
         <div className={style.eventRoles}></div>
