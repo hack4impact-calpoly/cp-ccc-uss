@@ -54,25 +54,32 @@ export default function VolunteerDetails({ _id }: Props) {
     const searchTerm = e.target.value;
     setSearchItem(searchTerm);
 
+    console.log(searchTerm);
+
     const filteredItems = volunteerEntries.filter(
       (entry) =>
-        entry.volunteer?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        entry.roles?.map((role: IVolunteerRole) =>
-          role.roleName?.toLowerCase().includes(searchTerm.toLowerCase())
-        ) ||
-        entry.responses?.map(
-          (resp: IFormAnswer) =>
-            resp.question?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            resp.answer?.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+        entry.volunteer.name.toLowerCase().includes(searchTerm.toLowerCase()) //||
+        // entry.roles.map((role: IVolunteerRole) =>
+        //   role.roleName?.toLowerCase().includes(searchTerm.toLowerCase())
+        // )
+      // ||
+      // entry.responses?.map(
+      //   (resp: IFormAnswer) =>
+      //     resp.question?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      //     resp.answer?.toLowerCase().includes(searchTerm.toLowerCase())
+      // )
     );
+
+    console.log(filteredItems);
 
     setFilteredEntries(filteredItems);
   };
 
   async function fetchEntries() {
     try {
-      const response = await fetch(`http://localhost:3000/api/event/${_id}/entry`);
+      const response = await fetch(
+        `http://localhost:3000/api/event/${_id}/entry`
+      );
 
       if (!response.ok) {
         throw new Error(
