@@ -95,8 +95,39 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         console.error("Error creating Form:", err);
       }
 
+      // create event <roles not implemented yet> with new formId
+      const response = await fetch("/api/event", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: eventName,
+          date: date,
+          roles: [],
+          description: description,
+          location: location,
+          form: formIdTemp,
+        }),
+      });
+
+      if (response.status == 201) {
+        const createdEvent = await response.json();
+        eventIdTemp = createdEvent._id;
+        setEvents([...events, createdEvent]);
+        setEventId(createdEvent._id); // save event id for form
+        console.log("Event created with ID:", eventIdTemp);
+
+      } else {
+        const err = await response.text();
+        console.error("Error creating event:", err);
+      }
+
+
       // Create volunteer roles
       for (const role of roles) {
+        console.log("Creating role:", role.roleName);
+
         const timeslots = role.timeslots.map((timeslot) => ({
           startTime: timeslot.startTime,
           endTime: timeslot.endTime,
@@ -110,26 +141,16 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
           },
           body: JSON.stringify({
             roleName: role.roleName,
-            description: role.description,
+            description: "description",
             timeslots: timeslots,
-            event: eventId, 
+            event: eventIdTemp, 
           }),
         });
         if (response3.status === 201) {
           const createdRole = await response3.json();
           roleIdTemp.push(createdRole._id);
+          console.log("Role created with ID:", createdRole._id);
 
-
-          // After creating the event, update the volunteer role with the actual event ID
-          await fetch(`/api/role/${createdRole._id}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              event: eventIdTemp, // Use the actual event ID
-            }),
-          });
         }
         else {
           const err = await response3.text();
@@ -137,38 +158,24 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         }
       }
 
-
-      // create event <roles not implemented yet> with new formId
-      const response = await fetch("/api/event", {
-        method: "POST",
+          // Step 4: Update event with created role IDs
+      console.log("Updating event with roles...");
+      const updateEventResponse = await fetch(`/api/event/${eventIdTemp}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: eventName,
-          date: date,
           roles: roleIdTemp,
-          description: description,
-          location: location,
-          form: formIdTemp,
         }),
       });
 
-      if (response.status == 201) {
-        const createdEvent = await response.json();
-        eventIdTemp = createdEvent._id;
-        setEvents([...events, createdEvent]);
-        setEventId(createdEvent._id); // save event id for form
-        clearInputs();
-        onClose();
+      if (updateEventResponse.status === 200) {
+        console.log("Event updated with roles:", roleIdTemp);
       } else {
-        const err = await response.text();
-        console.error("Error creating event:", err);
+        const err = await updateEventResponse.text();
+        console.error("Error updating event with roles:", err);
       }
-    } catch (err) {
-      console.error("Error creating event:", err);
-    }
-
     // update form with new eventId => now form and event have mutual id's
     const response2 = await fetch("/api/form/" + formIdTemp, {
       method: "PUT",
@@ -187,6 +194,12 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
       const err = await response2.text();
       console.error("Error changing Form:", err);
     }
+
+    clearInputs();
+    onClose();
+  } catch (err) {
+    console.error("Error creating event:", err);
+  }
   };
 
   return (
