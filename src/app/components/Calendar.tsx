@@ -127,7 +127,7 @@ const Calendar = ({ admin = false }) => {
         eventClick={handleEventClick}
       />
 
-      <Modal size="md" isOpen={detailModalOpen} onClose={handleCloseModal}>
+      <Modal size="2xl" isOpen={detailModalOpen} onClose={handleCloseModal}>
         <ModalOverlay />
         <ModalContent className={style.modal}>
           <ModalBody>
