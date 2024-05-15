@@ -54,8 +54,6 @@ export default function VolunteerDetails({ _id }: Props) {
     const searchTerm = e.target.value;
     setSearchItem(searchTerm);
 
-    console.log(searchTerm);
-
     const filteredItems = volunteerEntries.filter(
       (entry) =>
         entry.volunteer.name.toLowerCase().includes(searchTerm.toLowerCase()) //||
@@ -69,8 +67,6 @@ export default function VolunteerDetails({ _id }: Props) {
       //     resp.answer?.toLowerCase().includes(searchTerm.toLowerCase())
       // )
     );
-
-    console.log(filteredItems);
 
     setFilteredEntries(filteredItems);
   };
