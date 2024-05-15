@@ -25,9 +25,10 @@ type Props = {
 };
 
 type VolunteerEntry = {
-  name: string;
+  _id: string;
+  eventId: string;
   roles: IVolunteerRole[];
-  timeslot: IVolunteerRoleTimeslot;
+  volunteer: IVolunteer;
   responses: IFormAnswer[];
 };
 
@@ -55,16 +56,10 @@ export default function VolunteerDetails({ _id }: Props) {
 
     const filteredItems = volunteerEntries.filter(
       (entry) =>
-        entry.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        entry.volunteer?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         entry.roles?.map((role: IVolunteerRole) =>
           role.roleName?.toLowerCase().includes(searchTerm.toLowerCase())
         ) ||
-        parseDate(entry.timeslot?.startTime)
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-        parseDate(entry.timeslot?.endTime)
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
         entry.responses?.map(
           (resp: IFormAnswer) =>
             resp.question?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -77,7 +72,7 @@ export default function VolunteerDetails({ _id }: Props) {
 
   async function fetchEntries() {
     try {
-      const response = await fetch(`http://localhost:3000/api/entry`);
+      const response = await fetch(`http://localhost:3000/api/event/${_id}/entry`);
 
       if (!response.ok) {
         throw new Error(
@@ -117,10 +112,10 @@ export default function VolunteerDetails({ _id }: Props) {
           background: "transparent",
           border: "none",
           textDecoration: "underline",
-          color: "black",
+          color: "#00aa9e",
           cursor: "pointer",
-          fontFamily: "Avenir",
-          fontSize: "16px",
+          fontFamily: "sans-serif",
+          fontSize: "20px",
         }}
       >
         more details
@@ -145,9 +140,8 @@ export default function VolunteerDetails({ _id }: Props) {
                 {filteredEntries.map((entry, Index) => (
                   <li key={Index}>
                     <DisplayVolunteerInformation
-                      name={entry.name}
+                      name={entry.volunteer.name}
                       roles={entry.roles}
-                      timeslot={entry.timeslot}
                       responses={entry.responses}
                     />
                   </li>
