@@ -58,29 +58,6 @@ function parseDate(date: Date) {
   });
 }
 
-function AdminEventDetailsButton() {
-  const handleClick = () => {
-    console.log("Button clicked!");
-  };
-
-  return (
-    <button
-      onClick={handleClick}
-      style={{
-        background: "transparent",
-        border: "none",
-        textDecoration: "underline",
-        color: "#00aa9e",
-        cursor: "pointer",
-        fontFamily: "sans-serif",
-        fontSize: "20px",
-      }}
-    >
-      more details
-    </button>
-  );
-}
-
 export default function AdminEventDetails({ _id }: Props) {
   const [event, setEvent] = useState<IEvent | null>(null);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
