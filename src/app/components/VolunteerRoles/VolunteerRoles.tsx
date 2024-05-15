@@ -194,7 +194,7 @@ export default function AddVolunteerRoles(props: {
               </Select>
             </FormControl>
           </Flex>
-          {selectedRoleIndex !== null && (
+          {selectedRoleIndex !== null && props.roles[selectedRoleIndex] && props.roles[selectedRoleIndex].timeslots && (
          <Box>
          <List>
            {props.roles[selectedRoleIndex].timeslots.map(

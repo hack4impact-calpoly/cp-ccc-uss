@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import AddQuestions from "@components/AddQuestions/AddQuestions";
 import { IEvent } from "@database/eventSchema";
-import { set } from "mongoose";
+import { Types, set } from "mongoose";
 import AddVolunteerRoles from "@components/VolunteerRoles/VolunteerRoles";
 
 interface CreateEventProps {
@@ -38,6 +38,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
   const [eventId, setEventId] = useState("61d634706a98a61edd42bf45");
 
   const btnRef = React.useRef(null);
+
 
   const handleChangeName = (e: any) => {
     setEventName(e.target.value);
@@ -68,7 +69,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
   const handleSubmit = async () => {
     let formIdTemp = "";
     let eventIdTemp = "";
-    let roleIdTemp = "";
+    let roleIdTemp : String[] = [];
     // Create form with placeholder eventId
     // Create event with new formId
     // Update form with new eventId
@@ -93,6 +94,49 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         const err = await response1.text();
         console.error("Error creating Form:", err);
       }
+
+      // Create volunteer roles
+      for (const role of roles) {
+        const timeslots = role.timeslots.map((timeslot) => ({
+          startTime: timeslot.startTime,
+          endTime: timeslot.endTime,
+          volunteers: [],
+        }));
+
+        const response3 = await fetch("/api/role", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            roleName: role.roleName,
+            description: role.description,
+            timeslots: timeslots,
+            event: eventId, 
+          }),
+        });
+        if (response3.status === 201) {
+          const createdRole = await response3.json();
+          roleIdTemp.push(createdRole._id);
+
+
+          // After creating the event, update the volunteer role with the actual event ID
+          await fetch(`/api/role/${createdRole._id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              event: eventIdTemp, // Use the actual event ID
+            }),
+          });
+        }
+        else {
+          const err = await response3.text();
+          console.error("Error creating volunteer role:", err);
+        }
+      }
+
 
       // create event <roles not implemented yet> with new formId
       const response = await fetch("/api/event", {
