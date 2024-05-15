@@ -24,9 +24,6 @@ export default function VolunteerDetails({ name, roles, responses }: Props) {
       hour12: true,
     });
   }
-  console.log(name);
-  console.log(roles);
-  console.log(responses);
   return (
     <div>
       <h2>{name}</h2>
