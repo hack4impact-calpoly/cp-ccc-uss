@@ -1,25 +1,33 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from "@components/Navbar";
 import Calendar from "@components/Calendar";
 import CreateEvent from '@components/CreateEvent/CreateEvent';
 import { useUser } from '@clerk/nextjs';
 import { Button } from '@chakra-ui/react';
 
+
 export default function Home() {
   const [admin, setAdmin] = useState(false);
-  let adminbutton = false;
+  const [adminbutton, setAdminButton] = useState(false);
 
   const { isLoaded, isSignedIn, user } = useUser();
-  const admins = process.env.NEXT_PUBLIC_ADMIN_EMAIL_ADDRESSES?.split(",");
-  if (user && isSignedIn && isLoaded && user.primaryEmailAddress) {
-    if (admins?.includes(user.primaryEmailAddress.emailAddress)) {
-      adminbutton = true;
+
+  useEffect(() => {
+    if (user) {
+      const orgs = user.organizationMemberships;
+      if (orgs?.some(org => org.organization.name === "CCC-USS-Admins")) {
+        setAdminButton(true);
+      } else {
+        setAdminButton(false);
+        setAdmin(false);
+      }
     } else {
-      adminbutton = false;
+      setAdminButton(false);
       setAdmin(false);
     }
-  }
+  },[user, isSignedIn, isLoaded]);
+
   return (
     <main>
       <div
