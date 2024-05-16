@@ -86,7 +86,8 @@ async function handleDeleteEvent(_id: string, toast: any) {
       status: 'success',
       duration: 9000,
       isClosable: true,
-    })
+    });
+    window.location.reload();
   } catch (err: unknown) {
     console.error('Error deleting event:', err);
     toast({
