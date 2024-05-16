@@ -90,9 +90,11 @@ const Calendar = ({ admin = false }) => {
         <div className={style.buttonContainer}>
           {admin ? (
             <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-            <Button mt={3} colorScheme="teal">
-              <Link href="/admin/profiles">Profile Database</Link>
-            </Button>
+            <Link href="/admin/profiles">
+              <Button mt={3} colorScheme="teal">
+                Profile Database
+              </Button>
+            </Link>
             <Button mt={3} ref={btnRef} onClick={onOpen} colorScheme="teal">
               Add Event
             </Button>
