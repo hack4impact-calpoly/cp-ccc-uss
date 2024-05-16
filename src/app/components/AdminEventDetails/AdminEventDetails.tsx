@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { IEvent } from '@database/eventSchema';
 import { IVolunteerRole } from '@database/volunteerRoleSchema';
 import { IVolunteerRoleTimeslot } from '@database/volunteerRoleSchema';
-import { Icon, IconButton, useToast } from '@chakra-ui/react'
+import { Icon, Button, IconButton, useToast } from '@chakra-ui/react'
 import { LuCalendarDays, LuText, LuUsers, LuBookOpen } from "react-icons/lu";
 import { IoLocationOutline } from "react-icons/io5";
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
@@ -18,7 +18,17 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  AlertDialogCloseButton,
+} from '@chakra-ui/react'
 import EditEvent from '@components/EditEvent';
+import React from 'react';
 
 type Props = {
   _id: string ;
@@ -129,7 +139,7 @@ export default function AdminEventDetails({ _id }: Props) {
   const [error, setError] = useState(false);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure(); // for edit modal
-
+  const cancelRef = React.useRef()
 
   //fetch event, then roles for that event
   useEffect(() => {
@@ -182,13 +192,41 @@ export default function AdminEventDetails({ _id }: Props) {
                 {/* content here */}
             </ModalContent>
           </Modal>
+        <>
           <IconButton
-            variant='outline'
-            colorScheme='teal'
-            aria-label='Delete event'
-            icon={<DeleteIcon />}
-            onClick={() => handleDeleteEvent(_id, toast)}
-            />        
+          variant='outline'
+          colorScheme='teal'
+          aria-label='Delete event'
+          icon={<DeleteIcon />}
+          onClick={onOpen}
+          />     
+          <AlertDialog
+          isOpen={isOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={onClose}
+          >
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                  Delete Customer
+                </AlertDialogHeader>
+
+                <AlertDialogBody>
+                  Are you sure? You can't undo this action afterwards.
+                </AlertDialogBody>
+
+                <AlertDialogFooter>
+                  <Button ref={cancelRef} onClick={onClose}>
+                    Cancel
+                  </Button>
+                  <Button colorScheme='red' onClick={() => handleDeleteEvent(_id, toast)} ml={3}>
+                    Delete
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>  
+        </> 
         </div>
         <div className={style.eventHeader}>Event Details: Admin</div>
         <div className={style.eventName}>{event.name}</div>
