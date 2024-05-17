@@ -95,10 +95,9 @@ export default function AddQuestions(props: {
       fieldType: "MULTI_SELECT",
       options: [],
     };
-    props.setQuestions((prevQuestions: any) => [
-      ...prevQuestions,
-      emptyQuestion,
-    ]);
+    props.setQuestions((prevQuestions: IFormQuestion[] | undefined) => {
+      return [...(prevQuestions || []), emptyQuestion];
+    });
   };
   
   if (!props.questions || props.questions.length === 0) {
