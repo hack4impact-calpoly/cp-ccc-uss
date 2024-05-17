@@ -38,7 +38,9 @@ function EditEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
   const [questions, setQuestions] = useState<IFormQuestion[]>([]);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [location, setLocation] = useState("default location");
-  const [eventId, setEventId] = useState("61d634706a98a61edd42bf45");
+  const [eventId, setEventId] = useState("663c2f0ed3954490f0c0c846");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const btnRef = React.useRef(null);
 
@@ -68,15 +70,45 @@ function EditEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
     setLocation("default location");
   };
 
+  useEffect(() => {
+    const fetchEventData = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const response = await fetch(`/api/event/${eventId}`);
+        const eventData = await response.json();
+  
+        if (response.ok) {
+          setEventName(eventData.name);
+          setDate(new Date(eventData.date));
+          setDescription(eventData.description);
+          setQuestions(eventData.questions);
+          setRoles(eventData.roles);
+          setLocation(eventData.location);
+        } else {
+          throw new Error(`Failed to fetch event data: ${response.status}`);
+        }
+      } catch (error) {
+        console.error("Error fetching event data:", error);
+        setError(`Failed to load event details. Please try again.`);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    if (eventId) {
+      fetchEventData();
+    }
+  }, [eventId]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   const handleSubmit = async () => {
     let formIdTemp = "";
     let eventIdTemp = "";
-    // Create form with placeholder eventId
-    // Create event with new formId
-    // Update form with new eventId
 
     try {
-      // Create new form with placeholder eventId
       const response1 = await fetch("/api/form", {
         method: "POST",
         headers: {
@@ -96,7 +128,6 @@ function EditEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         console.error("Error creating Form:", err);
       }
 
-      // create event <roles not implemented yet> with new formId
       const response = await fetch("/api/event", {
         method: "POST",
         headers: {
@@ -127,7 +158,6 @@ function EditEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
       console.error("Error creating event:", err);
     }
 
-    // update form with new eventId => now form and event have mutual id's
     const response2 = await fetch("/api/form/" + formIdTemp, {
       method: "PUT",
       headers: {
@@ -177,7 +207,7 @@ function EditEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         </div>
         <div className={styles.createEventButton}>
             <Button colorScheme="teal" onClick={handleSubmit}>
-                Create Event
+                Save
             </Button>
         </div>
     </div>

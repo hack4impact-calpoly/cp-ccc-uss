@@ -100,6 +100,17 @@ export default function AddQuestions(props: {
       emptyQuestion,
     ]);
   };
+  
+  if (!props.questions || props.questions.length === 0) {
+    return (
+      <Box maxWidth="463px" mx="auto" my={4}>
+        <Button onClick={addQuestion} leftIcon={<PlusCircleIcon />} variant="unstyled">
+          Add Question
+        </Button>
+      </Box>
+    );
+  }
+
 
   return (
     <Box maxWidth="463px" mx="auto">
