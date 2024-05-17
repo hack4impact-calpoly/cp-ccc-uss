@@ -2,23 +2,11 @@ import React, { useState, useEffect } from "react";
 import styles from "./CreateEvent/CreateEvent.module.css";
 import { Input } from "@chakra-ui/react";
 import { Textarea } from "@chakra-ui/react";
-import { Button, ButtonGroup } from "@chakra-ui/react";
-import { Heading } from "@chakra-ui/react";
-import { IFormQuestion, IVolunteerForm } from "@database/volunteerFormSchema";
+import { Button} from "@chakra-ui/react";
+import { IFormQuestion } from "@database/volunteerFormSchema";
 import { IVolunteerRole } from "@database/volunteerRoleSchema";
-import { useDisclosure } from "@chakra-ui/react";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-} from "@chakra-ui/react";
 import AddQuestions from "@components/AddQuestions/AddQuestions";
 import { IEvent } from "@database/eventSchema";
-import { set } from "mongoose";
 
 interface CreateEventProps {
   events: IEvent[];
