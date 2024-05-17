@@ -105,75 +105,33 @@ function EditEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
   if (error) return <div>Error: {error}</div>;
 
   const handleSubmit = async () => {
-    let formIdTemp = "";
-    let eventIdTemp = "";
+    try{
+        const updateEventResponse = await fetch(`/api/event/${eventId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: eventName,
+            date: date,
+            roles: roles, 
+            description: description,
+            questions: questions,
+            location: location,
+          }),
+        });
 
-    try {
-      const response1 = await fetch("/api/form", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          eventId: eventId,
-          questions: questions,
-        }),
-      });
-
-      if (response1.status == 201) {
-        const createdForm = await response1.json();
-        formIdTemp = createdForm._id;
-      } else {
-        const err = await response1.text();
-        console.error("Error creating Form:", err);
-      }
-
-      const response = await fetch("/api/event", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: eventName,
-          date: date,
-          roles: ["roleId1", "roleId2"],
-          description: description,
-          location: location,
-          form: formIdTemp,
-        }),
-      });
-
-      if (response.status == 201) {
-        const createdEvent = await response.json();
-        eventIdTemp = createdEvent._id;
-        setEvents([...events, createdEvent]);
-        setEventId(createdEvent._id); // save event id for form
-        clearInputs();
-        onClose();
-      } else {
-        const err = await response.text();
-        console.error("Error creating event:", err);
-      }
-    } catch (err) {
-      console.error("Error creating event:", err);
-    }
-
-    const response2 = await fetch("/api/form/" + formIdTemp, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        eventId: eventIdTemp,
-        questions: questions,
-      }),
-    });
-
-    if (response2.status == 201) {
-      const changedForm = await response2.json();
-    } else {
-      const err = await response2.text();
-      console.error("Error changing Form:", err);
+        if (updateEventResponse.ok) {
+          const updatedEvent = await updateEventResponse.json();
+          console.log("Event updated successfully:", updatedEvent);
+          setEvents(events.map(event => event._id === eventId ? updatedEvent : event)); 
+          clearInputs();
+          onClose(); 
+        } else {
+          console.error("Error updating event:", await updateEventResponse.text());
+        }
+    } catch (error) {
+      console.error("Error in updating event:", error);
     }
   };
 
