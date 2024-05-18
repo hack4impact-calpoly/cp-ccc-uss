@@ -1,32 +1,33 @@
 import React, { useState, useEffect } from "react";
 import styles from "./CreateEvent/CreateEvent.module.css";
 import { Input } from "@chakra-ui/react";
-import { Textarea } from "@chakra-ui/react";
+import { Textarea, ModalCloseButton } from "@chakra-ui/react";
 import { Button} from "@chakra-ui/react";
 import { IFormQuestion } from "@database/volunteerFormSchema";
 import { IVolunteerRole } from "@database/volunteerRoleSchema";
 import AddQuestions from "@components/AddQuestions/AddQuestions";
 import { IEvent } from "@database/eventSchema";
 
-interface CreateEventProps {
+interface EditEventProps {
   events: IEvent[];
   setEvents: React.Dispatch<React.SetStateAction<IEvent[]>>;
   onOpen: () => void;
   onClose: () => void;
+  eventId: string;
 }
 
 type Props = {
     _id: string ;
 };
 
-function EditEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
+function EditEvent({ events, setEvents, onOpen, onClose, eventId }: EditEventProps) {
   const [eventName, setEventName] = useState("");
   const [date, setDate] = useState<Date>(new Date());
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState<IFormQuestion[]>([]);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [location, setLocation] = useState("default location");
-  const [eventId, setEventId] = useState("663c2f0ed3954490f0c0c846");
+  // const [eventId, setEventId] = useState("663c2f0ed3954490f0c0c846");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -58,35 +59,33 @@ function EditEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
     setLocation("default location");
   };
 
-  useEffect(() => {
-    const fetchEventData = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const response = await fetch(`/api/event/${eventId}`);
-        const eventData = await response.json();
-  
-        if (response.ok) {
-          setEventName(eventData.name);
-          setDate(new Date(eventData.date));
-          setDescription(eventData.description);
-          setQuestions(eventData.questions);
-          setRoles(eventData.roles);
-          setLocation(eventData.location);
-        } else {
-          throw new Error(`Failed to fetch event data: ${response.status}`);
-        }
-      } catch (error) {
-        console.error("Error fetching event data:", error);
-        setError(`Failed to load event details. Please try again.`);
-      } finally {
-        setLoading(false);
+  const fetchEventData = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch(`/api/event/${eventId}`);
+      const eventData = await response.json();
+
+      if (response.ok) {
+        setEventName(eventData.name);
+        setDate(new Date(eventData.date));
+        setDescription(eventData.description);
+        setQuestions(eventData.questions);
+        setRoles(eventData.roles);
+        setLocation(eventData.location);
+      } else {
+        throw new Error(`Failed to fetch event data: ${response.status}`);
       }
-    };
-  
-    if (eventId) {
-      fetchEventData();
+    } catch (error) {
+      console.error("Error fetching event data:", error);
+      setError(`Failed to load event details. Please try again.`);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchEventData();
   }, [eventId]);
 
   if (loading) return <div>Loading...</div>;
