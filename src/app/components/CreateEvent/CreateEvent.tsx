@@ -123,11 +123,8 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         console.error("Error creating event:", err);
       }
 
-
       // Create volunteer roles
       for (const role of roles) {
-        console.log("Creating role:", role.roleName);
-
         const timeslots = role.timeslots.map((timeslot) => ({
           startTime: timeslot.startTime,
           endTime: timeslot.endTime,
@@ -158,8 +155,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         }
       }
 
-          // Step 4: Update event with created role IDs
-      console.log("Updating event with roles...");
+      // Step 4: Update event with created role IDs
       const updateEventResponse = await fetch(`/api/event/${eventIdTemp}`, {
         method: "PUT",
         headers: {
@@ -177,30 +173,30 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         console.error("Error updating event with roles:", err);
       }
 
-    // update form with new eventId => now form and event have mutual id's
-    const response2 = await fetch("/api/form/" + formIdTemp, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        eventId: eventIdTemp,
-        questions: questions,
-      }),
-    });
+      // update form with new eventId => now form and event have mutual id's
+      const response2 = await fetch("/api/form/" + formIdTemp, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          eventId: eventIdTemp,
+          questions: questions,
+        }),
+      });
 
-    if (response2.status == 201) {
-      const changedForm = await response2.json();
-    } else {
-      const err = await response2.text();
-      console.error("Error changing Form:", err);
+      if (response2.status == 201) {
+        const changedForm = await response2.json();
+      } else {
+        const err = await response2.text();
+        console.error("Error changing Form:", err);
+      }
+
+      clearInputs();
+      onClose();
+    } catch (err) {
+      console.error("Error creating event:", err);
     }
-
-    clearInputs();
-    onClose();
-  } catch (err) {
-    console.error("Error creating event:", err);
-  }
   };
 
   return (

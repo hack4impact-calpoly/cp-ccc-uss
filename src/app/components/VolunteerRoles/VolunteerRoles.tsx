@@ -30,10 +30,6 @@ export default function AddVolunteerRoles(props: {
     [index: number]: string;
   }>({});
 
-  useEffect(() => {
-    console.log("Roles state changed:", props.roles);
-  }, [props.roles]);
-
   const handleOptionInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number,
@@ -92,7 +88,6 @@ export default function AddVolunteerRoles(props: {
     const shift = updatedRoles[roleIndex].timeslots[shiftIndex];
     if (field === "startTime" || field === "endTime") {
       const timeValue = e.target.value;
-      console.log(timeValue)
       const [hours, minutes] = timeValue.split(":").map(Number);
   
       let existingDate = shift[field];
