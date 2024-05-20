@@ -1,20 +1,22 @@
 "use client";
-import { IVolunteer } from "@database/volunteerSchema";
-import { IVolunteerEntry } from "@database/volunteerEntrySchema";
-import { IEvent } from "@database/eventSchema";
 import {
   DataGrid,
   GridRowsProp,
   GridColDef,
-  GridToolbar,
 } from "@mui/x-data-grid";
 import style from "./VolunteerProfile.module.css";
 import { useEffect, useState } from "react";
 import Navbar from "@components/Navbar";
-import { Heading } from "@chakra-ui/react";
+import { Heading, Button, useDisclosure, Alert, AlertIcon, Box, AlertTitle, AlertDescription, CloseButton } from "@chakra-ui/react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useUser } from "@clerk/clerk-react";
 import { Avatar } from "@mui/material";
+import { Select as ChakraReactSelect } from "chakra-react-select";
+
+interface SelectOption {
+  value: string;
+  label: string;
+}
 
 async function getVolunteerID(email: string): Promise<string | null> {
   try {
@@ -116,9 +118,14 @@ export default function VolunteerProfile() {
   const user = useUser();
 
   const [events, setEvents] = useState<GridRowsProp>([]);
+  const [languages, setLanguages] = useState<string[]>([]);
+  const [skills, setSkills] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const userEmail = user?.user?.primaryEmailAddress?.toString() ?? "";
+
+  const { isOpen: isVisible, onClose, onOpen } = useDisclosure();
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -171,6 +178,34 @@ export default function VolunteerProfile() {
       fetchEvents();
     }
   }, [userEmail]);
+
+  async function handleLanguageSelect(languages: string[]) {
+    setLanguages(languages);
+  };
+
+  async function handleSkillsSelect(skills: string[]) {
+    setSkills(skills);
+  }
+
+  async function handleSavePreferences() {
+    setButtonLoading(true);
+    const tags = languages.concat(skills);
+
+    try {
+      const volunteerId = await getVolunteerID(
+        user.user?.primaryEmailAddress?.toString() || ""
+      );
+
+      console.log("unfinished handlesave, volunteerid: ", volunteerId);
+      console.log("tags: ", tags);
+    } catch (err) {
+      console.error("Error saving preferences: ", err);
+    } finally {
+      setButtonLoading(false);
+      onOpen();
+    }
+  }
+
   const theme = createTheme({
     palette: {
       mode: "light",
@@ -184,6 +219,7 @@ export default function VolunteerProfile() {
   if (error)
     return <div className={style.loadingError}>Error loading volunteers.</div>;
   return (
+    <>
     <ThemeProvider theme={theme}>
       <div className={style.mainContainer}>
         <Navbar />
@@ -221,5 +257,99 @@ export default function VolunteerProfile() {
         </div>
       </div>
     </ThemeProvider>
+    <div className={style.questions}>
+      <Heading as="h2" size="xl" className={style.heading}>
+        Profile Tags
+      </Heading>
+      <div className={style.tagQuestions}>
+        <div className={style.questionContainer}>
+          <ChakraReactSelect 
+            isMulti 
+            name="languages"
+            options={[
+              { value: 'englishFluent', label: 'English fluent' },
+              { value: 'spanishFluent', label: 'Spanish fluent' },
+              { value: 'englishBasic', label: 'English basic' },
+              { value: 'spanishBasic', label: 'Spanish basic' },
+            ]}
+            onChange={(selectedOptions) =>
+              handleLanguageSelect(
+                selectedOptions.map((option) => option.value)
+              )
+            }
+            placeholder="Select languages..."
+            chakraStyles={{
+              control: (provided, state) => ({
+                ...provided,
+                borderColor: "black",
+                borderRadius: "10px",
+                marginBottom: "15px",
+              }),
+              multiValue: (provided) => ({
+                ...provided,
+                backgroundColor: "teal.200",
+              }),
+            }}
+          />
+        </div>
+        <div className={style.questionContainer}>
+          <ChakraReactSelect 
+            isMulti 
+            name="skills_experience"
+            options={[
+              { value: 'legalExpertise', label: 'Legal expertise' },
+              { value: 'socialMedia', label: 'Social media experience' },
+              { value: 'accounting', label: 'Accounting experience' },
+            ]}
+            onChange={(selectedOptions) =>
+              handleSkillsSelect(
+                selectedOptions.map((option) => option.value)
+              )
+            }
+            placeholder="Select skills/experience..."
+            chakraStyles={{
+              control: (provided, state) => ({
+                ...provided,
+                borderColor: "black",
+                borderRadius: "10px",
+                marginBottom: "15px",
+              }),
+              multiValue: (provided) => ({
+                ...provided,
+                backgroundColor: "teal.200",
+              }),
+            }}
+          />
+        </div>
+        {(isVisible ? (
+          <Alert status='success' maxW="sm">
+            <AlertIcon />
+            <Box flex="1">
+              <AlertTitle>Success!</AlertTitle>
+              <AlertDescription>
+                Preferences saved!
+              </AlertDescription>
+            </Box>
+            <CloseButton
+              alignSelf='flex-start'
+              position='relative'
+              right={-1}
+              top={-1}
+              onClick={onClose}
+            />
+          </Alert>
+        ) : (
+          <Button 
+            mt={4}
+            colorScheme="teal"
+            onClick={handleSavePreferences}
+            isLoading={buttonLoading}
+          >
+            Save Preferences
+          </Button>
+        ))}
+      </div>
+    </div>
+  </>
   );
 }
