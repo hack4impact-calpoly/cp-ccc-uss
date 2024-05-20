@@ -95,7 +95,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         console.error("Error creating Form:", err);
       }
 
-      // create event <roles not implemented yet> with new formId
+      // create event with new formId
       const response = await fetch("/api/event", {
         method: "POST",
         headers: {
@@ -176,6 +176,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         const err = await updateEventResponse.text();
         console.error("Error updating event with roles:", err);
       }
+
     // update form with new eventId => now form and event have mutual id's
     const response2 = await fetch("/api/form/" + formIdTemp, {
       method: "PUT",
