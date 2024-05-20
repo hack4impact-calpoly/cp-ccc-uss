@@ -189,15 +189,30 @@ export default function VolunteerProfile() {
 
   async function handleSavePreferences() {
     setButtonLoading(true);
-    const tags = languages.concat(skills);
+    const updatedTags = languages.concat(skills);
 
     try {
       const volunteerId = await getVolunteerID(
         user.user?.primaryEmailAddress?.toString() || ""
       );
 
-      console.log("unfinished handlesave, volunteerid: ", volunteerId);
-      console.log("tags: ", tags);
+      if (volunteerId) {
+        const volunteer = await getVolunteerData(volunteerId);
+        const updatedVolunteer = { ...volunteer, tags: updatedTags };
+
+        const response = await fetch(`/api/volunteer/${volunteerId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedVolunteer),
+        });
+        if (response.ok) {
+          console.log('Volunteer updated successfully:', updatedVolunteer);
+        } else {
+          console.error('Failed to update volunteer:', response.statusText);
+        }
+      }
     } catch (err) {
       console.error("Error saving preferences: ", err);
     } finally {
