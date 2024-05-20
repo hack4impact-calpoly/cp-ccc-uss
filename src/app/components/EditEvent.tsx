@@ -111,7 +111,7 @@ function EditEvent({ events, setEvents, onOpen, onClose, eventId }: EditEventPro
         if (updateEventResponse.ok) {
           const updatedEvent = await updateEventResponse.json();
           console.log("Event updated successfully:", updatedEvent);
-          setEvents(events.map(event => event._id === eventId ? updatedEvent : event)); 
+          // setEvents(events.map(event => event._id === eventId ? updatedEvent : event)); 
           clearInputs();
           onClose(); 
         } else {
