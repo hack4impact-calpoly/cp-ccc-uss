@@ -33,7 +33,6 @@ async function getVolunteerID(email: string): Promise<string | null> {
     if (!targetVolunteer) {
       throw new Error("Volunteer not found");
     }
-    console.log(targetVolunteer._id);
     return targetVolunteer._id;
   } catch (error) {
     console.error("Error fetching volunteer:", error);
@@ -52,7 +51,7 @@ async function getVolunteerData(volunteerId: string) {
     }
     return res.json();
   } catch (err: unknown) {
-    console.log(`error: ${err}`);
+    console.error(`error: ${err}`);
     return null;
   }
 }
@@ -68,7 +67,7 @@ async function getEntryDetails(entryId: string) {
     }
     return res.json();
   } catch (err: unknown) {
-    console.log(`error: ${err}`);
+    console.error(`error: ${err}`);
     return null;
   }
 }
@@ -84,16 +83,33 @@ async function getEventDetails(eventId: string) {
     }
     return res.json();
   } catch (err: unknown) {
-    console.log(`error: ${err}`);
+    console.error(`error: ${err}`);
     return null;
   }
 }
+
+async function getRoleDetails(roleId: string) {
+  try {
+    const res = await fetch(`http://localhost:3000/api/role/${roleId}`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch role details");
+    }
+    return res.json();
+  } catch (err: unknown) {
+    console.error(`error: ${err}`);
+    return null;
+  }
+}
+
 const columns: GridColDef[] = [
-  { field: "event", headerName: "Event Requested", width: 300 },
-  { field: "email", headerName: "Email", width: 300 },
+  { field: "event", headerName: "Event", width: 300 },
+  { field: "role", headerName: "Volunteer Role", width: 300 },
   //{ field: "status", headerName: "Status", width: 300 },
-  { field: "date", headerName: "Date & Time", width: 300 },
-  { field: "description", headerName: "Description", width: 300 },
+  { field: "date", headerName: "Date", width: 300 },
+  { field: "description", headerName: "Event Description", width: 300 },
 ];
 
 export default function VolunteerProfile() {
@@ -105,13 +121,10 @@ export default function VolunteerProfile() {
   const userEmail = user?.user?.primaryEmailAddress?.toString() ?? "";
 
   useEffect(() => {
-    console.log("Fetching events...");
     const fetchEvents = async () => {
       setLoading(true);
       try {
         const volunteerId = await getVolunteerID(userEmail);
-        console.log("email: ", userEmail);
-        console.log("ID: ", volunteerId);
         if (volunteerId) {
           // Get volunteer entries using volunteer ID
           const volunteer = await getVolunteerData(volunteerId);
@@ -120,19 +133,27 @@ export default function VolunteerProfile() {
             if (entryDetails) {
               const eventDetails = await getEventDetails(entryDetails.eventId);
               if (eventDetails) {
-                return {
-                  id: entry,
-                  event: eventDetails.name,
-                  email: volunteer.email,
-                  date: new Date(eventDetails.date).toLocaleString(),
-                  description: eventDetails.description,
-                };
+                // get role details for every roleId in entry.roles
+                const rolePromises = entryDetails.roles.map(async (roleId: string) => {
+                  const roleDetails = await getRoleDetails(roleId);
+                  if (roleDetails) {
+                    return {
+                      id: roleId,
+                      event: eventDetails.name,
+                      role: roleDetails.roleName,
+                      date: new Date(eventDetails.date).toDateString(),
+                      description: eventDetails.description,
+                    };
+                  }
+                  return null;
+                });
+                return Promise.all(rolePromises);
               }
             }
             return null;
           });
           const eventResults = await Promise.all(eventPromises);
-          const filteredEvents = eventResults.filter((event) => event !== null);
+          const filteredEvents = eventResults.flat().filter((event) => event !== null);
           setEvents(filteredEvents);
         } else {
           setError(true);
