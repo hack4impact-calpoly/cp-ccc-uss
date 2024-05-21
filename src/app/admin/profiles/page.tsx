@@ -10,16 +10,18 @@ import {
   GridToolbarExportContainer,
   GridToolbarExport,
   GridToolbarQuickFilter,
+  GridRenderCellParams,
 } from "@mui/x-data-grid";
 import type {} from "@mui/x-data-grid/themeAugmentation";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Chip, Stack, Toolbar, Typography } from "@mui/material";
+import { Chip, Stack, Toolbar, Typography, makeStyles } from "@mui/material";
 import style from "./ProfileDatabase.module.css";
 import { IVolunteer } from "@database/volunteerSchema";
 import { useEffect, useState } from "react";
 import Navbar from "@components/Navbar";
 import { Heading } from "@chakra-ui/react";
 import { create } from "@mui/material/styles/createTransitions";
+import { grey } from "@mui/material/colors";
 
 //get all volunteers
 async function getVolunteers() {
@@ -39,11 +41,23 @@ async function getVolunteers() {
 }
 
 const columns: GridColDef[] = [
-  { field: "name", headerName: "Name", width: 300 },
-  { field: "email", headerName: "Email", width: 300 },
+  {
+    // Now 'name' : '{name}\n{email}'
+    field: "name",
+    headerName: "Name",
+    headerClassName: "super-app-theme--header",
+    width: 300,
+    renderCell: (params: GridRenderCellParams) => (
+      <div>
+        <Typography>{params.value.split("\n")[0]}</Typography>
+        <Typography>{params.value.split("\n")[1]}</Typography>
+      </div>
+    ),
+  },
   {
     field: "tags",
     headerName: "Tags",
+    headerClassName: "super-app-theme--header",
     width: 300,
     renderCell: (
       params // map volunteer tags to UI chips or "No Tags" chip
@@ -62,6 +76,7 @@ const columns: GridColDef[] = [
   {
     field: "event-type",
     headerName: "Event Type",
+    headerClassName: "super-app-theme--header",
     width: 300,
     renderCell: (
       params // map event prefs to UI chips or "No Event Types" chip
@@ -113,6 +128,10 @@ export default function ProfileDatabase() {
       try {
         const data = await getVolunteers();
         if (data) {
+          // To place name over email in same column, make the "name" field of IVolunteer hold both
+          for (let i = 0; i < data.length; i++) {
+            data[i].name = data[i].name.concat("\n", data[i].email);
+          }
           setVolunteers(data);
         } else {
           setError(true);
@@ -127,6 +146,8 @@ export default function ProfileDatabase() {
     setVolunteersData();
   }, []);
 
+  console.log("volunteers:", volunteers);
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading volunteers.</div>;
 
@@ -140,9 +161,6 @@ export default function ProfileDatabase() {
       }}
     >
       <Navbar />
-      <Heading p={3} fontFamily={"Sans-serif"}>
-        Volunteers
-      </Heading>
       <div style={{ height: "75%", width: "75%" }}>
         <ThemeProvider theme={pageTheme}>
           <DataGrid
@@ -150,8 +168,6 @@ export default function ProfileDatabase() {
             getRowId={(row) => row._id}
             rowHeight={70}
             columns={columns}
-            disableColumnSelector={true}
-            disableDensitySelector={true}
             slots={{
               // toolbar: GridToolbar,
               toolbar: CustomToolbar,
@@ -164,6 +180,11 @@ export default function ProfileDatabase() {
             localeText={{
               toolbarQuickFilterPlaceholder:
                 "Search by volunteer name, role, past event",
+            }}
+            sx={{
+              "& .super-app-theme--header": {
+                background: "#ffff",
+              },
             }}
           />
         </ThemeProvider>
