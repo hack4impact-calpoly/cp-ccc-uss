@@ -40,6 +40,22 @@ async function getVolunteers() {
   }
 }
 
+async function getRole(id) {
+  try {
+    const res = await fetch(`http://localhost:3000/api/role/${id}`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch volunteer role");
+    }
+    return res.json();
+  } catch (err: unknown) {
+    console.log(`error: ${err}`);
+    return null;
+  }
+}
+
 const columns: GridColDef[] = [
   {
     // Now 'name' : '{name}\n{email}'
@@ -52,6 +68,25 @@ const columns: GridColDef[] = [
         <Typography>{params.value.split("\n")[0]}</Typography>
         <Typography>{params.value.split("\n")[1]}</Typography>
       </div>
+    ),
+  },
+  {
+    field: "roles",
+    headerName: "Roles",
+    headerClassName: "super-app-theme--header",
+    width: 300,
+    renderCell: (
+      params // map volunteer tags to UI chips or "No Tags" chip
+    ) => (
+      <Stack direction="row" spacing={1} className={style.tags}>
+        {params.value && Array.isArray(params.value) ? (
+          params.value.map((role, index) => (
+            <Chip key={`${params.id}-role-${index}`} label={role} />
+          ))
+        ) : (
+          <Chip label="No Roles" />
+        )}
+      </Stack>
     ),
   },
   {
@@ -128,9 +163,22 @@ export default function ProfileDatabase() {
       try {
         const data = await getVolunteers();
         if (data) {
-          // To place name over email in same column, make the "name" field of IVolunteer hold both
           for (let i = 0; i < data.length; i++) {
+            // To place name over email in same column, make the "name" field of IVolunteer hold both
             data[i].name = data[i].name.concat("\n", data[i].email);
+            // To display roles, get each role for each volunteer
+            for (let j = 0; j < data[i].roles.length; j++) {
+              // try {
+              let roleObj = await getRole(data[i].roles[j]);
+              if (roleObj) {
+                data[i].roles[j] = roleObj.roleName;
+              } else {
+                data[i].roles[j] = "Failed to fetch role";
+              }
+              // } catch {
+              // console.error("failed to fetch role");
+              // }
+            }
           }
           setVolunteers(data);
         } else {
