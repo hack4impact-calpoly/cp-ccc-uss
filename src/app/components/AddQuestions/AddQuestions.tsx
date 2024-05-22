@@ -29,10 +29,6 @@ export default function AddQuestions(props: {
     [index: number]: string;
   }>({});
 
-  useEffect(() => {
-    console.log("Questions state changed:", props.questions);
-  }, [props.questions]);
-
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
