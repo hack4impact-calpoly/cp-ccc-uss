@@ -58,14 +58,15 @@ async function getRole(id) {
 
 const columns: GridColDef[] = [
   {
-    // Now 'name' : '{name}\n{email}'
     field: "name",
     headerName: "Name",
-    headerClassName: "super-app-theme--header",
+    headerClassName: `${style.headerRow}`,
     width: 300,
     renderCell: (params: GridRenderCellParams) => (
       <div>
-        <Typography>{params.value.split("\n")[0]}</Typography>
+        <Typography fontWeight={"bold"}>
+          {params.value.split("\n")[0]}
+        </Typography>
         <Typography>{params.value.split("\n")[1]}</Typography>
       </div>
     ),
@@ -73,7 +74,7 @@ const columns: GridColDef[] = [
   {
     field: "roles",
     headerName: "Roles",
-    headerClassName: "super-app-theme--header",
+    headerClassName: `${style.headerRow}`,
     width: 300,
     renderCell: (
       params // map volunteer tags to UI chips or "No Tags" chip
@@ -92,7 +93,7 @@ const columns: GridColDef[] = [
   {
     field: "tags",
     headerName: "Tags",
-    headerClassName: "super-app-theme--header",
+    headerClassName: `${style.headerRow}`,
     width: 300,
     renderCell: (
       params // map volunteer tags to UI chips or "No Tags" chip
@@ -111,7 +112,7 @@ const columns: GridColDef[] = [
   {
     field: "event-type",
     headerName: "Event Type",
-    headerClassName: "super-app-theme--header",
+    headerClassName: `${style.headerRow}`,
     width: 300,
     renderCell: (
       params // map event prefs to UI chips or "No Event Types" chip
@@ -128,6 +129,11 @@ const columns: GridColDef[] = [
     ),
   },
 ];
+
+const headerRowName = (params, index) => {
+  if (index === 0) return `${style.firstRow}`;
+  else return null;
+};
 
 function CustomToolbar() {
   return (
@@ -212,6 +218,7 @@ export default function ProfileDatabase() {
             getRowId={(row) => row._id}
             rowHeight={70}
             columns={columns}
+            getRowClassName={headerRowName}
             slots={{
               toolbar: CustomToolbar,
             }}
@@ -225,8 +232,8 @@ export default function ProfileDatabase() {
                 "Search by volunteer name, role, past event",
             }}
             sx={{
-              "& .super-app-theme--header": {
-                background: "#ffff",
+              ".css-1essi2g-MuiDataGrid-columnHeaderRow": {
+                fontSize: 18,
               },
             }}
           />

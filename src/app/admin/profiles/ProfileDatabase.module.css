@@ -19,6 +19,6 @@
   justify-content: space-between;
 }
 
-.super-app-theme--header {
-  background: greenyellow;
+.headerRow {
+  background: #f6f6f6;
 }
