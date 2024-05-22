@@ -5,6 +5,9 @@ import {
     SignedOut,
     SignInButton,
     UserButton,
+    SignIn,
+    SignUp,
+    RedirectToSignUp
   } from "@clerk/nextjs";
 
 export default function Login() {
@@ -25,7 +28,7 @@ export default function Login() {
             </SignedIn>
             <SignedOut>
                 {/* Signed out users get sign in button */}
-                <SignInButton>
+                <SignInButton signUpForceRedirectUrl="/signup-redirect">
                     <Button>
                         Login
                     </Button>
