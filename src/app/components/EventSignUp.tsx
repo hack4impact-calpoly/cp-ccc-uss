@@ -21,13 +21,13 @@ import {
   Text,
   Textarea,
   Heading,
+  Collapse,
 } from "@chakra-ui/react";
 import style from "@styles/EventSignUp.module.css";
 import { IFormQuestion } from "@database/volunteerFormSchema";
 import { IFormAnswer } from "@database/volunteerEntrySchema";
 import { Select as ChakraReactSelect } from "chakra-react-select";
 import { useUser } from "@clerk/nextjs";
-import { set } from "mongoose";
 
 type EventSignUpProps = {
   prefilledEventId?: string; // optional to prefill modal with event data
@@ -35,7 +35,11 @@ type EventSignUpProps = {
   isEventPast: boolean;
 };
 
-export default function EventSignUp({ prefilledEventId, buttonText, isEventPast }: EventSignUpProps) {
+export default function EventSignUp({
+  prefilledEventId,
+  buttonText,
+  isEventPast,
+}: EventSignUpProps) {
   const [event, setEvent] = useState<IEvent | null>(null);
   const [upcomingEvents, setUpcomingEvents] = useState<IEvent[]>([]);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
@@ -50,6 +54,9 @@ export default function EventSignUp({ prefilledEventId, buttonText, isEventPast 
   const [answers, setAnswers] = useState<IFormAnswer[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [descriptionOpen, setDescriptionOpen] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [errorMessage, setErrorMessage] = useState("");
   const user = useUser();
 
@@ -70,6 +77,7 @@ export default function EventSignUp({ prefilledEventId, buttonText, isEventPast 
   // clear modal info when close modal (resets)
   function handleClose() {
     handleEventInput("");
+    setDescriptionOpen({});
     onClose();
   }
 
@@ -99,6 +107,11 @@ export default function EventSignUp({ prefilledEventId, buttonText, isEventPast 
 
   async function handleEventInput(eventID: String) {
     try {
+      setEvent(null);
+      setAnswers([]);
+      setQuestions([]);
+      setSelectedRoles([]);
+      setRoles([]);
       const selectedEvent: IEvent | undefined = upcomingEvents.find(
         (e) => e._id === eventID
       );
@@ -209,6 +222,13 @@ export default function EventSignUp({ prefilledEventId, buttonText, isEventPast 
 
       return updatedShifts;
     });
+  }
+
+  function toggleDescription(roleId: string) {
+    setDescriptionOpen((prev) => ({
+      ...prev,
+      [roleId]: !prev[roleId],
+    }));
   }
 
   function renderCustomQuestion(question: IFormQuestion, index: number) {
@@ -422,7 +442,7 @@ export default function EventSignUp({ prefilledEventId, buttonText, isEventPast 
   return (
     <Box m={4}>
       <Button colorScheme="teal" onClick={onOpen} isDisabled={isEventPast}>
-        { buttonText || "Event Sign Up" }
+        {buttonText || "Event Sign Up"}
       </Button>
       <Modal isOpen={isOpen} onClose={handleClose} size="xl">
         <ModalOverlay />
@@ -476,6 +496,10 @@ export default function EventSignUp({ prefilledEventId, buttonText, isEventPast 
                 <ChakraReactSelect
                   isMulti
                   name="roles"
+                  value={selectedRoles.map((role) => ({
+                    value: role._id,
+                    label: role.roleName,
+                  }))}
                   options={roles.map((role) => ({
                     value: role._id,
                     label: role.roleName,
@@ -506,8 +530,28 @@ export default function EventSignUp({ prefilledEventId, buttonText, isEventPast 
             {selectedRoles.map((role) => (
               <Box key={role._id}>
                 <Text as="h3" borderBottom="1px solid black" mb={2}>
-                  Select Shifts for {role.roleName}:
+                  Select Shifts for {role.roleName}
+                  {role.description && role.description.length > 0 && (
+                    <Text
+                      as="span"
+                      ml={2}
+                      color="teal.500"
+                      cursor="pointer"
+                      onClick={() => toggleDescription(role._id)}
+                    >
+                      (
+                      {descriptionOpen[role._id]
+                        ? "Hide Description"
+                        : "Show Description"}
+                      )
+                    </Text>
+                  )}
                 </Text>
+                {role.description && role.description.length > 0 && (
+                  <Collapse in={descriptionOpen[role._id]} animateOpacity>
+                    <Text mb={2}>{role.description}</Text>
+                  </Collapse>
+                )}
                 <Box mb={4}>
                   {selectedShifts[role._id]?.map((shiftData, index) => (
                     <Box key={index}>
