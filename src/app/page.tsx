@@ -37,13 +37,13 @@ export default function Home() {
           alignItems: "center",
           justifyContent: "space-between",
         }}
-      >
+      >    
         <Navbar />
         <div>
           {adminbutton ? (
             <div>
               <Button onClick={() => (admin ? setAdmin(false) : setAdmin(true))} mt={3} p={6} colorScheme="teal">
-                {admin ? <>Admin <br/> Change View</> : <>User <br/> Change View</>}
+                {admin ? <>View as <br/> volunteer</> : <>View as <br/> Admin</>}
               </Button>
             </div>) :
             null}
