@@ -148,7 +148,6 @@ export default function ProfileDatabase() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  // const pageTheme = createTheme();
   const pageTheme = createTheme({
     typography: {
       button: {
@@ -167,18 +166,15 @@ export default function ProfileDatabase() {
             // To place name over email in same column, make the "name" field of IVolunteer hold both
             data[i].name = data[i].name.concat("\n", data[i].email);
             // To display roles, get each role for each volunteer
+            let roleTitles = [];
             for (let j = 0; j < data[i].roles.length; j++) {
-              // try {
               let roleObj = await getRole(data[i].roles[j]);
               if (roleObj) {
-                data[i].roles[j] = roleObj.roleName;
-              } else {
-                data[i].roles[j] = "Failed to fetch role";
+                roleTitles.push(roleObj.roleName);
               }
-              // } catch {
-              // console.error("failed to fetch role");
-              // }
             }
+            if (roleTitles.length == 0) roleTitles.push("No roles found");
+            data[i].roles = roleTitles;
           }
           setVolunteers(data);
         } else {
@@ -217,7 +213,6 @@ export default function ProfileDatabase() {
             rowHeight={70}
             columns={columns}
             slots={{
-              // toolbar: GridToolbar,
               toolbar: CustomToolbar,
             }}
             slotProps={{
