@@ -8,6 +8,7 @@ import { useUser } from "@clerk/nextjs";
 import {
     SignInButton,
   } from "@clerk/nextjs";
+import EventSignUp from "@components/EventSignUp";
 
 type IParams = {
   id: string;
@@ -15,6 +16,7 @@ type IParams = {
 
 export default function UserEventDetails({ id }: IParams) {
   const [eventData, setEventData] = useState<IEvent | null>(null);
+  const [isEventPast, setIsEventPast] = useState<boolean>(false);
   
   //User Session Data
   const { isLoaded, isSignedIn, user } = useUser();
@@ -38,6 +40,14 @@ export default function UserEventDetails({ id }: IParams) {
   useEffect(() => {
     fetchEventData();
   }, [id]);
+
+  useEffect(() => {
+    if (eventData) {
+      const eventDate = new Date(eventData.date);
+      const currentDate = new Date();
+      setIsEventPast(eventDate < currentDate);
+    }
+  }, [eventData]);
 
   return (
     <>
@@ -80,7 +90,7 @@ export default function UserEventDetails({ id }: IParams) {
             </div>
             <div className={style.buttonContainer}>
               {(user && isSignedIn && isLoaded) ? (
-              <button className={style.button}>Sign Up</button>
+                <EventSignUp prefilledEventId={eventData._id} buttonText="Sign Up" isEventPast={isEventPast} />
               ) : 
               (
               <SignInButton>
