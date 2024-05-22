@@ -109,25 +109,6 @@ const columns: GridColDef[] = [
       </Stack>
     ),
   },
-  {
-    field: "event-type",
-    headerName: "Event Type",
-    headerClassName: `${style.headerRow}`,
-    flex: 1,
-    renderCell: (
-      params // map event prefs to UI chips or "No Event Types" chip
-    ) => (
-      <Stack direction="row" spacing={1} className={style.eventPreferences}>
-        {params.value && Array.isArray(params.value) ? (
-          params.value.map((eventType, index) => (
-            <Chip key={`${params.id}-event-${index}`} label={eventType} />
-          ))
-        ) : (
-          <Chip label="No Event Types" />
-        )}
-      </Stack>
-    ),
-  },
 ];
 
 const headerRowName = (params, index) => {
@@ -149,18 +130,18 @@ function CustomToolbar() {
   );
 }
 
-const CustomQuickFilterbar = () => {
-  return (
-    <div style={{ height: "64px", padding: "16px", boxSizing: "border-box" }}>
-      {/* Your custom toolbar content */}
-      <input
-        type="text"
-        placeholder="Search by volunteer name, role, past event"
-        style={{ width: "200%", height: "100%", fontSize: "18px" }}
-      />
-    </div>
-  );
-};
+// const CustomQuickFilterbar = () => {
+//   return (
+//     <div style={{ height: "64px", padding: "16px", boxSizing: "border-box" }}>
+//       {/* Your custom toolbar content */}
+//       <input
+//         type="text"
+//         placeholder="Search by volunteer name, role, past event"
+//         style={{ width: "200%", height: "100%", fontSize: "18px" }}
+//       />
+//     </div>
+//   );
+// };
 
 export default function ProfileDatabase() {
   const [volunteers, setVolunteers] = useState<IVolunteer[] | null>(null);
@@ -226,6 +207,9 @@ export default function ProfileDatabase() {
       <Navbar />
       <div style={{ height: "75%", width: "75%", overflowX: "hidden" }}>
         <ThemeProvider theme={pageTheme}>
+          <Typography fontSize={24} align="center" paddingBottom={1}>
+            Volunteer Database
+          </Typography>
           <DataGrid
             style={{ width: "100%" }}
             autoHeight
@@ -255,6 +239,9 @@ export default function ProfileDatabase() {
               },
               ".custom-quick-filter": {
                 width: "150%",
+              },
+              ".css-wop1k0-MuiDataGrid-footerContainer": {
+                background: "#f6f6f6",
               },
             }}
           />
