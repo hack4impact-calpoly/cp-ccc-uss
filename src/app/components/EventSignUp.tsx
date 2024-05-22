@@ -30,12 +30,13 @@ import { useUser } from "@clerk/nextjs";
 import { set } from "mongoose";
 
 type EventSignUpProps = {
-  eventData?: IEvent; // optional to prefill modal with event data
+  prefilledEventId?: string; // optional to prefill modal with event data
   buttonText?: string;
+  isEventPast: boolean;
 };
 
-export default function EventSignUp({ eventData, buttonText }: EventSignUpProps) {
-  const [event, setEvent] = useState<IEvent | null>(eventData || null);
+export default function EventSignUp({ prefilledEventId, buttonText, isEventPast }: EventSignUpProps) {
+  const [event, setEvent] = useState<IEvent | null>(null);
   const [upcomingEvents, setUpcomingEvents] = useState<IEvent[]>([]);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<IVolunteerRole[]>([]);
@@ -59,6 +60,12 @@ export default function EventSignUp({ eventData, buttonText }: EventSignUpProps)
   useEffect(() => {
     fetchForm();
   }, [event]);
+
+  useEffect(() => {
+    if (prefilledEventId && upcomingEvents.length > 0) {
+      handleEventInput(prefilledEventId);
+    }
+  }, [prefilledEventId, upcomingEvents]);
 
   // clear modal info when close modal (resets)
   function handleClose() {
@@ -414,7 +421,7 @@ export default function EventSignUp({ eventData, buttonText }: EventSignUpProps)
 
   return (
     <Box m={4}>
-      <Button colorScheme="teal" onClick={onOpen}>
+      <Button colorScheme="teal" onClick={onOpen} isDisabled={isEventPast}>
         { buttonText || "Event Sign Up" }
       </Button>
       <Modal isOpen={isOpen} onClose={handleClose} size="xl">
