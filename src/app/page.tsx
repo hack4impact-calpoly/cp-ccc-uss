@@ -50,7 +50,7 @@ export default function Home() {
             </div>) :
             null}
         </div>
-        <EventSignUp id={"test"} />
+        <EventSignUp />
         <div className="h-screen">
         </div>
         <div style={{ width: "70%", margin: "20px" }}>

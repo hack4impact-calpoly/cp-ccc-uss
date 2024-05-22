@@ -29,12 +29,13 @@ import { Select as ChakraReactSelect } from "chakra-react-select";
 import { useUser } from "@clerk/nextjs";
 import { set } from "mongoose";
 
-type IParams = {
-  id: string;
+type EventSignUpProps = {
+  eventData?: IEvent; // optional to prefill modal with event data
+  buttonText?: string;
 };
 
-export default function EventSignUp({ id }: IParams) {
-  const [event, setEvent] = useState<IEvent | null>(null);
+export default function EventSignUp({ eventData, buttonText }: EventSignUpProps) {
+  const [event, setEvent] = useState<IEvent | null>(eventData || null);
   const [upcomingEvents, setUpcomingEvents] = useState<IEvent[]>([]);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<IVolunteerRole[]>([]);
@@ -414,7 +415,7 @@ export default function EventSignUp({ id }: IParams) {
   return (
     <Box m={4}>
       <Button colorScheme="teal" onClick={onOpen}>
-        Event Sign Up
+        { buttonText || "Event Sign Up" }
       </Button>
       <Modal isOpen={isOpen} onClose={handleClose} size="xl">
         <ModalOverlay />
@@ -440,6 +441,7 @@ export default function EventSignUp({ id }: IParams) {
                   Event Sign Up
                 </Heading>
                 <Select
+                  value={event?._id || ""}
                   placeholder="Select Event"
                   onChange={(e) => {
                     handleEventInput(e.target.value);

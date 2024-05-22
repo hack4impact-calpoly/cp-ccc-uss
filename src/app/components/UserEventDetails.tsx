@@ -8,6 +8,7 @@ import { useUser } from "@clerk/nextjs";
 import {
     SignInButton,
   } from "@clerk/nextjs";
+import EventSignUp from "@components/EventSignUp";
 
 type IParams = {
   id: string;
@@ -80,7 +81,7 @@ export default function UserEventDetails({ id }: IParams) {
             </div>
             <div className={style.buttonContainer}>
               {(user && isSignedIn && isLoaded) ? (
-              <button className={style.button}>Sign Up</button>
+                <EventSignUp eventData={eventData} buttonText="Sign Up" />
               ) : 
               (
               <SignInButton>
