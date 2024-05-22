@@ -61,7 +61,7 @@ const columns: GridColDef[] = [
     field: "name",
     headerName: "Name",
     headerClassName: `${style.headerRow}`,
-    width: 300,
+    flex: 1,
     renderCell: (params: GridRenderCellParams) => (
       <div>
         <Typography fontWeight={"bold"}>
@@ -75,7 +75,7 @@ const columns: GridColDef[] = [
     field: "roles",
     headerName: "Roles",
     headerClassName: `${style.headerRow}`,
-    width: 300,
+    flex: 1,
     renderCell: (
       params // map volunteer tags to UI chips or "No Tags" chip
     ) => (
@@ -94,7 +94,7 @@ const columns: GridColDef[] = [
     field: "tags",
     headerName: "Tags",
     headerClassName: `${style.headerRow}`,
-    width: 300,
+    flex: 1,
     renderCell: (
       params // map volunteer tags to UI chips or "No Tags" chip
     ) => (
@@ -113,7 +113,7 @@ const columns: GridColDef[] = [
     field: "event-type",
     headerName: "Event Type",
     headerClassName: `${style.headerRow}`,
-    width: 300,
+    flex: 1,
     renderCell: (
       params // map event prefs to UI chips or "No Event Types" chip
     ) => (
@@ -224,9 +224,11 @@ export default function ProfileDatabase() {
       }}
     >
       <Navbar />
-      <div style={{ height: "75%", width: "75%" }}>
+      <div style={{ height: "75%", width: "75%", overflowX: "hidden" }}>
         <ThemeProvider theme={pageTheme}>
           <DataGrid
+            style={{ width: "100%" }}
+            autoHeight
             rows={volunteers}
             getRowId={(row) => row._id}
             rowHeight={70}
