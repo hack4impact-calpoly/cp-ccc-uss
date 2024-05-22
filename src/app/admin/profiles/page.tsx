@@ -139,7 +139,7 @@ function CustomToolbar() {
   return (
     <GridToolbarContainer className={style.customToolbarContainer}>
       <div className={style.customToolbarSearch}>
-        <GridToolbarQuickFilter />
+        <GridToolbarQuickFilter classes={{ root: "custom-quick-filter" }} />
       </div>
       <div className={style.customToolbarFilterandExport}>
         <GridToolbarFilterButton />
@@ -148,6 +148,19 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
+
+const CustomQuickFilterbar = () => {
+  return (
+    <div style={{ height: "64px", padding: "16px", boxSizing: "border-box" }}>
+      {/* Your custom toolbar content */}
+      <input
+        type="text"
+        placeholder="Search by volunteer name, role, past event"
+        style={{ width: "200%", height: "100%", fontSize: "18px" }}
+      />
+    </div>
+  );
+};
 
 export default function ProfileDatabase() {
   const [volunteers, setVolunteers] = useState<IVolunteer[] | null>(null);
@@ -234,6 +247,12 @@ export default function ProfileDatabase() {
             sx={{
               ".css-1essi2g-MuiDataGrid-columnHeaderRow": {
                 fontSize: 18,
+              },
+              ".css-c63i49-MuiInputBase-input-MuiInput-input": {
+                fontSize: 16,
+              },
+              ".custom-quick-filter": {
+                width: "150%",
               },
             }}
           />
