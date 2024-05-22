@@ -4,6 +4,7 @@ import {
   GridRowsProp,
   GridColDef,
 } from "@mui/x-data-grid";
+import { IVolunteer } from "@database/volunteerSchema";
 import style from "./VolunteerProfile.module.css";
 import { useEffect, useState } from "react";
 import Navbar from "@components/Navbar";
@@ -11,9 +12,9 @@ import { Heading, Button, useDisclosure, Alert, AlertIcon, Box, AlertTitle, Aler
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useUser } from "@clerk/clerk-react";
 import { Avatar } from "@mui/material";
-import { Select as ChakraReactSelect } from "chakra-react-select";
+import { Select as ChakraReactSelect, OptionBase } from "chakra-react-select";
 
-interface SelectOption {
+interface SelectOption extends OptionBase {
   value: string;
   label: string;
 }
@@ -114,12 +115,25 @@ const columns: GridColDef[] = [
   { field: "description", headerName: "Event Description", width: 300 },
 ];
 
+export const languageOptions = [
+  { value: 'englishFluent', label: 'English fluent' },
+  { value: 'spanishFluent', label: 'Spanish fluent' },
+  { value: 'englishBasic', label: 'English basic' },
+  { value: 'spanishBasic', label: 'Spanish basic' },
+]
+
+export const skillOptions = [
+  { value: 'legalExpertise', label: 'Legal expertise' },
+  { value: 'socialMedia', label: 'Social media experience' },
+  { value: 'accounting', label: 'Accounting experience' },
+]
+
 export default function VolunteerProfile() {
   const user = useUser();
 
   const [events, setEvents] = useState<GridRowsProp>([]);
-  const [languages, setLanguages] = useState<string[]>([]);
-  const [skills, setSkills] = useState<string[]>([]);
+  const [languages, setLanguages] = useState<readonly SelectOption[]>([]);
+  const [skills, setSkills] = useState<readonly SelectOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const userEmail = user?.user?.primaryEmailAddress?.toString() ?? "";
@@ -128,13 +142,13 @@ export default function VolunteerProfile() {
   const [buttonLoading, setButtonLoading] = useState(false);
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchEventsandTags = async () => {
       setLoading(true);
       try {
         const volunteerId = await getVolunteerID(userEmail);
         if (volunteerId) {
           // Get volunteer entries using volunteer ID
-          const volunteer = await getVolunteerData(volunteerId);
+          const volunteer: IVolunteer = await getVolunteerData(volunteerId);
           const eventPromises = volunteer.entries.map(async (entry: string) => {
             const entryDetails = await getEntryDetails(entry);
             if (entryDetails) {
@@ -162,6 +176,10 @@ export default function VolunteerProfile() {
           const eventResults = await Promise.all(eventPromises);
           const filteredEvents = eventResults.flat().filter((event) => event !== null);
           setEvents(filteredEvents);
+
+          // get tags from Volunteer and set select values
+          setLanguages(languageOptions.filter((opt) => volunteer.tags?.includes(opt.value)))
+          setSkills(skillOptions.filter((opt) => volunteer.tags?.includes(opt.value)))
         } else {
           setError(true);
           console.error("Volunteer ID not found.");
@@ -175,21 +193,15 @@ export default function VolunteerProfile() {
     };
 
     if (userEmail) {
-      fetchEvents();
+      fetchEventsandTags();
     }
   }, [userEmail]);
 
-  async function handleLanguageSelect(languages: string[]) {
-    setLanguages(languages);
-  };
-
-  async function handleSkillsSelect(skills: string[]) {
-    setSkills(skills);
-  }
-
   async function handleSavePreferences() {
     setButtonLoading(true);
-    const updatedTags = languages.concat(skills);
+    const stringLangs = languages.map((el) => el.value);
+    const stringSkills = skills.map((el) => el.value);
+    const combinedTags = stringLangs.concat(stringSkills);
 
     try {
       const volunteerId = await getVolunteerID(
@@ -198,7 +210,7 @@ export default function VolunteerProfile() {
 
       if (volunteerId) {
         const volunteer = await getVolunteerData(volunteerId);
-        const updatedVolunteer = { ...volunteer, tags: updatedTags };
+        const updatedVolunteer = { ...volunteer, tags: combinedTags };
 
         const response = await fetch(`/api/volunteer/${volunteerId}`, {
           method: 'PUT',
@@ -281,18 +293,10 @@ export default function VolunteerProfile() {
           <ChakraReactSelect 
             isMulti 
             name="languages"
-            options={[
-              { value: 'englishFluent', label: 'English fluent' },
-              { value: 'spanishFluent', label: 'Spanish fluent' },
-              { value: 'englishBasic', label: 'English basic' },
-              { value: 'spanishBasic', label: 'Spanish basic' },
-            ]}
-            onChange={(selectedOptions) =>
-              handleLanguageSelect(
-                selectedOptions.map((option) => option.value)
-              )
-            }
+            options={languageOptions}
+            onChange={setLanguages}
             placeholder="Select languages..."
+            value={languages}
             chakraStyles={{
               control: (provided, state) => ({
                 ...provided,
@@ -311,17 +315,10 @@ export default function VolunteerProfile() {
           <ChakraReactSelect 
             isMulti 
             name="skills_experience"
-            options={[
-              { value: 'legalExpertise', label: 'Legal expertise' },
-              { value: 'socialMedia', label: 'Social media experience' },
-              { value: 'accounting', label: 'Accounting experience' },
-            ]}
-            onChange={(selectedOptions) =>
-              handleSkillsSelect(
-                selectedOptions.map((option) => option.value)
-              )
-            }
+            options={skillOptions}
+            onChange={setSkills}
             placeholder="Select skills/experience..."
+            value={skills}
             chakraStyles={{
               control: (provided, state) => ({
                 ...provided,
