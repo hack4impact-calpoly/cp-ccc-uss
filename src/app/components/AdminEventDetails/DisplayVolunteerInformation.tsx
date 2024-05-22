@@ -9,6 +9,12 @@ import type {
   IVolunteerRoleTimeslot,
 } from "../../../database/volunteerRoleSchema";
 import style from "./AdminEventDetails.module.css";
+import {
+  Box,
+  Text,
+  Heading,
+  Flex,
+} from "@chakra-ui/react";
 
 type Props = {
   name: string;
@@ -16,7 +22,7 @@ type Props = {
   responses: IFormAnswer[];
 };
 
-export default function VolunteerDetails({ name, roles, responses }: Props) {
+export default function DisplayVolunteerInformation({ name, roles, responses }: Props) {
   function parseDate(date: Date) {
     return new Date(date).toLocaleTimeString("en-US", {
       hour: "2-digit",
@@ -25,29 +31,56 @@ export default function VolunteerDetails({ name, roles, responses }: Props) {
     });
   }
   return (
-    <div>
-      <h2>{name}</h2>
-      {roles.map((role, Index) => (
-        <div key={Index}>
-          <h3>
-            {role.roleName} -
-            <div className={style.openTime}>
+    <Box>
+      <Heading size="md" mb={4}>{name}</Heading>
+      {roles.map((role, index) => (
+        <Box key={index} mb={4}>
+          <Flex align="center">
+            <Box
+              w={2}
+              h={2}
+              borderRadius="full"
+              bg="yellow.400"
+              mr={2}
+              mb={2}
+            />
+            <Heading size="sm" mb={2}>
+              {role.roleName}
+              
+            </Heading>
+            <Flex 
+              className={style.openTime}
+              ml={4}>
               {role.timeslots.map((timeslot, subIndex) => (
-                <span key={subIndex}>
-                  {parseDate(timeslot.startTime)} -{" "}
-                  {parseDate(timeslot.endTime)}
-                </span>
+                <Text key={subIndex} mb={1} fontSize="sm">
+                  {parseDate(timeslot.startTime)} - {parseDate(timeslot.endTime)} {"\xa0"}
+                  
+                </Text>
+                
               ))}
-            </div>
-          </h3>
-          {responses.map((response: IFormAnswer, Index2) => (
-            <div key={Index2}>
-              <p>{response.question}</p>
-              <p>{response.answer}</p>
-            </div>
+            </Flex>
+          </Flex>
+
+          {responses.map((response, index2) => (
+            <Flex key={index2} align="center">
+              <Box
+                w={4}
+                h={4}
+                borderRadius="full"
+                border="1px solid"
+                borderColor="gray.400"
+                mr={2}
+                mb={5}
+              />
+              <Box>
+                <Text fontWeight="bold">{response.question}</Text>
+                <Text>{response.answer}</Text>
+              </Box>
+            </Flex>
           ))}
-        </div>
+        </Box>
       ))}
-    </div>
+    </Box>
   );
+  
 }

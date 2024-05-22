@@ -13,16 +13,27 @@ import style from "./AdminEventDetails.module.css";
 import {
   Modal,
   ModalOverlay,
-  useDisclosure,
+  UseDisclosureReturn,
   ModalContent,
   ModalHeader,
   ModalBody,
+  Box,
+  Button,
+  Input,
+  Text,
+  List,
+  ListItem,
+  Heading,
+  Flex
 } from "@chakra-ui/react";
 import DisplayVolunteerInformation from "./DisplayVolunteerInformation";
 
 type Props = {
   _id: string;
-};
+  isOpen: UseDisclosureReturn["isOpen"];
+  onOpen: UseDisclosureReturn["onOpen"];
+  onClose: UseDisclosureReturn["onClose"];
+}
 
 type VolunteerEntry = {
   _id: string;
@@ -32,12 +43,11 @@ type VolunteerEntry = {
   responses: IFormAnswer[];
 };
 
-export default function VolunteerDetails({ _id }: Props) {
+export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props) {
   const [volunteerEntries, setVolunteerEntries] = useState<VolunteerEntry[]>(
     []
   );
   const [searchItem, setSearchItem] = useState<string>("");
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [filteredEntries, setFilteredEntries] = useState<VolunteerEntry[]>([]);
   const [loading, setLoading] = useState<Boolean>(true);
   const [error, setError] = useState(null);
@@ -108,52 +118,72 @@ export default function VolunteerDetails({ _id }: Props) {
   }, []);
 
   return (
-    <div>
-      <button
-        onClick={onOpen}
-        style={{
-          background: "transparent",
-          border: "none",
-          textDecoration: "underline",
-          color: "#00aa9e",
-          cursor: "pointer",
-          fontFamily: "sans-serif",
-          fontSize: "20px",
-        }}
-      >
-        more details
-      </button>
+    <Box p={4} pl={12}> 
+      <Box>
+        {!loading && !error && filteredEntries.length === 0 ? (
+          <Text>No volunteers found.</Text>
+        ) : (
+          <List spacing={4}>
+            {volunteerEntries.map((entry, index) => (
+              <ListItem key={index}>
+                <Box>
+                    <Heading fontSize="20px">{entry.volunteer.name}</Heading>
+                  {entry.roles.map((role, roleIndex) => (
+                    <Flex align="center">
+                      <Heading as="i" fontSize="sm">
+                        {role.roleName} -
+                      </Heading>
+                      <Flex 
+                        className={style.openTime}
+                        ml={1}>
+                        {role.timeslots.map((timeslot, subIndex) => (
+                          <Text key={subIndex} fontSize="sm">
+                            {parseDate(timeslot.startTime)} - {parseDate(timeslot.endTime)} {"\xa0"}
+                          </Text> 
+                        ))}
+                      </Flex>
+                    </Flex>
+                  ))}
+                </Box>
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </Box>
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Volunteer Details</ModalHeader>
           <ModalBody>
-            <input
+            <Input
               type="text"
               value={searchItem}
               onChange={handleSearchChange}
               placeholder="Type to search"
+              mb={4}
             />
-            {loading && <p>Loading...</p>}
-            {error && <p>There was an error loading the volunteer details.</p>}
+            {loading && <Text>Loading...</Text>}
+            {error && <Text>There was an error loading the volunteer details.</Text>}
             {!loading && !error && filteredEntries.length === 0 ? (
-              <p>No volunteers found.</p>
+              <Text>No volunteers found.</Text>
             ) : (
-              <ul>
+              <List spacing={3}>
                 {filteredEntries.map((entry, Index) => (
-                  <li key={Index}>
-                    <DisplayVolunteerInformation
-                      name={entry.volunteer.name}
-                      roles={entry.roles}
-                      responses={entry.responses}
-                    />
-                  </li>
+                  <ListItem key={Index}>
+                    <Box>
+                      <DisplayVolunteerInformation
+                        name={entry.volunteer.name}
+                        roles={entry.roles}
+                        responses={entry.responses}
+                      />
+                    </Box>
+                  </ListItem>
                 ))}
-              </ul>
+              </List>
             )}
           </ModalBody>
         </ModalContent>
       </Modal>
-    </div>
+    </Box>
   );
 }
