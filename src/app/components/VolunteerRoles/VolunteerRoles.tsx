@@ -172,13 +172,12 @@ export default function AddVolunteerRoles(props: {
             <FormControl width="145px">
               <Select
                 value={selectedRoleIndex !== null ? selectedRoleIndex : ""}
-                borderColor="customGray"
-                color="customGray"
+                color="white"
+                bg='teal'
                 borderRadius="12px"
                 fontSize={14}
                 size="sm"
                 onChange={handleRoleSelect}
-
               >
                 <option value="">Select Role</option>
                 {props.roles.map((role, index) => (

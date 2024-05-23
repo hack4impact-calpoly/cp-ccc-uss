@@ -85,6 +85,12 @@ export default function AddQuestions(props: {
     }
   };
 
+  const handleDeleteQuestion = (questionIndex: number) => {
+    const updatedQuestions = [...props.questions];
+    updatedQuestions.splice(questionIndex, 1);
+    props.setQuestions(updatedQuestions);
+  };
+
   const addQuestion = () => {
     const emptyQuestion: IFormQuestion = {
       question: "",
@@ -130,6 +136,12 @@ export default function AddQuestions(props: {
                 <option value="SHORT_ANSWER">Short Answer</option>
               </Select>
             </FormControl>
+            <IconButton
+              aria-label="Delete question"
+              icon={<DeleteIcon />}
+              onClick={() => handleDeleteQuestion(index)}
+              variant="unstyled"
+            />
           </Flex>
 
           <Box>
