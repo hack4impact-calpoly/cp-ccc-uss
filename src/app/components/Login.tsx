@@ -28,7 +28,7 @@ export default function Login() {
             </SignedIn>
             <SignedOut>
                 {/* Signed out users get sign in button */}
-                <SignInButton signUpForceRedirectUrl="/signup-redirect">
+                <SignInButton>
                     <Button>
                         Login
                     </Button>
