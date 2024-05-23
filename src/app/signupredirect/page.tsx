@@ -1,10 +1,12 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { useUser } from "@clerk/clerk-react";
+// import { useRouter } from 'next/router';
 
 export default function SignUpRedirect() {
   const { isSignedIn, user, isLoaded } = useUser();
   const [volunteerAdded, setVolunteerAdded] = useState(false);
+  // const router = useRouter();
 
   useEffect(() => {
     if (isSignedIn && isLoaded && user && !volunteerAdded) {
@@ -25,6 +27,8 @@ export default function SignUpRedirect() {
             }),
           });
           setVolunteerAdded(true);
+          // router.push('/');
+          window.location.href = '/'; // Redirect to home page
         } catch (err) {
           console.error("Error adding volunteer:", err);
         }
