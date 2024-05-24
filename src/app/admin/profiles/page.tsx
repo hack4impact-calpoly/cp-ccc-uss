@@ -134,19 +134,6 @@ function CustomToolbar() {
   );
 }
 
-// const CustomQuickFilterbar = () => {
-//   return (
-//     <div style={{ height: "64px", padding: "16px", boxSizing: "border-box" }}>
-//       {/* Your custom toolbar content */}
-//       <input
-//         type="text"
-//         placeholder="Search by volunteer name, role, past event"
-//         style={{ width: "200%", height: "100%", fontSize: "18px" }}
-//       />
-//     </div>
-//   );
-// };
-
 export default function ProfileDatabase() {
   const [volunteers, setVolunteers] = useState<IVolunteer[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -230,8 +217,6 @@ export default function ProfileDatabase() {
   }, [volunteers]);
 
   const getRowHeight = (rows) => {
-    // console.log("in getRowHeight, row.id =", rows.id);
-    // console.log(rowHeights, rowHeights[rows.id]);
     return rowHeights[rows.id] || 70;
   };
 
@@ -258,9 +243,6 @@ export default function ProfileDatabase() {
             autoHeight
             rows={volunteers}
             getRowId={(row) => row._id}
-            // variableRowHeight
-            // wordWrap
-            // rowHeight={70}
             getRowHeight={getRowHeight}
             columns={columns}
             getRowClassName={headerRowName}
