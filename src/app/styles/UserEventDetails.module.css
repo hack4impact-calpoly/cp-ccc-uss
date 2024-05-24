@@ -54,7 +54,7 @@
   white-space: nowrap;
 }
 
-.button-container {
+.buttonContainer {
   display: flex;
   justify-content: center;
   margin-top: 20px; /* Adjust the space between the button and the description box */
