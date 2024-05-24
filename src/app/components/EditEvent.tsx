@@ -12,15 +12,15 @@ interface EditEventProps {
   event: IEvent[];
   setEvent: React.Dispatch<React.SetStateAction<IEvent[] | null>>;
   onOpen: () => void;
-  onClose: () => void;
   eventId: string;
+  onEventUpdated: (updatedEvent: IEvent) => void;
 }
 
 type Props = {
     _id: string ;
 };
 
-function EditEvent({ event, setEvent, onOpen, onClose, eventId }: EditEventProps) {
+function EditEvent({ event, setEvent, onClose, eventId, onEventUpdated }: EditEventProps) {
   const [eventName, setEventName] = useState(event.name);
   const [date, setDate] = useState<Date>(new Date(event.date));
   const [description, setDescription] = useState(event.description);
@@ -73,6 +73,7 @@ function EditEvent({ event, setEvent, onOpen, onClose, eventId }: EditEventProps
           const updatedEvent = await updateEventResponse.json();
           console.log("Event updated successfully:", updatedEvent);
           setEvent(updatedEvent);
+          onEventUpdated(updatedEvent);
           onClose(); 
         } else {
           console.error("Error updating event:", await updateEventResponse.text());

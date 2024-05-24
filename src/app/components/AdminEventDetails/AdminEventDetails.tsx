@@ -138,6 +138,10 @@ export default function AdminEventDetails({ _id }: Props) {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure(); // for edit modal
 
+  const onEventUpdated = (updatedEvent: IEvent) => {
+    console.log("Updating event in parent:", updatedEvent);
+    setEvent(updatedEvent);
+  };
 
   //fetch event, then roles for that event
   useEffect(() => {
@@ -184,6 +188,7 @@ export default function AdminEventDetails({ _id }: Props) {
                 {event && (<EditEvent
                   event={event}
                   setEvent={setEvent}
+                  onEventUpdated={onEventUpdated}
                   setRoles={setRoles}
                   onClose={onClose}
                   eventId={_id}
