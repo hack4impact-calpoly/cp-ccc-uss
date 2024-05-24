@@ -206,14 +206,14 @@ export default function ProfileDatabase() {
         let rowHeight = 70;
         if (volunteers[i].roles) {
           rowHeight = Math.max(
-            Math.ceil(volunteers[i].roles.length / 2) * 20 + 50,
+            Math.ceil(volunteers[i].roles.length / 2) * 25 + 50,
             70
           );
         }
         if (volunteers[i].tags) {
           rowHeight = Math.max(
             rowHeight,
-            Math.ceil(volunteers[i].tags.length / 2) * 20 + 50
+            Math.ceil(volunteers[i].tags.length / 2) * 25 + 50
           );
         }
         newHeights[volunteers[i]._id] = rowHeight;
@@ -289,8 +289,10 @@ export default function ProfileDatabase() {
               ".css-wop1k0-MuiDataGrid-footerContainer": {
                 background: "#f6f6f6",
               },
-              ".css-niqf4j-MuiStack-root": {
+              ".css-gavykb-MuiChip-root": {
                 justifyContent: "space",
+                marginBottom: 1,
+                alignSelf: "left",
               },
             }}
           />
