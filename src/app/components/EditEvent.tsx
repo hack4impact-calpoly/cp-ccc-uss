@@ -9,8 +9,8 @@ import AddQuestions from "@components/AddQuestions/AddQuestions";
 import { IEvent } from "@database/eventSchema";
 
 interface EditEventProps {
-  events: IEvent[];
-  setEvents: React.Dispatch<React.SetStateAction<IEvent[]>>;
+  event: IEvent[];
+  setEvent: React.Dispatch<React.SetStateAction<IEvent[] | null>>;
   onOpen: () => void;
   onClose: () => void;
   eventId: string;
@@ -20,15 +20,13 @@ type Props = {
     _id: string ;
 };
 
-function EditEvent({ events, setEvents, onOpen, onClose, eventId }: EditEventProps) {
-  const [eventName, setEventName] = useState("");
-  const [date, setDate] = useState<Date>(new Date());
-  const [description, setDescription] = useState("");
-  const [questions, setQuestions] = useState<IFormQuestion[]>([]);
-  const [roles, setRoles] = useState<IVolunteerRole[]>([]);
-  const [location, setLocation] = useState("default location");
-  // const [eventId, setEventId] = useState("663c2f0ed3954490f0c0c846");
-  const [loading, setLoading] = useState(true);
+function EditEvent({ event, setEvent, onOpen, onClose, eventId }: EditEventProps) {
+  const [eventName, setEventName] = useState(event.name);
+  const [date, setDate] = useState<Date>(new Date(event.date));
+  const [description, setDescription] = useState(event.description);
+  const [questions, setQuestions] = useState<IFormQuestion[]>(event.questions);
+  const [roles, setRoles] = useState<IVolunteerRole[]>(event.roles);
+  const [location, setLocation] = useState(event.location);
   const [error, setError] = useState('');
 
   const btnRef = React.useRef(null);
@@ -50,48 +48,11 @@ function EditEvent({ events, setEvents, onOpen, onClose, eventId }: EditEventPro
     setDate(selectedDate);
   };
 
-  const clearInputs = () => {
-    setEventName("");
-    setDate(new Date());
-    setDescription("");
-    setQuestions([]);
-    setRoles([]);
-    setLocation("default location");
-  };
-
-  const fetchEventData = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const response = await fetch(`/api/event/${eventId}`);
-      const eventData = await response.json();
-
-      if (response.ok) {
-        setEventName(eventData.name);
-        setDate(new Date(eventData.date));
-        setDescription(eventData.description);
-        setQuestions(eventData.questions);
-        setRoles(eventData.roles);
-        setLocation(eventData.location);
-      } else {
-        throw new Error(`Failed to fetch event data: ${response.status}`);
-      }
-    } catch (error) {
-      console.error("Error fetching event data:", error);
-      setError(`Failed to load event details. Please try again.`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchEventData();
-  }, [eventId]);
-
-  if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   const handleSubmit = async () => {
+    if(!event) return;
+  
     try{
         const updateEventResponse = await fetch(`/api/event/${eventId}`, {
           method: "PUT",
@@ -111,8 +72,7 @@ function EditEvent({ events, setEvents, onOpen, onClose, eventId }: EditEventPro
         if (updateEventResponse.ok) {
           const updatedEvent = await updateEventResponse.json();
           console.log("Event updated successfully:", updatedEvent);
-          // setEvents(events.map(event => event._id === eventId ? updatedEvent : event)); 
-          clearInputs();
+          setEvent(updatedEvent);
           onClose(); 
         } else {
           console.error("Error updating event:", await updateEventResponse.text());

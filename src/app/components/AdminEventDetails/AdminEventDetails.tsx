@@ -181,13 +181,14 @@ export default function AdminEventDetails({ _id }: Props) {
             <ModalOverlay />
             <ModalContent>
                 <ModalCloseButton />
-                <EditEvent
-                  events={[event]}
-                  setEvents={setEvent}
+                {event && (<EditEvent
+                  event={event}
+                  setEvent={setEvent}
                   setRoles={setRoles}
                   onClose={onClose}
                   eventId={_id}
                 />
+                )}
                 {/* content here */}
             </ModalContent>
           </Modal>
