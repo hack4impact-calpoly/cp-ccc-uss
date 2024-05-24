@@ -3,8 +3,10 @@ import {
   DataGrid,
   GridRowsProp,
   GridColDef,
+  GridRowParams,
 } from "@mui/x-data-grid";
 import { IVolunteer } from "@database/volunteerSchema";
+import { IVolunteerRole, IVolunteerRoleTimeslot } from "@database/volunteerRoleSchema";
 import style from "./VolunteerProfile.module.css";
 import { useEffect, useState } from "react";
 import Navbar from "@components/Navbar";
@@ -13,6 +15,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useUser } from "@clerk/clerk-react";
 import { Avatar } from "@mui/material";
 import { Select as ChakraReactSelect, OptionBase } from "chakra-react-select";
+import { Chip, Stack } from "@mui/material";
 
 interface SelectOption extends OptionBase {
   value: string;
@@ -107,12 +110,43 @@ async function getRoleDetails(roleId: string) {
   }
 }
 
+function getTimeslots(volunteerId: string, roleDetails: IVolunteerRole): IVolunteerRoleTimeslot[] {
+  return roleDetails.timeslots.filter((timeslot) => timeslot.volunteers.includes(volunteerId))
+}
+
+function dateToShiftTime(date: Date): string {
+  var pacificTime = new Date(date);
+  pacificTime.setMinutes(pacificTime.getMinutes() + (7 * 60))
+  let hours: number = pacificTime.getHours();
+  let minutes: number | string = pacificTime.getMinutes();
+  const ampm: string = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  minutes = minutes < 10 ? '0' + minutes : minutes.toString();
+  const strTime: string = hours + ':' + minutes + ampm;
+  return strTime;
+}
+
 const columns: GridColDef[] = [
-  { field: "event", headerName: "Event", width: 300 },
-  { field: "role", headerName: "Volunteer Role", width: 300 },
-  //{ field: "status", headerName: "Status", width: 300 },
-  { field: "date", headerName: "Date", width: 300 },
-  { field: "description", headerName: "Event Description", width: 300 },
+  { field: "event", headerName: "Event", flex: 1 },
+  { field: "role", headerName: "Volunteer Role", flex: 1 },
+  { field: "timeslots", headerName: "Shifts", flex: 1.2,
+    renderCell: (params) => ( // map timeslots to UI chips or "No Shifts" chip
+      <Stack direction="column" className={style.timeslots}>
+        {params.value && Array.isArray(params.value) ? params.value.map((timeslot: IVolunteerRoleTimeslot, index) => (
+          <Chip key={`${params.id}-tag-${index}`}
+                label={`${dateToShiftTime(timeslot.startTime)} - ${dateToShiftTime(timeslot.endTime)}`}
+                sx={{
+                  marginTop: '5px',
+                  marginBottom: '5px',
+                }}
+          />
+        )) : <Chip label="No Shifts" />}
+      </Stack>
+    )
+  },
+  { field: "date", headerName: "Date", flex: 1 },
+  { field: "description", headerName: "Event Description", flex: 2.5 },
 ];
 
 export const languageOptions = [
@@ -156,12 +190,13 @@ export default function VolunteerProfile() {
               if (eventDetails) {
                 // get role details for every roleId in entry.roles
                 const rolePromises = entryDetails.roles.map(async (roleId: string) => {
-                  const roleDetails = await getRoleDetails(roleId);
+                  const roleDetails: IVolunteerRole = await getRoleDetails(roleId);
                   if (roleDetails) {
                     return {
                       id: roleId,
                       event: eventDetails.name,
                       role: roleDetails.roleName,
+                      timeslots: getTimeslots(volunteerId, roleDetails),
                       date: new Date(eventDetails.date).toDateString(),
                       description: eventDetails.description,
                     };
@@ -253,10 +288,9 @@ export default function VolunteerProfile() {
         <div className={style.userInfo}>
           <Avatar
             src={user.user?.imageUrl}
-            sx={{ width: 100, height: 100 }}
             className={style.avatar}
           />
-          <h1 className={style.userName}>Volunteer Profile</h1>
+          <h1 className={style.userName}>{user.user?.fullName}</h1>
         </div>
         <div className={style.headingContainer}>
           <Heading as="h2" size="xl" className={style.heading}>
@@ -264,7 +298,7 @@ export default function VolunteerProfile() {
           </Heading>
         </div>
         <div className={style.yellowBar}></div>{" "}
-        <div>
+        <div className={style.datagridContainer}>
           <DataGrid
             initialState={{
               pagination: {
@@ -280,6 +314,13 @@ export default function VolunteerProfile() {
                 sort: "asc",
               },
             ]}
+            getRowHeight={() => 'auto'}
+            sx={{
+              '& .MuiDataGrid-row': {
+                display: 'flex',
+                flexDirection: 'row',
+              },
+            }}
           />
         </div>
       </div>
