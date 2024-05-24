@@ -341,9 +341,9 @@ export default function VolunteerProfile() {
             chakraStyles={{
               control: (provided, state) => ({
                 ...provided,
-                borderColor: "black",
+                borderColor: "#D0CFCF",
                 borderRadius: "10px",
-                marginBottom: "15px",
+                marginBottom: "10px",
               }),
               multiValue: (provided) => ({
                 ...provided,
@@ -363,9 +363,9 @@ export default function VolunteerProfile() {
             chakraStyles={{
               control: (provided, state) => ({
                 ...provided,
-                borderColor: "black",
+                borderColor: "#D0CFCF",
                 borderRadius: "10px",
-                marginBottom: "15px",
+                marginBottom: "10px",
               }),
               multiValue: (provided) => ({
                 ...provided,
