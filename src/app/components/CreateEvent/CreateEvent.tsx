@@ -18,7 +18,8 @@ import {
 } from "@chakra-ui/react";
 import AddQuestions from "@components/AddQuestions/AddQuestions";
 import { IEvent } from "@database/eventSchema";
-import { set } from "mongoose";
+import { Types, set } from "mongoose";
+import AddVolunteerRoles from "@components/VolunteerRoles/VolunteerRoles";
 
 interface CreateEventProps {
   events: IEvent[];
@@ -38,6 +39,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
 
   const btnRef = React.useRef(null);
 
+
   const handleChangeName = (e: any) => {
     setEventName(e.target.value);
   };
@@ -51,7 +53,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
     // Adjusting for time zone offset
     const timezoneOffset = selectedDate.getTimezoneOffset();
     selectedDate.setMinutes(selectedDate.getMinutes() + timezoneOffset);
-    
+
     setDate(selectedDate);
   };
 
@@ -67,6 +69,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
   const handleSubmit = async () => {
     let formIdTemp = "";
     let eventIdTemp = "";
+    let roleIdTemp : String[] = [];
     // Create form with placeholder eventId
     // Create event with new formId
     // Update form with new eventId
@@ -92,7 +95,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         console.error("Error creating Form:", err);
       }
 
-      // create event <roles not implemented yet> with new formId
+      // create event with new formId
       const response = await fetch("/api/event", {
         method: "POST",
         headers: {
@@ -101,7 +104,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         body: JSON.stringify({
           name: eventName,
           date: date,
-          roles: ["roleId1", "roleId2"],
+          roles: [],
           description: description,
           location: location,
           form: formIdTemp,
@@ -113,69 +116,123 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         eventIdTemp = createdEvent._id;
         setEvents([...events, createdEvent]);
         setEventId(createdEvent._id); // save event id for form
-        clearInputs();
-        onClose();
+        console.log("Event created with ID:", eventIdTemp);
+
       } else {
         const err = await response.text();
         console.error("Error creating event:", err);
       }
+
+      // Create volunteer roles
+      for (const role of roles) {
+        const timeslots = role.timeslots.map((timeslot) => ({
+          startTime: timeslot.startTime,
+          endTime: timeslot.endTime,
+          volunteers: [],
+        }));
+
+        const response3 = await fetch("/api/role", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            roleName: role.roleName,
+            description: "description",
+            timeslots: timeslots,
+            event: eventIdTemp, 
+          }),
+        });
+        if (response3.status === 201) {
+          const createdRole = await response3.json();
+          roleIdTemp.push(createdRole._id);
+          console.log("Role created with ID:", createdRole._id);
+
+        }
+        else {
+          const err = await response3.text();
+          console.error("Error creating volunteer role:", err);
+        }
+      }
+
+      // Step 4: Update event with created role IDs
+      const updateEventResponse = await fetch(`/api/event/${eventIdTemp}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          roles: roleIdTemp,
+        }),
+      });
+
+      if (updateEventResponse.status === 200) {
+        console.log("Event updated with roles:", roleIdTemp);
+      } else {
+        const err = await updateEventResponse.text();
+        console.error("Error updating event with roles:", err);
+      }
+
+      // update form with new eventId => now form and event have mutual id's
+      const response2 = await fetch("/api/form/" + formIdTemp, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          eventId: eventIdTemp,
+          questions: questions,
+        }),
+      });
+
+      if (response2.status == 201) {
+        const changedForm = await response2.json();
+      } else {
+        const err = await response2.text();
+        console.error("Error changing Form:", err);
+      }
+
+      clearInputs();
+      onClose();
     } catch (err) {
       console.error("Error creating event:", err);
-    }
-
-    // update form with new eventId => now form and event have mutual id's
-    const response2 = await fetch("/api/form/" + formIdTemp, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        eventId: eventIdTemp,
-        questions: questions,
-      }),
-    });
-
-    if (response2.status == 201) {
-      const changedForm = await response2.json();
-    } else {
-      const err = await response2.text();
-      console.error("Error changing Form:", err);
     }
   };
 
   return (
     <div className={styles.event}>
-        <h2 className={styles.eventHeader}>Create Event</h2>
-        <ModalCloseButton/>
-        <Input
-            placeholder="Event Name"
-            value={eventName}
-            onChange={handleChangeName}
-            borderColor="black"
-        />
-        <Input
-            placeholder="Select Date and Time"
-            type="date"
-            value={new Date(date).toLocaleDateString("en-CA")}
-            onChange={handleChangeDate}
-            borderColor="black"
-        />
-        <Textarea
-            placeholder="Event Description"
-            value={description}
-            onChange={handleChangeDesc}
-            width="463px"
-            height="197px"
-            borderColor="black"
-        />
-        <div>
-            <AddQuestions questions={questions} setQuestions={setQuestions} />
-        </div>
-        <div className={styles.createEventButton}>
-            <Button colorScheme="teal" onClick={handleSubmit}>
-                Create Event
-            </Button>
-        </div>
+      <h2 className={styles.eventHeader}>Create Event</h2>
+      <ModalCloseButton />
+      <Input
+        placeholder="Event Name"
+        value={eventName}
+        onChange={handleChangeName}
+        borderColor="black"
+      />
+      <Input
+        placeholder="Select Date and Time"
+        type="date"
+        value={new Date(date).toLocaleDateString("en-CA")}
+        onChange={handleChangeDate}
+        borderColor="black"
+      />
+      <Textarea
+        placeholder="Event Description"
+        value={description}
+        onChange={handleChangeDesc}
+        width="463px"
+        height="197px"
+        borderColor="black"
+      />
+      <div>
+        <AddQuestions questions={questions} setQuestions={setQuestions} />
+        <AddVolunteerRoles roles={roles} setRoles={setRoles} date={date}/>
+      </div>
+      <div className={styles.createEventButton}>
+        <Button colorScheme="teal" onClick={handleSubmit}>
+          Create Event
+        </Button>
+      </div>
     </div>
   );
 }

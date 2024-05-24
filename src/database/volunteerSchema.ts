@@ -4,7 +4,7 @@ export type IVolunteer = {
   _id: string;
   name: string;
   email: string;
-  languages?: string[];
+  tags?: string[];
   roles: string[];
   entries: string[];
   active: boolean;
@@ -13,7 +13,7 @@ export type IVolunteer = {
 const volunteerSchema = new Schema<IVolunteer>({
   name: { type: String, required: true },
   email: { type: String, required: true },
-  languages: { type: [String], required: false, default: [] },
+  tags: { type: [String], required: false, default: [] },
   roles: [{ type: String, ref: "VolunteerRoles" }],
   entries: [{ type: String, ref: "VolunteerEntries" }],
   active: { type: Boolean, required: true, default: true },

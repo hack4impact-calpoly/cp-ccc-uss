@@ -47,7 +47,7 @@ export async function PUT(req: NextRequest, { params }: IParams) {
 
     if (event) {
       const updatedEvent = await eventSchema.findByIdAndUpdate({ _id }, event);
-      return NextResponse.json(updatedEvent, { status: 201 });
+      return NextResponse.json(updatedEvent, { status: 200 });
     } else {
       console.error("Invalid request body");
       return NextResponse.json("Invalid request body", { status: 400 });
