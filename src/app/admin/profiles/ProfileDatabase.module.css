@@ -6,6 +6,10 @@
   justify-content: left;
 }
 
+.tagBubbles {
+  padding: 20;
+}
+
 .eventPreferences {
   display: flex;
   flex-wrap: wrap;

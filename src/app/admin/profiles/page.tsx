@@ -101,10 +101,14 @@ const columns: GridColDef[] = [
       <Stack direction="row" spacing={1} className={style.tags}>
         {params.value && Array.isArray(params.value) ? (
           params.value.map((tag, index) => (
-            <Chip key={`${params.id}-tag-${index}`} label={tag} />
+            <Chip
+              className={style.tagBubbles}
+              key={`${params.id}-tag-${index}`}
+              label={tag}
+            />
           ))
         ) : (
-          <Chip label="No Tags" />
+          <Chip className={style.tagBubbles} label="No Tags" />
         )}
       </Stack>
     ),
@@ -147,6 +151,7 @@ export default function ProfileDatabase() {
   const [volunteers, setVolunteers] = useState<IVolunteer[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [rowHeights, setRowHeights] = useState<{ [key: number]: number }>({});
 
   const pageTheme = createTheme({
     typography: {
@@ -192,6 +197,44 @@ export default function ProfileDatabase() {
 
   console.log("volunteers:", volunteers);
 
+  useEffect(() => {
+    const setHeightPerRow = () => {
+      let newHeights: { [key: number]: number } = {};
+      if (!volunteers) return;
+      for (let i = 0; i < volunteers.length; i++) {
+        // set the height of this row based on size of data
+        let rowHeight = 70;
+        if (volunteers[i].roles) {
+          rowHeight = Math.max(
+            Math.ceil(volunteers[i].roles.length / 2) * 20 + 50,
+            70
+          );
+        }
+        if (volunteers[i].tags) {
+          rowHeight = Math.max(
+            rowHeight,
+            Math.ceil(volunteers[i].tags.length / 2) * 20 + 50
+          );
+        }
+        newHeights[volunteers[i]._id] = rowHeight;
+        console.log(
+          i,
+          volunteers[i],
+          "height: ",
+          newHeights[volunteers[i]._id]
+        );
+      }
+      setRowHeights(newHeights);
+    };
+    setHeightPerRow();
+  }, [volunteers]);
+
+  const getRowHeight = (rows) => {
+    // console.log("in getRowHeight, row.id =", rows.id);
+    // console.log(rowHeights, rowHeights[rows.id]);
+    return rowHeights[rows.id] || 70;
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading volunteers.</div>;
 
@@ -215,7 +258,10 @@ export default function ProfileDatabase() {
             autoHeight
             rows={volunteers}
             getRowId={(row) => row._id}
-            rowHeight={70}
+            // variableRowHeight
+            // wordWrap
+            // rowHeight={70}
+            getRowHeight={getRowHeight}
             columns={columns}
             getRowClassName={headerRowName}
             slots={{
@@ -242,6 +288,9 @@ export default function ProfileDatabase() {
               },
               ".css-wop1k0-MuiDataGrid-footerContainer": {
                 background: "#f6f6f6",
+              },
+              ".css-niqf4j-MuiStack-root": {
+                justifyContent: "space",
               },
             }}
           />
