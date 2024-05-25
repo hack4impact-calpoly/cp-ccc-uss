@@ -103,17 +103,21 @@ const columns: GridColDef[] = [
         {params.value && Array.isArray(params.value) ? (
           params.value.map((tag, index) => {
             let tagLabel = "";
+            let tagColor = "#f6f6f6";
             for (let i = 0; i < languageOptions.length; i++) {
               if (languageOptions[i].value == tag) {
                 tagLabel = languageOptions[i].label;
+                tagColor = "#DDF9F7";
                 break;
               }
             }
-
-            for (let i = 0; i < skillOptions.length; i++) {
-              if (skillOptions[i].value == tag) {
-                tagLabel = skillOptions[i].label;
-                break;
+            if (tagLabel == "") {
+              for (let i = 0; i < skillOptions.length; i++) {
+                if (skillOptions[i].value == tag) {
+                  tagLabel = skillOptions[i].label;
+                  tagColor = "#FFEFD0";
+                  break;
+                }
               }
             }
             return (
@@ -121,6 +125,7 @@ const columns: GridColDef[] = [
                 className={style.tagBubbles}
                 key={`${params.id}-tag-${index}`}
                 label={tagLabel}
+                style={{ backgroundColor: tagColor }}
               />
             );
           })
