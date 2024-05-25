@@ -175,6 +175,7 @@ export default function ProfileDatabase() {
       setLoading(true);
       try {
         const data = await getVolunteers();
+        const roleTitlesDict = {};
         if (data) {
           for (let i = 0; i < data.length; i++) {
             // To place name over email in same column, make the "name" field of IVolunteer hold both
@@ -182,9 +183,14 @@ export default function ProfileDatabase() {
             // To display roles, get each role for each volunteer
             let roleTitles = [];
             for (let j = 0; j < data[i].roles.length; j++) {
-              let roleObj = await getRole(data[i].roles[j]);
-              if (roleObj) {
-                roleTitles.push(roleObj.roleName);
+              if (data[i].roles[j] in roleTitlesDict) {
+                roleTitles.push(roleTitlesDict[data[i].roles[j]]);
+              } else {
+                let roleObj = await getRole(data[i].roles[j]);
+                if (roleObj) {
+                  roleTitlesDict[data[i].roles[j]] = roleObj.roleName;
+                  roleTitles.push(roleObj.roleName);
+                }
               }
             }
             if (roleTitles.length == 0) roleTitles.push("No roles found");
