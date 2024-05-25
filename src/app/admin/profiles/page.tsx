@@ -19,6 +19,7 @@ import style from "./ProfileDatabase.module.css";
 import { IVolunteer } from "@database/volunteerSchema";
 import { useEffect, useState } from "react";
 import Navbar from "@components/Navbar";
+import { languageOptions, skillOptions } from "app/volunteerProfile/page";
 import { Heading } from "@chakra-ui/react";
 import { create } from "@mui/material/styles/createTransitions";
 import { grey } from "@mui/material/colors";
@@ -100,13 +101,29 @@ const columns: GridColDef[] = [
     ) => (
       <Stack direction="row" spacing={1} className={style.tags}>
         {params.value && Array.isArray(params.value) ? (
-          params.value.map((tag, index) => (
-            <Chip
-              className={style.tagBubbles}
-              key={`${params.id}-tag-${index}`}
-              label={tag}
-            />
-          ))
+          params.value.map((tag, index) => {
+            let tagLabel = "";
+            for (let i = 0; i < languageOptions.length; i++) {
+              if (languageOptions[i].value == tag) {
+                tagLabel = languageOptions[i].label;
+                break;
+              }
+            }
+
+            for (let i = 0; i < skillOptions.length; i++) {
+              if (skillOptions[i].value == tag) {
+                tagLabel = skillOptions[i].label;
+                break;
+              }
+            }
+            return (
+              <Chip
+                className={style.tagBubbles}
+                key={`${params.id}-tag-${index}`}
+                label={tagLabel}
+              />
+            );
+          })
         ) : (
           <Chip className={style.tagBubbles} label="No Tags" />
         )}
@@ -200,7 +217,7 @@ export default function ProfileDatabase() {
         if (volunteers[i].tags) {
           rowHeight = Math.max(
             rowHeight,
-            Math.ceil(volunteers[i].tags.length / 2) * 25 + 50
+            Math.ceil(volunteers[i].tags.length) * 25 + 50
           );
         }
         newHeights[volunteers[i]._id] = rowHeight;
