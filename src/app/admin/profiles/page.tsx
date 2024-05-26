@@ -1,28 +1,21 @@
 "use client";
-import * as React from "react";
 import {
   DataGrid,
-  GridRowsProp,
   GridColDef,
-  GridToolbar,
   GridToolbarContainer,
   GridToolbarFilterButton,
-  GridToolbarExportContainer,
   GridToolbarExport,
   GridToolbarQuickFilter,
   GridRenderCellParams,
 } from "@mui/x-data-grid";
 import type {} from "@mui/x-data-grid/themeAugmentation";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Chip, Stack, Toolbar, Typography, makeStyles } from "@mui/material";
+import { Chip, Stack, Typography } from "@mui/material";
 import style from "./ProfileDatabase.module.css";
 import { IVolunteer } from "@database/volunteerSchema";
 import { useEffect, useState } from "react";
 import Navbar from "@components/Navbar";
 import { languageOptions, skillOptions } from "app/volunteerProfile/page";
-import { Heading } from "@chakra-ui/react";
-import { create } from "@mui/material/styles/createTransitions";
-import { grey } from "@mui/material/colors";
 
 //get all volunteers
 async function getVolunteers() {
