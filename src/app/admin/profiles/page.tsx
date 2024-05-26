@@ -210,8 +210,6 @@ export default function ProfileDatabase() {
     setVolunteersData();
   }, []);
 
-  console.log("volunteers:", volunteers);
-
   useEffect(() => {
     const setHeightPerRow = () => {
       let newHeights: { [key: number]: number } = {};
@@ -232,12 +230,6 @@ export default function ProfileDatabase() {
           );
         }
         newHeights[volunteers[i]._id] = rowHeight;
-        console.log(
-          i,
-          volunteers[i],
-          "height: ",
-          newHeights[volunteers[i]._id]
-        );
       }
       setRowHeights(newHeights);
     };
@@ -284,7 +276,7 @@ export default function ProfileDatabase() {
             }}
             localeText={{
               toolbarQuickFilterPlaceholder:
-                "Search by volunteer name, role, past event",
+                "Search by volunteer name, role, or tags",
             }}
             sx={{
               ".css-1essi2g-MuiDataGrid-columnHeaderRow": {
