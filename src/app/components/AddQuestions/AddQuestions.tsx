@@ -10,25 +10,14 @@ import {
   List,
   ListItem,
   Select,
-  Circle,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { EmptyCircleIcon, PlusCircleIcon } from "../../styles/CustomElements";
-
-//add to parent component
-//const [questions, setQuestions] = useState<IFormQuestion[]>([])
-
-//when adding component
-//<AddQuestions questions={questions} setQuestions={setQuestions}/>
 
 export default function AddQuestions(props: {
   questions: IFormQuestion[];
   setQuestions: Function;
 }) {
-  const [newOptionInputs, setNewOptionInputs] = useState<{
-    [index: number]: string;
-  }>({});
-
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -61,6 +50,12 @@ export default function AddQuestions(props: {
     } else {
       console.error("Options are undefined");
     }
+  };
+
+  const handleDeleteQuestion = (index: number) => {
+    const updatedQuestions = [...props.questions];
+    updatedQuestions.splice(index, 1);
+    props.setQuestions(updatedQuestions);
   };
 
   const handleAddOption = (questionIndex: number) => {
@@ -130,6 +125,12 @@ export default function AddQuestions(props: {
                 <option value="SHORT_ANSWER">Short Answer</option>
               </Select>
             </FormControl>
+            <IconButton
+              aria-label="Delete question"
+              icon={<DeleteIcon />}
+              onClick={() => handleDeleteQuestion(index)}
+              variant="unstyled"
+            />
           </Flex>
 
           <Box>
@@ -160,6 +161,8 @@ export default function AddQuestions(props: {
                         icon={<DeleteIcon />}
                         onClick={() => handleDeleteOption(index, opIndex)}
                         variant="unstyled"
+                        opacity="0.7"
+                        _hover={{ opacity: "1" }}
                       />
                     </ListItem>
                   ))}
@@ -169,7 +172,7 @@ export default function AddQuestions(props: {
                       leftIcon={<PlusCircleIcon />}
                       variant="unstyled"
                       color="customGray"
-                      fontWeight="normal" 
+                      fontWeight="normal"
                       fontStyle={"italic"}
                     >
                       Add option
