@@ -91,9 +91,11 @@ const Calendar = ({ admin = false }) => {
   }, [events]);
 
   const eventBubbleContent = (arg) => {
-    return <div className={style.eventBubbleContent}>
-      {arg.event.title}
-      </div>;
+    return (
+      <div className={style.eventBubble}>
+        <div className={style.eventBubbleContent}>{arg.event.title}</div>
+      </div>
+    );
   };
 
   return (
