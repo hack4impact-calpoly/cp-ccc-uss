@@ -197,6 +197,12 @@ const calendarStyles = `
   font-family: sans-serif;
 }
 
+.fc-header-toolbar{
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+}
+
 .fc .fc-event {
   background-color: #C4F1DE;
   border-radius: 1em;
@@ -225,6 +231,7 @@ const calendarStyles = `
   justify-content: left;
   .fc-daygrid-day-number {
     font-family: Sans-serif;
+    font-size: 12px;
   }
 }
 
