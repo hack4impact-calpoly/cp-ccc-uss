@@ -200,7 +200,7 @@ const calendarStyles = `
 
 .fc-toolbar-chunk {
   padding-right: 2%;
-  margin-bottom: -20%;
+  margin-bottom: -20px;
 }
 
 .fc-toolbar-title {
