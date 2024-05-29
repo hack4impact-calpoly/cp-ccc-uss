@@ -64,7 +64,7 @@ export default function Home() {
             </div>
           ) : null}
         </div>
-        <div style={{ marginTop: "-100px", alignSelf: "center"}}>
+        <div style={{ marginTop: "-100px", alignSelf: "center" }}>
           <EventSignUp />
         </div>
         <div className="h-screen"></div>

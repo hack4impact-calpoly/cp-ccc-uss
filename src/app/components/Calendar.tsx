@@ -22,7 +22,6 @@ import AdminEventDetails from "./AdminEventDetails/AdminEventDetails";
 import CreateEvent from "./CreateEvent/CreateEvent";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import EventSignUp from "./EventSignUp";
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
