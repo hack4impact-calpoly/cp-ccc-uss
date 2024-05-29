@@ -4,7 +4,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import type { IEvent } from "@database/eventSchema";
-import style from "@styles/calendar.module.css";
+import style from "@styles/Calendar.module.css";
 import { useDisclosure } from "@chakra-ui/react";
 import { EventClickArg, EventContentArg } from "@fullcalendar/core/index.js";
 import {
