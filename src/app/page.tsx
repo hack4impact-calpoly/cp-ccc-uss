@@ -62,7 +62,19 @@ export default function Home() {
             </div>
           ) : null}
         </div>
-        <EventSignUp />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "70%",
+            margin: "0 15%",
+            textAlign: "center",
+          }}
+        >
+          <h1 style={{ margin: "20px 20px 20px 0", fontSize: "2rem" }}>Volunteer Events</h1>
+          <EventSignUp />
+        </div>
         <div className="h-screen"></div>
         <div style={{ width: "70%", margin: "20px" }}>
           <Calendar admin={admin} />
