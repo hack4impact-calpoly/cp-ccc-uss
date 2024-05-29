@@ -47,8 +47,13 @@ const Calendar = ({ admin = false }) => {
     const fetchEvents = async () => {
       try {
         const response = await fetch("/api/event/");
-        const eventsFromDB = await response.json();
-        setEvents(eventsFromDB);
+        if (response.ok) {
+          const eventsFromDB = await response.json();
+          setEvents(eventsFromDB);
+        } else {
+          console.error("Error fetching events. Status:", response.status);
+          setEvents([]);
+        }
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -70,7 +75,7 @@ const Calendar = ({ admin = false }) => {
   // useEffect to convert events to FullCalendar compatible events whenever events array changes
   useEffect(() => {
     const convertEventsToFCFormat = () => {
-      if (events !== null) {
+      if (events.length > 0) {
         const FullCalendarEvents = events.map((event) => ({
           id: event._id,
           title: event.name,

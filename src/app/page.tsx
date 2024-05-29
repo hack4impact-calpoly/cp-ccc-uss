@@ -11,21 +11,25 @@ import { Button } from "@chakra-ui/react";
 export default function Home() {
   const [admin, setAdmin] = useState(false);
   const [adminbutton, setAdminButton] = useState(false);
+  const [signUpButton, setSignUpButton] = useState(false);
 
   const { isLoaded, isSignedIn, user } = useUser();
 
   useEffect(() => {
     if (user) {
       const orgs = user.organizationMemberships;
-      if (orgs?.some((org) => org.organization.name === "CCC-USS-Admins")) {
+      if (orgs?.some(org => org.organization.name === "CCC-USS-Admins")) { // admin
         setAdminButton(true);
-      } else {
+        setSignUpButton(false);
+      } else { // normal volunteer 
         setAdminButton(false);
         setAdmin(false);
+        setSignUpButton(true);
       }
-    } else {
+    } else { // not signed in
       setAdminButton(false);
       setAdmin(false);
+      setSignUpButton(false);
     }
   }, [user, isSignedIn, isLoaded]);
 
@@ -73,9 +77,8 @@ export default function Home() {
           }}
         >
           <h1 style={{ margin: "20px 20px 20px 0", fontSize: "2rem" }}>Volunteer Events</h1>
-          <EventSignUp />
         </div>
-        <div className="h-screen"></div>
+        // {signUpButton || (adminbutton && !admin) ? <EventSignUp /> : null}
         <div style={{ width: "70%", margin: "20px" }}>
           <Calendar admin={admin} />
         </div>
