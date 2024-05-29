@@ -68,7 +68,7 @@ export default function Home() {
           <EventSignUp />
         </div>
         <div className="h-screen"></div>
-        <div style={{ width: "80%", height: "60%", marginTop: "-10px" }}>
+        <div style={{ width: "80%", height: "70%", marginTop: "-10px" }}>
           <Calendar admin={admin} />
         </div>
       </div>

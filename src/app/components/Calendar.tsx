@@ -162,6 +162,8 @@ const Calendar = ({ admin = false }) => {
           events={fullCalendarEvents}
           eventClick={handleEventClick}
           eventContent={eventBubbleContent}
+          dayMaxEventRows={true}
+          dayMaxEvents={2}
         />
       </div>
       <Modal size="2xl" isOpen={detailModalOpen} onClose={handleCloseModal}>
@@ -212,22 +214,6 @@ const calendarStyles = `
   margin-right: auto;
   justify-content: center;
 }
-
-// .fc .fc-event {
-//   background-color: #C4F1DE;
-//   border-radius: 1em;
-//   padding: 5%;
-//   padding-right: 25%;
-//   // display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   box-sizing: border-box;
-//   font-family: Sans-serif;
-
-//   .fc-event-title {
-//     font-weight: normal;
-//   }
-// }
 
 .fc-daygrid-event-dot {
   display: none;
