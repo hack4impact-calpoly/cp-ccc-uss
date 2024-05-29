@@ -14,7 +14,9 @@ import {
   Text,
   Heading,
   Flex,
+  Avatar,
 } from "@chakra-ui/react";
+import { useUser } from "@clerk/nextjs";
 
 type Props = {
   name: string;
@@ -23,6 +25,7 @@ type Props = {
 };
 
 export default function DisplayVolunteerInformation({ name, roles, responses }: Props) {
+  const { user } = useUser();
   function parseDate(date: Date) {
     return new Date(date).toLocaleTimeString("en-US", {
       hour: "2-digit",
@@ -32,9 +35,17 @@ export default function DisplayVolunteerInformation({ name, roles, responses }: 
   }
   return (
     <Box>
-      <Heading size="md" mb={4}>{name}</Heading>
+      <Flex direction="row" alignItems="center">
+        <Avatar
+          src={user?.imageUrl}
+          marginRight={3}
+          size="sm"
+        />
+        <Heading size="md">{name}</Heading>
+      </Flex>
+      
       {roles.map((role, index) => (
-        <Box key={index} mb={4}>
+        <Box key={index} ml={4}>
           <Flex align="center">
             <Box
               w={2}
@@ -46,23 +57,22 @@ export default function DisplayVolunteerInformation({ name, roles, responses }: 
             />
             <Heading size="sm" mb={2}>
               {role.roleName}
-              
             </Heading>
             <Flex 
               className={style.openTime}
               ml={4}>
               {role.timeslots.map((timeslot, subIndex) => (
                 <Text key={subIndex} mb={1} fontSize="sm">
-                  {parseDate(timeslot.startTime)} - {parseDate(timeslot.endTime)} {"\xa0"}
-                  
+                  {parseDate(timeslot.startTime)} - {parseDate(timeslot.endTime)}{"\xa0"} 
                 </Text>
                 
               ))}
             </Flex>
           </Flex>
-
-          {responses.map((response, index2) => (
-            <Flex key={index2} align="center">
+        </Box>
+      ))}
+      {responses.map((response, index2) => (
+            <Flex key={index2} align="center" ml={4}>
               <Box
                 w={4}
                 h={4}
@@ -78,8 +88,6 @@ export default function DisplayVolunteerInformation({ name, roles, responses }: 
               </Box>
             </Flex>
           ))}
-        </Box>
-      ))}
     </Box>
   );
   

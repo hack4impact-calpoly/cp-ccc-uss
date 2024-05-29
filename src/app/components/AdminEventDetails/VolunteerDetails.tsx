@@ -24,9 +24,11 @@ import {
   List,
   ListItem,
   Heading,
-  Flex
+  Flex,
+  Avatar
 } from "@chakra-ui/react";
 import DisplayVolunteerInformation from "./DisplayVolunteerInformation";
+import { useUser } from "@clerk/nextjs";
 
 type Props = {
   _id: string;
@@ -51,10 +53,11 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
   const [filteredEntries, setFilteredEntries] = useState<VolunteerEntry[]>([]);
   const [loading, setLoading] = useState<Boolean>(true);
   const [error, setError] = useState(null);
+  const { user } = useUser();
 
   function parseDate(date: Date) {
     return new Date(date).toLocaleTimeString("en-US", {
-      hour: "2-digit",
+      hour: "numeric",
       minute: "2-digit",
       hour12: true,
     });
@@ -118,7 +121,7 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
   }, []);
 
   return (
-    <Box p={4} pl={12}> 
+    <Box p={4} > 
       <Box>
         {!loading && !error && filteredEntries.length === 0 ? (
           <Text>No volunteers found.</Text>
@@ -126,25 +129,33 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
           <List spacing={4}>
             {volunteerEntries.map((entry, index) => (
               <ListItem key={index}>
-                <Box>
+                <Flex direction="row">
+                  <Avatar
+                    src={user?.imageUrl}
+                    marginRight={3}
+                    size="sm"
+                  />
+                  <Box>
                     <Heading fontSize="20px">{entry.volunteer.name}</Heading>
-                  {entry.roles.map((role, roleIndex) => (
-                    <Flex align="center" key={roleIndex}>
-                      <Heading as="i" fontSize="sm">
-                        {role.roleName} -
-                      </Heading>
-                      <Flex 
-                        className={style.openTime}
-                        ml={1}>
-                        {role.timeslots.map((timeslot, subIndex) => (
-                          <Text key={subIndex} fontSize="sm">
-                            {parseDate(timeslot.startTime)} - {parseDate(timeslot.endTime)} {"\xa0"}
-                          </Text> 
-                        ))}
+                    {entry.roles.map((role, roleIndex) => (
+                      <Flex align="center" key={roleIndex}>
+                        <Heading as="i" fontSize="sm">
+                          {role.roleName} -
+                        </Heading>
+                        <Flex 
+                          className={style.openTime}
+                          ml={1}
+                          direction="row">
+                          {role.timeslots.map((timeslot, subIndex) => (
+                            <Text key={subIndex} fontSize="sm">
+                              {parseDate(timeslot.startTime)} - {parseDate(timeslot.endTime)} {"\xa0"}
+                            </Text> 
+                          ))}
+                        </Flex>
                       </Flex>
-                    </Flex>
-                  ))}
-                </Box>
+                    ))}
+                  </Box>
+                </Flex>
               </ListItem>
             ))}
           </List>
