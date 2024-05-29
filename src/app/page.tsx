@@ -44,31 +44,10 @@ export default function Home() {
         }}
       >
         <Navbar />
-        <div>
-          {adminbutton ? (
-            <div>
-              <Button
-                onClick={() => (admin ? setAdmin(false) : setAdmin(true))}
-                mt={3}
-                p={6}
-                colorScheme="teal"
-              >
-                {admin ? (
-                  <>
-                    View as <br /> volunteer
-                  </>
-                ) : (
-                  <>
-                    View as <br /> Admin
-                  </>
-                )}
-              </Button>
-            </div>
-          ) : null}
-        </div>
         <div
           style={{
             display: "flex",
+            flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
             width: "70%",
@@ -76,12 +55,32 @@ export default function Home() {
             textAlign: "center",
           }}
         >
-          <h1 style={{ margin: "20px 20px 20px 0", fontSize: "2rem" }}>Volunteer Events</h1>
+          <h1 style={{ margin: "20px 20px 20px 20px", fontSize: "2rem", textAlign: "center" }}>Volunteer Events</h1>
         </div>
-        // {signUpButton || (adminbutton && !admin) ? <EventSignUp /> : null}
-        <div style={{ width: "70%", margin: "20px" }}>
+        {/* {signUpButton || (adminbutton && !admin) ? <EventSignUp /> : null} */}
+        <div style={{ width: "70%" }}>
           <Calendar admin={admin} />
         </div>
+        {adminbutton ? (
+          <div>
+            <Button
+              onClick={() => (admin ? setAdmin(false) : setAdmin(true))}
+              mb={10}
+              p={8}
+              colorScheme="teal"
+            >
+              {admin ? (
+                <>
+                  View as <br /> volunteer
+                </>
+              ) : (
+                <>
+                  View as <br /> Admin
+                </>
+              )}
+            </Button>
+          </div>
+        ) : null}
       </div>
     </main>
   );
