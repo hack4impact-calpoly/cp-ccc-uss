@@ -205,6 +205,8 @@ const calendarStyles = `
 
 .fc-toolbar-title {
   font-family: sans-serif;
+  text-align: center;
+  width: 150px;
 }
 
 .fc-header-toolbar{
