@@ -20,8 +20,9 @@ import {
 import UserEventDetails from "./UserEventDetails";
 import AdminEventDetails from "./AdminEventDetails/AdminEventDetails";
 import CreateEvent from "./CreateEvent/CreateEvent";
-import { useUser } from '@clerk/nextjs';
+import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import EventSignUp from "./EventSignUp";
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
@@ -84,21 +85,28 @@ const Calendar = ({ admin = false }) => {
   }, [events]);
 
   return (
-      <div className={style.wrapper}>
-        <style>{calendarStyles}</style>
-        <>
+    <div className={style.wrapper}>
+      <style>{calendarStyles}</style>
+      <>
         <div className={style.buttonContainer}>
           {admin ? (
-            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-            <Link href="/admin/profiles">
-              <Button mt={3} colorScheme="teal">
-                Profile Database
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <Link href="/admin/profiles">
+                <Button mt={3} colorScheme="teal">
+                  Profile Database
+                </Button>
+              </Link>
+              <Button mt={3} ref={btnRef} onClick={onOpen} colorScheme="teal">
+                Add Event
               </Button>
-            </Link>
-            <Button mt={3} ref={btnRef} onClick={onOpen} colorScheme="teal">
-              Add Event
-            </Button>
-          </div>) : null}
+            </div>
+          ) : null}
         </div>
         <Modal
           onClose={onClose}
@@ -112,32 +120,35 @@ const Calendar = ({ admin = false }) => {
             <div>
               <ModalCloseButton />
 
-              <CreateEvent 
-                events={events} 
-                setEvents={setEvents} 
+              <CreateEvent
+                events={events}
+                setEvents={setEvents}
                 onOpen={onOpen}
-                onClose={onClose}/>
+                onClose={onClose}
+              />
             </div>
           </ModalContent>
         </Modal>
       </>
-      <FullCalendar
-        aspectRatio={style ? 1.5 : 2.0}
-        plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
-        headerToolbar={{
-          left: "prev",
-          center: "title",
-          right: "next",
-        }}
-        titleFormat={{ month: "long" }}
-        dayHeaderFormat={{ weekday: "long" }}
-        editable
-        selectable
-        initialView="dayGridMonth"
-        events={fullCalendarEvents}
-        eventClick={handleEventClick}
-      />
-
+      <div className={style.calendarContainer}>
+        <FullCalendar
+          aspectRatio={style ? 1.5 : 2.0}
+          plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
+          headerToolbar={{
+            left: "prev",
+            center: "title",
+            right: "next",
+            // right: <EventSignUp />
+          }}
+          titleFormat={{ month: "long" }}
+          dayHeaderFormat={{ weekday: "long" }}
+          editable={false}
+          selectable
+          initialView="dayGridMonth"
+          events={fullCalendarEvents}
+          eventClick={handleEventClick}
+        />
+      </div>
       <Modal size="2xl" isOpen={detailModalOpen} onClose={handleCloseModal}>
         <ModalOverlay />
         <ModalContent className={style.modal}>
