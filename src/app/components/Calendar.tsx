@@ -200,6 +200,7 @@ const calendarStyles = `
 
 .fc-toolbar-chunk {
   padding-right: 2%;
+  margin-bottom: -20%;
 }
 
 .fc-toolbar-title {
@@ -210,6 +211,7 @@ const calendarStyles = `
   margin-left: auto;
   margin-right: auto;
   justify-content: center;
+
 }
 
 .fc-daygrid-event-dot {

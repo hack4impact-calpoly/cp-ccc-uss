@@ -18,15 +18,18 @@ export default function Home() {
   useEffect(() => {
     if (user) {
       const orgs = user.organizationMemberships;
-      if (orgs?.some(org => org.organization.name === "CCC-USS-Admins")) { // admin
+      if (orgs?.some((org) => org.organization.name === "CCC-USS-Admins")) {
+        // admin
         setAdminButton(true);
         setSignUpButton(false);
-      } else { // normal volunteer 
+      } else {
+        // normal volunteer
         setAdminButton(false);
         setAdmin(false);
         setSignUpButton(true);
       }
-    } else { // not signed in
+    } else {
+      // not signed in
       setAdminButton(false);
       setAdmin(false);
       setSignUpButton(false);
@@ -57,10 +60,18 @@ export default function Home() {
             textAlign: "center",
           }}
         >
-          <h1 style={{ margin: "20px 20px 20px 20px", fontSize: "2rem", textAlign: "center" }}>Volunteer Events</h1>
+          <h1
+            style={{
+              margin: "20px 20px 20px 20px",
+              fontSize: "2rem",
+              textAlign: "center",
+              marginTop: "-1%",
+            }}
+          >
+            Volunteer Events
+          </h1>
         </div>
-        {/* {signUpButton || (adminbutton && !admin) ? <EventSignUp /> : null} */}
-        <div style={{ width: "70%" }}>
+        <div style={{ width: "85%", marginTop: "1%" }}>
           <Calendar admin={admin} />
         </div>
         {adminbutton ? (
