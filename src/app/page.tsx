@@ -11,21 +11,25 @@ import { Button } from "@chakra-ui/react";
 export default function Home() {
   const [admin, setAdmin] = useState(false);
   const [adminbutton, setAdminButton] = useState(false);
+  const [signUpButton, setSignUpButton] = useState(false);
 
   const { isLoaded, isSignedIn, user } = useUser();
 
   useEffect(() => {
     if (user) {
       const orgs = user.organizationMemberships;
-      if (orgs?.some((org) => org.organization.name === "CCC-USS-Admins")) {
+      if (orgs?.some(org => org.organization.name === "CCC-USS-Admins")) { // admin
         setAdminButton(true);
-      } else {
+        setSignUpButton(false);
+      } else { // normal volunteer 
         setAdminButton(false);
         setAdmin(false);
+        setSignUpButton(true);
       }
-    } else {
+    } else { // not signed in
       setAdminButton(false);
       setAdmin(false);
+      setSignUpButton(false);
     }
   }, [user, isSignedIn, isLoaded]);
 
@@ -42,35 +46,43 @@ export default function Home() {
         }}
       >
         <Navbar />
-        <div>
-          {adminbutton ? (
-            <div>
-              <Button
-                onClick={() => (admin ? setAdmin(false) : setAdmin(true))}
-                mt={3}
-                p={6}
-                colorScheme="teal"
-              >
-                {admin ? (
-                  <>
-                    View as <br /> volunteer
-                  </>
-                ) : (
-                  <>
-                    View as <br /> Admin
-                  </>
-                )}
-              </Button>
-            </div>
-          ) : null}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "70%",
+            margin: "0 15%",
+            textAlign: "center",
+          }}
+        >
+          <h1 style={{ margin: "20px 20px 20px 20px", fontSize: "2rem", textAlign: "center" }}>Volunteer Events</h1>
         </div>
-        <div style={{ marginTop: "-100px", alignSelf: "center" }}>
-          <EventSignUp />
-        </div>
-        <div className="h-screen"></div>
-        <div style={{ width: "100%", height: "70%", marginTop: "-10px" }}>
+        {/* {signUpButton || (adminbutton && !admin) ? <EventSignUp /> : null} */}
+        <div style={{ width: "70%" }}>
           <Calendar admin={admin} />
         </div>
+        {adminbutton ? (
+          <div>
+            <Button
+              onClick={() => (admin ? setAdmin(false) : setAdmin(true))}
+              mb={10}
+              p={8}
+              colorScheme="teal"
+            >
+              {admin ? (
+                <>
+                  View as <br /> volunteer
+                </>
+              ) : (
+                <>
+                  View as <br /> Admin
+                </>
+              )}
+            </Button>
+          </div>
+        ) : null}
       </div>
     </main>
   );
