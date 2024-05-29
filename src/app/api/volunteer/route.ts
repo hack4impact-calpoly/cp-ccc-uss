@@ -6,7 +6,7 @@ import Volunteers, { IVolunteer } from "@database/volunteerSchema";
 export async function POST(req: NextRequest) {
   await connectDB();
   try {
-    const { name, email, languages, roles, entries } /*: IVolunteer*/ =
+    const { name, email, tags, roles, entries } /*: IVolunteer*/ =
       await req.json(); // collect volunteer data from req
 
     if (!name || !email) {
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    const volunteer = { name, email, languages, roles, entries, active: true };
+    const volunteer = { name, email, tags, roles, entries, active: true };
 
     try {
       const createdVolunteer = await Volunteers.create(volunteer); // try to create volunteer in database

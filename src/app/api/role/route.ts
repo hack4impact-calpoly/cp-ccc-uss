@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       console.log("Error updating Event Roles. ", err);
       return NextResponse.json("Event Roles not updated", { status: 404 });
     }
-    return NextResponse.json(savedVolunteerRole);
+    return NextResponse.json(savedVolunteerRole, { status: 201 });
   } catch (err) {
     console.log("Error creating volunteer role: ", err);
     return NextResponse.json("New VolunteerRole not created", { status: 404 });

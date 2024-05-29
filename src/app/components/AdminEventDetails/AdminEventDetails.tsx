@@ -112,7 +112,7 @@ export default function AdminEventDetails({ _id }: Props) {
           <Icon as={LuText}
             className={style.icon}
             sx={{ fontSize: 50 }}/>
-          <div style={{marginTop: "10px", overflow: 'scroll', maxHeight: '400px'}}>
+          <div style={{marginTop: "10px", overflowY: 'auto', maxHeight: '400px'}}>
             <strong>Description:{" "}</strong>
             {" " +event.description}
           </div>
