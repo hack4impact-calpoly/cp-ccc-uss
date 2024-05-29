@@ -116,7 +116,7 @@ function getTimeslots(volunteerId: string, roleDetails: IVolunteerRole): IVolunt
 
 function dateToShiftTime(date: Date): string {
   var pacificTime = new Date(date);
-  pacificTime.setMinutes(pacificTime.getMinutes() + (7 * 60))
+  // pacificTime.setMinutes(pacificTime.getMinutes() + (7 * 60))
   let hours: number = pacificTime.getHours();
   let minutes: number | string = pacificTime.getMinutes();
   const ampm: string = hours >= 12 ? 'PM' : 'AM';
