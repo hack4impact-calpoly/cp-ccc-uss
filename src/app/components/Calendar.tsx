@@ -83,7 +83,6 @@ const Calendar = ({ admin = false }) => {
           start: event.date, //start is the date field for the full calendar
         }));
         setFullCalendarEvents(FullCalendarEvents);
-        console.log(fullCalendarEvents);
       }
     };
 
@@ -146,13 +145,12 @@ const Calendar = ({ admin = false }) => {
       </>
       <div className={style.calendarContainer}>
         <FullCalendar
-          aspectRatio={style ? 1.5 : 2.0}
+          aspectRatio={style ? 1.8 : 1.6}
           plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
           headerToolbar={{
             left: "prev",
             center: "title",
             right: "next",
-            // right: <EventSignUp />
           }}
           titleFormat={{ month: "long" }}
           dayHeaderFormat={{ weekday: "long" }}
