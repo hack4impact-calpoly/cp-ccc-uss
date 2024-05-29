@@ -71,7 +71,7 @@ export default function Home() {
             Volunteer Events
           </h1>
         </div>
-        <div style={{ width: "85%", marginTop: "1%" }}>
+        <div style={{ width: "85%", marginTop: "-1%" }}>
           <Calendar admin={admin} />
         </div>
         {adminbutton ? (
