@@ -194,10 +194,11 @@ export default function AddQuestions(props: {
         </Box>
       ))}
       <Button
-        mt={6}
         onClick={addQuestion}
         leftIcon={<PlusCircleIcon />}
         variant="unstyled"
+        mb = {6}
+        mt = {-1}
       >
         Add Question
       </Button>
