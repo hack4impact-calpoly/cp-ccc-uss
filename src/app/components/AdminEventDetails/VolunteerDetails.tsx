@@ -129,7 +129,7 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
                 <Box>
                     <Heading fontSize="20px">{entry.volunteer.name}</Heading>
                   {entry.roles.map((role, roleIndex) => (
-                    <Flex align="center">
+                    <Flex align="center" key={roleIndex}>
                       <Heading as="i" fontSize="sm">
                         {role.roleName} -
                       </Heading>
