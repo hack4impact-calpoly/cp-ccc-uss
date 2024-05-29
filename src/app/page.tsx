@@ -1,13 +1,12 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import Navbar from "@components/Navbar";
 import Calendar from "@components/Calendar";
-import CreateEvent from '@components/CreateEvent/CreateEvent';
+import CreateEvent from "@components/CreateEvent/CreateEvent";
 import EventSignUp from "@components/EventSignUp";
 
-import { useUser } from '@clerk/nextjs';
-import { Button } from '@chakra-ui/react';
-
+import { useUser } from "@clerk/nextjs";
+import { Button } from "@chakra-ui/react";
 
 export default function Home() {
   const [admin, setAdmin] = useState(false);
@@ -32,7 +31,7 @@ export default function Home() {
       setAdmin(false);
       setSignUpButton(false);
     }
-  },[user, isSignedIn, isLoaded]);
+  }, [user, isSignedIn, isLoaded]);
 
   return (
     <main>
@@ -43,18 +42,43 @@ export default function Home() {
           alignItems: "center",
           justifyContent: "space-between",
         }}
-      >    
+      >
         <Navbar />
         <div>
           {adminbutton ? (
             <div>
-              <Button onClick={() => (admin ? setAdmin(false) : setAdmin(true))} mt={3} p={6} colorScheme="teal">
-                {admin ? <>View as <br/> volunteer</> : <>View as <br/> Admin</>}
+              <Button
+                onClick={() => (admin ? setAdmin(false) : setAdmin(true))}
+                mt={3}
+                p={6}
+                colorScheme="teal"
+              >
+                {admin ? (
+                  <>
+                    View as <br /> volunteer
+                  </>
+                ) : (
+                  <>
+                    View as <br /> Admin
+                  </>
+                )}
               </Button>
-            </div>) :
-            null}
+            </div>
+          ) : null}
         </div>
-        {signUpButton || (adminbutton && !admin) ? <EventSignUp /> : null}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "70%",
+            margin: "0 15%",
+            textAlign: "center",
+          }}
+        >
+          <h1 style={{ margin: "20px 20px 20px 0", fontSize: "2rem" }}>Volunteer Events</h1>
+        </div>
+        // {signUpButton || (adminbutton && !admin) ? <EventSignUp /> : null}
         <div style={{ width: "70%", margin: "20px" }}>
           <Calendar admin={admin} />
         </div>
