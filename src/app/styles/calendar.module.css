@@ -1,3 +1,4 @@
+
 .buttonContainer {
   display: flex;
   justify-content: flex-end;
@@ -20,7 +21,7 @@
 
 .eventBubble {
   width: 100px;
-  height: 28px;
+  height: 24px;
   overflow: hidden;
   background-color: #c4f1de;
   border-radius: 1em;
