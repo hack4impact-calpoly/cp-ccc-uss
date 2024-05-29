@@ -6,7 +6,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import type { IEvent } from "@database/eventSchema";
 import style from "@styles/calendar.module.css";
 import { useDisclosure } from "@chakra-ui/react";
-import { EventClickArg } from "@fullcalendar/core/index.js";
+import { EventClickArg, EventContentArg } from "@fullcalendar/core/index.js";
 import {
   Modal,
   ModalOverlay,
@@ -90,7 +90,7 @@ const Calendar = ({ admin = false }) => {
     convertEventsToFCFormat();
   }, [events]);
 
-  const eventBubbleContent = (arg) => {
+  const eventBubbleContent = (arg: EventContentArg) => {
     return (
       <div className={style.eventBubble}>
         <div className={style.eventBubbleContent}>{arg.event.title}</div>
