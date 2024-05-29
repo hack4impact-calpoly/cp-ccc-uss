@@ -83,11 +83,18 @@ const Calendar = ({ admin = false }) => {
           start: event.date, //start is the date field for the full calendar
         }));
         setFullCalendarEvents(FullCalendarEvents);
+        console.log(fullCalendarEvents);
       }
     };
 
     convertEventsToFCFormat();
   }, [events]);
+
+  const eventBubbleContent = (arg) => {
+    return <div className={style.eventBubbleContent}>
+      {arg.event.title}
+      </div>;
+  };
 
   return (
     <div className={style.wrapper}>
@@ -152,6 +159,7 @@ const Calendar = ({ admin = false }) => {
           initialView="dayGridMonth"
           events={fullCalendarEvents}
           eventClick={handleEventClick}
+          eventContent={eventBubbleContent}
         />
       </div>
       <Modal size="2xl" isOpen={detailModalOpen} onClose={handleCloseModal}>
@@ -203,21 +211,21 @@ const calendarStyles = `
   justify-content: center;
 }
 
-.fc .fc-event {
-  background-color: #C4F1DE;
-  border-radius: 1em;
-  padding: 5%;
-  padding-right: 25%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-sizing: border-box;
-  font-family: Sans-serif;
+// .fc .fc-event {
+//   background-color: #C4F1DE;
+//   border-radius: 1em;
+//   padding: 5%;
+//   padding-right: 25%;
+//   // display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   box-sizing: border-box;
+//   font-family: Sans-serif;
 
-  .fc-event-title {
-    font-weight: normal;
-  }
-}
+//   .fc-event-title {
+//     font-weight: normal;
+//   }
+// }
 
 .fc-daygrid-event-dot {
   display: none;

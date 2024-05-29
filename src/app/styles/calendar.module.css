@@ -1,5 +1,5 @@
 .wrapper {
-  padding-bottom: 5%;
+  /* padding-bottom: 5%; */
 }
 
 .buttonContainer {
@@ -20,6 +20,22 @@
   margin: auto;
   height: 70%;
   width: 70%;
+}
+
+.eventBubbleContent {
+  width: 100px;
+  height: 25px;
+  overflow: hidden;
+  background-color: #c4f1de;
+  border-radius: 1em;
+  padding: 5%;
+  padding-right: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  font-family: Sans-serif;
+  font-weight: normal;
 }
 
 /* .fc-daygrid-day-number {
