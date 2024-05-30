@@ -28,9 +28,9 @@ export async function PUT(req: NextRequest, { params }: IParams) {
   try {
     // get Volunteer ID and structure
     const id = params._id;
-    const { name, email, languages, roles, entries, active }: IVolunteer =
+    const { name, email, tags, roles, entries, active }: IVolunteer =
       await req.json();
-    const volunteer = { name, email, languages, roles, entries, ...(active !== undefined && {active}) };
+    const volunteer = { name, email, tags, roles, entries, ...(active !== undefined && {active}) };
 
     if (volunteer) {
       const updatedVolunteer = await Volunteers.findByIdAndUpdate(

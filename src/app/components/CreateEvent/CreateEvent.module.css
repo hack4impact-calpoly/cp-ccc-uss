@@ -5,7 +5,7 @@
     justify-content: space-between;
     padding: 56px;
     width: 576px;
-    height: 580px;
+    max-height: 90vh;
     border-radius: 16px;
     background-color: rgb(255, 255, 255);
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
@@ -26,3 +26,27 @@
   flex-direction: row;
   justify-content: center;
 }
+
+.input {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-color: black;
+  border-radius: 15px !important;
+  min-height: 40px;
+}
+
+.input2 {
+  margin-bottom: 20px;
+  border-color: black;
+  border-radius: 15px !important;
+  min-height: 40px;
+}
+
+.input3{
+  width:450px;
+  height: 197px;
+  border-color:black;
+  border-radius: 15px !important;
+  margin-bottom: 40px;
+}
+

@@ -4,9 +4,9 @@ import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import type { IEvent } from "@database/eventSchema";
-import style from "@styles/calendar.module.css";
+import style from "@styles/Calendar.module.css";
 import { useDisclosure } from "@chakra-ui/react";
-import { EventClickArg } from "@fullcalendar/core/index.js";
+import { EventClickArg, EventContentArg } from "@fullcalendar/core/index.js";
 import {
   Modal,
   ModalOverlay,
@@ -20,7 +20,7 @@ import {
 import UserEventDetails from "./UserEventDetails";
 import AdminEventDetails from "./AdminEventDetails/AdminEventDetails";
 import CreateEvent from "./CreateEvent/CreateEvent";
-import { useUser } from '@clerk/nextjs';
+import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 
 //Interface to define full calendar event format
@@ -47,8 +47,13 @@ const Calendar = ({ admin = false }) => {
     const fetchEvents = async () => {
       try {
         const response = await fetch("/api/event/");
-        const eventsFromDB = await response.json();
-        setEvents(eventsFromDB);
+        if (response.ok) {
+          const eventsFromDB = await response.json();
+          setEvents(eventsFromDB);
+        } else {
+          console.error("Error fetching events. Status:", response.status);
+          setEvents([]);
+        }
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -70,7 +75,7 @@ const Calendar = ({ admin = false }) => {
   // useEffect to convert events to FullCalendar compatible events whenever events array changes
   useEffect(() => {
     const convertEventsToFCFormat = () => {
-      if (events !== null) {
+      if (events.length > 0) {
         const FullCalendarEvents = events.map((event) => ({
           id: event._id,
           title: event.name,
@@ -83,22 +88,48 @@ const Calendar = ({ admin = false }) => {
     convertEventsToFCFormat();
   }, [events]);
 
+  const eventBubbleContent = (arg: EventContentArg) => {
+    return (
+      <div className={style.eventBubble}>
+        <div className={style.eventBubbleContent}>{arg.event.title}</div>
+      </div>
+    );
+  };
+
+  const updateEventInList = (updatedEvent: IEvent) => {
+    const updatedEvents = events.map((event) =>
+      event._id === updatedEvent._id ? updatedEvent : event
+    );
+    setEvents(updatedEvents);
+  };
+
+  const removeEventFromList = (deletedEventId: string) => {
+    setEvents((prevEvents) =>
+      prevEvents.filter((event) => event._id !== deletedEventId)
+    );
+  };
+
   return (
-      <div className={style.wrapper}>
-        <style>{calendarStyles}</style>
-        <>
+    <div className={style.wrapper}>
+      <style>{calendarStyles}</style>
+      <>
         <div className={style.buttonContainer}>
           {admin ? (
-            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-            <Link href="/admin/profiles">
-              <Button mt={3} colorScheme="teal">
-                Profile Database
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "70%",
+              }}
+            >
+              <Link href="/admin/profiles">
+                <Button colorScheme="teal">Profile Database</Button>
+              </Link>
+              <Button ref={btnRef} onClick={onOpen} colorScheme="teal">
+                Add Event
               </Button>
-            </Link>
-            <Button mt={3} ref={btnRef} onClick={onOpen} colorScheme="teal">
-              Add Event
-            </Button>
-          </div>) : null}
+            </div>
+          ) : null}
         </div>
         <Modal
           onClose={onClose}
@@ -112,38 +143,48 @@ const Calendar = ({ admin = false }) => {
             <div>
               <ModalCloseButton />
 
-              <CreateEvent 
-                events={events} 
-                setEvents={setEvents} 
+              <CreateEvent
+                events={events}
+                setEvents={setEvents}
                 onOpen={onOpen}
-                onClose={onClose}/>
+                onClose={onClose}
+              />
             </div>
           </ModalContent>
         </Modal>
       </>
-      <FullCalendar
-        aspectRatio={style ? 1.5 : 2.0}
-        plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
-        headerToolbar={{
-          left: "prev",
-          center: "title",
-          right: "next",
-        }}
-        titleFormat={{ month: "long" }}
-        dayHeaderFormat={{ weekday: "long" }}
-        editable
-        selectable
-        initialView="dayGridMonth"
-        events={fullCalendarEvents}
-        eventClick={handleEventClick}
-      />
-
+      <div className={style.calendarContainer}>
+        <FullCalendar
+          aspectRatio={style ? 1.8 : 1.6}
+          plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
+          headerToolbar={{
+            left: "prev",
+            center: "title",
+            right: "next",
+          }}
+          titleFormat={{ month: "long" }}
+          dayHeaderFormat={{ weekday: "long" }}
+          editable={false}
+          selectable
+          initialView="dayGridMonth"
+          events={fullCalendarEvents}
+          eventClick={handleEventClick}
+          eventContent={eventBubbleContent}
+          dayMaxEventRows={true}
+          dayMaxEvents={2}
+        />
+      </div>
       <Modal size="2xl" isOpen={detailModalOpen} onClose={handleCloseModal}>
         <ModalOverlay />
         <ModalContent className={style.modal}>
           <ModalBody>
             {admin ? (
-              <AdminEventDetails _id={selectedEventId} />
+              <AdminEventDetails
+                _id={selectedEventId}
+                updateEventInList={updateEventInList}
+                removeEventFromList={removeEventFromList}
+                onClose={handleCloseModal}
+              />
             ) : (
               <UserEventDetails id={selectedEventId} />
             )}
@@ -175,26 +216,20 @@ const calendarStyles = `
 
 .fc-toolbar-chunk {
   padding-right: 2%;
+  margin-bottom: -20px;
 }
 
 .fc-toolbar-title {
   font-family: sans-serif;
+  text-align: center;
+  width: 150px;
 }
 
-.fc .fc-event {
-  background-color: #C4F1DE;
-  border-radius: 1em;
-  padding: 5%;
-  padding-right: 25%;
-  display: flex;
+.fc-header-toolbar{
+  margin-left: auto;
+  margin-right: auto;
   justify-content: center;
-  align-items: center;
-  box-sizing: border-box;
-  font-family: Sans-serif;
 
-  .fc-event-title {
-    font-weight: normal;
-  }
 }
 
 .fc-daygrid-event-dot {
@@ -209,6 +244,7 @@ const calendarStyles = `
   justify-content: left;
   .fc-daygrid-day-number {
     font-family: Sans-serif;
+    font-size: 12px;
   }
 }
 

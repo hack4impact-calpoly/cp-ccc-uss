@@ -1,0 +1,77 @@
+.userInfo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 10px; 
+}
+
+.userName {
+  font-size: 2rem;
+  padding-right: 5px;
+}
+
+.mainContainer {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+.heading {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.datagridContainer {
+  max-height: 40vh;
+  overflow: auto;
+  width: 100%;
+  border: 1px solid #d0cfcf;
+  border-radius: 8px;
+}
+
+.loading-error {
+  font-size: 1.2rem;
+  color: red;
+  margin-top: 20px;
+}
+
+.headingContainer {
+  margin-top: 20px;
+}
+
+.heading {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.yellowBar {
+  height: 10px;
+  background-color: #fbb343;
+  margin-bottom: 20px;
+}
+
+.questions {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 30px 20px;
+}
+
+.tagQuestions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-evenly;
+}
+
+.questionContainer {
+  padding: 5px;
+}
+
+.timeslots {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: auto;
+  width: 80%;
+}

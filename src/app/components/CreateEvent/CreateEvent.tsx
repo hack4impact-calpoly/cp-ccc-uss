@@ -30,7 +30,12 @@ interface CreateEventProps {
 
 function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
   const [eventName, setEventName] = useState("");
-  const [date, setDate] = useState<Date>(new Date());
+  const [date, setDate] = useState<Date>(() => {
+    const today = new Date();
+    const timezoneOffset = today.getTimezoneOffset();
+    today.setMinutes(timezoneOffset);
+    return today;
+  });
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState<IFormQuestion[]>([]);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
@@ -50,9 +55,9 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
 
   const handleChangeDate = (e: any) => {
     const selectedDate = new Date(e.target.value);
-    // Adjusting for time zone offset
+
     const timezoneOffset = selectedDate.getTimezoneOffset();
-    selectedDate.setMinutes(selectedDate.getMinutes() + timezoneOffset);
+    selectedDate.setMinutes(timezoneOffset);
 
     setDate(selectedDate);
   };
@@ -126,8 +131,8 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
       // Create volunteer roles
       for (const role of roles) {
         const timeslots = role.timeslots.map((timeslot) => ({
-          startTime: timeslot.startTime,
-          endTime: timeslot.endTime,
+          startTime: new Date(timeslot.startTime.getTime() + 7 * 60 * 60 * 1000),
+          endTime: new Date(timeslot.endTime.getTime() + 7 * 60 * 60 * 1000),
           volunteers: [],
         }));
 
@@ -204,12 +209,14 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
       <h2 className={styles.eventHeader}>Create Event</h2>
       <ModalCloseButton />
       <Input
+        className={styles.input}
         placeholder="Event Name"
         value={eventName}
         onChange={handleChangeName}
         borderColor="black"
       />
       <Input
+        className={styles.input2}
         placeholder="Select Date and Time"
         type="date"
         value={new Date(date).toLocaleDateString("en-CA")}
@@ -217,16 +224,17 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         borderColor="black"
       />
       <Textarea
+        className={styles.input3}
         placeholder="Event Description"
         value={description}
         onChange={handleChangeDesc}
-        width="463px"
+        max-width="463px"
         height="197px"
         borderColor="black"
       />
       <div>
-        <AddQuestions questions={questions} setQuestions={setQuestions} />
         <AddVolunteerRoles roles={roles} setRoles={setRoles} date={date}/>
+        <AddQuestions questions={questions} setQuestions={setQuestions} />
       </div>
       <div className={styles.createEventButton}>
         <Button colorScheme="teal" onClick={handleSubmit}>
