@@ -26,3 +26,27 @@
   flex-direction: row;
   justify-content: center;
 }
+
+.input {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-color: black;
+  border-radius: 15px !important;
+  min-height: 40px;
+}
+
+.input2 {
+  margin-bottom: 20px;
+  border-color: black;
+  border-radius: 15px !important;
+  min-height: 40px;
+}
+
+.input3{
+  width:450px;
+  height: 197px;
+  border-color:black;
+  border-radius: 15px !important;
+  margin-bottom: 40px;
+}
+

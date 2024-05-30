@@ -209,12 +209,14 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
       <h2 className={styles.eventHeader}>Create Event</h2>
       <ModalCloseButton />
       <Input
+        className={styles.input}
         placeholder="Event Name"
         value={eventName}
         onChange={handleChangeName}
         borderColor="black"
       />
       <Input
+        className={styles.input2}
         placeholder="Select Date and Time"
         type="date"
         value={new Date(date).toLocaleDateString("en-CA")}
@@ -222,6 +224,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         borderColor="black"
       />
       <Textarea
+        className={styles.input3}
         placeholder="Event Description"
         value={description}
         onChange={handleChangeDesc}
@@ -230,8 +233,8 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         borderColor="black"
       />
       <div>
-        <AddQuestions questions={questions} setQuestions={setQuestions} />
         <AddVolunteerRoles roles={roles} setRoles={setRoles} date={date}/>
+        <AddQuestions questions={questions} setQuestions={setQuestions} />
       </div>
       <div className={styles.createEventButton}>
         <Button colorScheme="teal" onClick={handleSubmit}>

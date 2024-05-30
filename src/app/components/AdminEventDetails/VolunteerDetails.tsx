@@ -131,7 +131,7 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
               <ListItem key={index}>
                 <Flex direction="row">
                   <Avatar
-                    src={user?.imageUrl}
+                    name={entry.volunteer.name}
                     marginRight={3}
                     size="sm"
                   />
