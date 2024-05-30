@@ -10,10 +10,9 @@ import { IVolunteerRole, IVolunteerRoleTimeslot } from "@database/volunteerRoleS
 import style from "./VolunteerProfile.module.css";
 import { useEffect, useState } from "react";
 import Navbar from "@components/Navbar";
-import { Heading, Button, useDisclosure, Alert, AlertIcon, Box, AlertTitle, AlertDescription, CloseButton } from "@chakra-ui/react";
+import { Heading, Button, useDisclosure, Alert, AlertIcon, Box, AlertTitle, AlertDescription, CloseButton, Avatar } from "@chakra-ui/react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useUser } from "@clerk/clerk-react";
-import { Avatar } from "@mui/material";
 import { Select as ChakraReactSelect, OptionBase } from "chakra-react-select";
 import { Chip, Stack } from "@mui/material";
 import { SignOutButton } from "@components/SignOutButton";
@@ -286,13 +285,12 @@ export default function VolunteerProfile() {
       <div className={style.mainContainer}>
         <Navbar />
         <div className={style.userInfo}>
-          <ThemeProvider theme={theme}>
           <Avatar
             src={user.user?.imageUrl}
-            className={style.avatar}
+            marginRight={3}
+            size="md"
           />
           <h1 className={style.userName}>{user.user?.fullName}</h1>
-          </ThemeProvider>
           <SignOutButton/>
         </div>
         <ThemeProvider theme={theme}>
