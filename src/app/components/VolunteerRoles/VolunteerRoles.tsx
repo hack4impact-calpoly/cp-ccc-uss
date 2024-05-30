@@ -13,12 +13,12 @@ import {
   List,
   ListItem,
   Select,
-  Circle,
+  Textarea,
   Icon, // Import the Icon component from Chakra UI
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { EmptyCircleIcon, PlusCircleIcon } from "../../styles/CustomElements";
-import { AiOutlineInfoCircle } from "react-icons/ai"; 
+import { AiOutlineInfoCircle } from "react-icons/ai";
 import styles from "./VolunteerRoles.module.css";
 
 export default function AddVolunteerRoles(props: {
@@ -46,7 +46,7 @@ export default function AddVolunteerRoles(props: {
   const handleDeleteOption = (index: number) => {
     const updatedRoles = [...props.roles];
     // Removes the role at the specified index
-    updatedRoles.splice(index, 1); 
+    updatedRoles.splice(index, 1);
     props.setRoles(updatedRoles);
     if (index === selectedRoleIndex) {
       setSelectedRoleIndex(null);
@@ -57,7 +57,7 @@ export default function AddVolunteerRoles(props: {
     const emptyRole: IVolunteerRole = {
       _id: "",
       roleName: "",
-      description: "", 
+      description: "",
       timeslots: [],
       event: "",
     };
@@ -108,7 +108,7 @@ export default function AddVolunteerRoles(props: {
       if (!existingDate) {
         existingDate = props.date;
       }
-  
+
       existingDate.setHours(hours);
       existingDate.setMinutes(minutes);
       existingDate.setSeconds(0);
@@ -133,60 +133,60 @@ export default function AddVolunteerRoles(props: {
     updatedRoles[roleIndex].timeslots.splice(shiftIndex, 1);
     props.setRoles(updatedRoles);
   };
-  
-  //need to change how it's displayed so after roles are added, shifts can be added, maybe add drop down to change roles/shifts?
-  return (
 
+  return (
     <Box maxWidth="463px" mx="auto" className={styles.volunteerroles}>
       <Box>
         <h2 className={styles.role}>Enter Roles</h2>
         <List>
-  {props.roles?.map((role, index) => (
-    <ListItem key={index} display="flex" flexDirection="column" alignItems="flex-start">
-      {/* Role name input field */}
-      <Flex alignItems="center" mb={2}>
-        <EmptyCircleIcon />
-        <Input
-          type="text"
-          value={role.roleName}
-          onChange={(e) => handleOptionInputChange(e, index)}
-          placeholder={`Role ${index + 1}`}
-          flex="1"
-          ml={2}
-          mr={2}
-          variant="unstyled"
-          borderRadius={0}
-          borderColor="customGray"
-          _placeholder={{ color: "placeholder" }}
-          _focus={{ borderColor: "inputBorder" }}
-        />
-        <IconButton
-          aria-label="Delete role"
-          icon={<DeleteIcon />}
-          onClick={() => handleDeleteOption(index)}
-          variant="unstyled"
-        />
-          </Flex>
-          {/* Role description input field */}
-        <textarea
-          value={role.description}
-          onChange={(e) => handleDescriptionChange(e, index)}
-          placeholder="Role Description"
-          style={{
-            flex: '1',
-            marginLeft: '16px',
-            marginRight: '16px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            padding: '8px',
-            resize: 'vertical',
-            minHeight: '50px',
-            fontFamily: 'inherit',
-            fontSize: '14px',
-  }}
-/>
-    </ListItem>
-  ))}
+          {props.roles?.map((role, index) => (
+            <ListItem
+              key={index}
+              display="flex"
+              flexDirection="column"
+              alignItems="flex-start"
+            >
+              {/* Role name input field */}
+              <Flex alignItems="center" mb={2} justifyContent="space-between" w="full">
+                <EmptyCircleIcon />
+                <Input
+                  type="text"
+                  value={role.roleName}
+                  onChange={(e) => handleOptionInputChange(e, index)}
+                  placeholder={`Role ${index + 1}`}
+                  flex="1"
+                  ml={2}
+                  mr={2}
+                  variant="unstyled"
+                  borderRadius={0}
+                  borderColor="customGray"
+                  _placeholder={{ color: "placeholder" }}
+                  _focus={{ borderColor: "inputBorder" }}
+                />
+                <IconButton
+                  aria-label="Delete role"
+                  icon={<DeleteIcon />}
+                  onClick={() => handleDeleteOption(index)}
+                  variant="unstyled"
+                />
+              </Flex>
+              {/* Role description input field */}
+              <Textarea
+                value={role.description}
+                onChange={(e) => handleDescriptionChange(e, index)}
+                placeholder="Role Description"
+                size="sm"
+                resize="vertical"
+                variant="outline"
+                focusBorderColor="blue.500"
+                errorBorderColor="red.500"
+                minH="50px"
+                maxW="100%"
+                px={2}
+                borderRadius={10}
+              />
+            </ListItem>
+          ))}
           <ListItem>
             <Button
               onClick={addRole}
@@ -199,16 +199,6 @@ export default function AddVolunteerRoles(props: {
             >
               Add Role
             </Button>
-          </ListItem>
-          <ListItem>
-          {/* Add an info icon at the bottom of the roles list */}
-            <Icon
-              as={AiOutlineInfoCircle}
-              color="customGray"
-              ml={2}
-              mt={1}
-              boxSize={4}
-            />
           </ListItem>
         </List>
       </Box>
@@ -227,9 +217,11 @@ export default function AddVolunteerRoles(props: {
               size="sm"
               onChange={handleRoleSelect}
             >
-              <option  style={{ color: "black" }} value="">Select Role</option>
+              <option style={{ color: "black" }} value="">
+                Select Role
+              </option>
               {props.roles.map((role, index) => (
-                <option  style={{ color: "black" }} key={index} value={index}>
+                <option style={{ color: "black" }} key={index} value={index}>
                   {role.roleName}
                 </option>
               ))}
