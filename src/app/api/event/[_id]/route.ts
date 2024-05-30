@@ -3,6 +3,8 @@ import connectDB from "@database/db";
 import eventSchema, { IEvent } from "@database/eventSchema";
 import VolunteerForms from "@database/volunteerFormSchema";
 import VolunteerRoles from "@database/volunteerRoleSchema";
+import VolunteerEntries, { IVolunteerEntry } from "@database/volunteerEntrySchema";
+import Volunteers, { IVolunteer } from "@database/volunteerSchema";
 
 type IParams = {
   params: {
@@ -68,16 +70,42 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
     const events = await eventSchema.findOne({ _id: _id }).orFail(); 
     const eventFormID = events.form; 
     const eventRolesArray = events.roles; 
-    console.log("Array: " + eventRolesArray); 
 
-    await VolunteerForms.findByIdAndDelete(eventFormID); 
+    // delete VolunteerForm
+    await VolunteerForms.findByIdAndDelete(eventFormID);
 
-    for (let i = 0; i < eventRolesArray.length; i++)
-      [
-        
-        await VolunteerRoles.findByIdAndDelete(eventRolesArray[i]),
-      ];
+    // update Volunteers with entry references
+    const volunteerEntries: IVolunteerEntry[] = await VolunteerEntries.find({ eventId: _id });
 
+    for (const entry of volunteerEntries) {
+      // find volunteer who made the entry
+      const volunteer = await Volunteers.findById(entry.volunteerId);
+
+      if (volunteer) {
+        volunteer.entries = volunteer.entries.filter((entryId: string) => entryId !== entry._id.toString());
+        await volunteer.save();
+      }
+    }
+
+    // delete entries
+    await VolunteerEntries.deleteMany({ eventId: _id });
+
+    // update Volunteers with role references & delete roles
+    for (const roleId of eventRolesArray) {
+      // Find Volunteers with roleId in their "roles" array
+      const volunteersWithRole = await Volunteers.find({ roles: roleId });
+
+      // Update each Volunteer to remove roleId from their "roles" array
+      for (const volunteer of volunteersWithRole) {
+        volunteer.roles = volunteer.roles.filter((role: string) => role !== roleId.toString());
+        await volunteer.save();
+      }
+
+      // Delete the VolunteerRole document
+      await VolunteerRoles.findByIdAndDelete(roleId);
+    }
+
+    // delete event
     const eventToDelete = await eventSchema.deleteOne({ _id: _id }).orFail(); 
 
     return NextResponse.json(eventToDelete);

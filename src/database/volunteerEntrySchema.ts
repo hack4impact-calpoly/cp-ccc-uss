@@ -6,6 +6,7 @@ export type IFormAnswer = {
 };
 
 export type IVolunteerEntry = {
+  _id: string;
   eventId: string;
   roles: string[];
   volunteerId: string;
