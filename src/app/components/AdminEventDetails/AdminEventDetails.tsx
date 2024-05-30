@@ -115,7 +115,17 @@ export default function AdminEventDetails({ _id }: Props) {
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [error, setError] = useState(false);
   const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isEditModalOpen,
+    onOpen: onEditModalOpen,
+    onClose: onEditModalClose
+  } = useDisclosure();
+  
+  const {
+    isOpen: isVolunteerModalOpen,
+    onOpen: onVolunteerModalOpen,
+    onClose: onVolunteerModalClose
+  } = useDisclosure();
 
   const onEventUpdated = (updatedEvent: IEvent) => {
     console.log("Updating event in parent:", updatedEvent);
@@ -152,12 +162,11 @@ export default function AdminEventDetails({ _id }: Props) {
             colorScheme='teal'
             aria-label='Edit event'
             icon={<EditIcon/>}
-            onClick={onOpen}
+            onClick={onEditModalOpen}
           />
           <Modal
-            onClose={onClose}
-            // finalFocusRef={btnRef}
-            isOpen={isOpen}
+            onClose={onEditModalClose}
+            isOpen={isEditModalOpen}
             scrollBehavior={"inside"}
             size={"xl"}
           >
@@ -169,11 +178,10 @@ export default function AdminEventDetails({ _id }: Props) {
                   setEvent={setEvent}
                   onEventUpdated={onEventUpdated}
                   setRoles={setRoles}
-                  onClose={onClose}
+                  onClose={onEditModalClose}
                   eventId={_id}
                 />
                 )}
-                {/* content here */}
             </ModalContent>
           </Modal>
           <IconButton
@@ -223,7 +231,7 @@ export default function AdminEventDetails({ _id }: Props) {
                 <div style={{marginTop: "6px"}}><strong>Volunteers</strong></div>
             </Flex>
             <Button
-                      onClick={onOpen}
+                      onClick={onVolunteerModalOpen}
                       background="transparent"
                       border="none"
                       textDecoration="underline"
@@ -238,7 +246,7 @@ export default function AdminEventDetails({ _id }: Props) {
             
           </div>
         </div>
-        <div style={{marginTop: "6px"}}><VolunteerDetails _id={event._id} isOpen={isOpen} onOpen={onOpen} onClose={onClose} /></div>
+        <div style={{marginTop: "6px"}}><VolunteerDetails _id={event._id} isOpen={isVolunteerModalOpen} onOpen={onVolunteerModalOpen} onClose={onVolunteerModalClose} /></div>
 
         {/* Later implement all volunteers for an event here */}
         <div className={style.eventRoles}></div>
