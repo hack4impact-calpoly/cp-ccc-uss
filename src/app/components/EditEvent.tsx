@@ -7,13 +7,12 @@ import { IEvent } from "@database/eventSchema";
 
 interface EditEventProps {
   event: IEvent;
-  setEvent: React.Dispatch<React.SetStateAction<IEvent | null>>;
   onClose: () => void;
   eventId: string;
   onEventUpdated: (updatedEvent: IEvent) => void;
 }
 
-function EditEvent({ event, setEvent, onClose, eventId, onEventUpdated }: EditEventProps) {
+function EditEvent({ event, onClose, eventId, onEventUpdated }: EditEventProps) {
   const [eventName, setEventName] = useState(event.name);
   const [date, setDate] = useState<Date>(new Date(event.date));
   const [description, setDescription] = useState(event.description);
@@ -60,7 +59,6 @@ function EditEvent({ event, setEvent, onClose, eventId, onEventUpdated }: EditEv
         if (updateEventResponse.ok) {
           const updatedEvent = await updateEventResponse.json();
           console.log("Event updated successfully:", updatedEvent);
-          setEvent(updatedEvent);
           onEventUpdated(updatedEvent);
           onClose(); 
         } else {

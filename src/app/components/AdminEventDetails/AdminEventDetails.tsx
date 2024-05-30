@@ -175,7 +175,6 @@ export default function AdminEventDetails({ _id }: Props) {
                 <ModalCloseButton />
                 {event && (<EditEvent
                   event={event}
-                  setEvent={setEvent}
                   onEventUpdated={onEventUpdated}
                   onClose={onEditModalClose}
                   eventId={_id}
