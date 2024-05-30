@@ -143,7 +143,7 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
           },
           body: JSON.stringify({
             roleName: role.roleName,
-            description: "description",
+            description: role.description.trim() ? role.description : "No Description",
             timeslots: timeslots,
             event: eventIdTemp, 
           }),

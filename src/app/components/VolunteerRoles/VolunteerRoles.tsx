@@ -14,11 +14,9 @@ import {
   ListItem,
   Select,
   Textarea,
-  Icon, // Import the Icon component from Chakra UI
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { EmptyCircleIcon, PlusCircleIcon } from "../../styles/CustomElements";
-import { AiOutlineInfoCircle } from "react-icons/ai";
 import styles from "./VolunteerRoles.module.css";
 
 export default function AddVolunteerRoles(props: {
