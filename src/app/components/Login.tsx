@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { Avatar, Button } from "@chakra-ui/react";
 import {
     ClerkProvider,
     SignedIn,
@@ -11,20 +11,11 @@ import {
   } from "@clerk/nextjs";
 import Link from "next/link";
 import { useUser } from "@clerk/clerk-react";
-import { Avatar } from "@mui/material";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 // import { SignOutButton } from "./SignOutButton";
 export default function Login() {
 
-  const user = useUser();
-  const theme = createTheme({
-    palette: {
-      mode: "light",
-      primary: {
-        main: "#1976d2",
-      },
-    },
-  });
+  const { user } = useUser();
+
     return (
       <>
         <div
@@ -38,11 +29,10 @@ export default function Login() {
         >
             <SignedIn>
                 <Link href={"/volunteerProfile"}>
-                  <ThemeProvider theme={theme}>
                     <Avatar
-                      src={user.user?.imageUrl}
+                      src={user?.imageUrl}
+                      size="md"
                     />
-                  </ThemeProvider>
                 </Link>
                 {/* <SignOutButton/> */}
             </SignedIn>
