@@ -228,6 +228,8 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         placeholder="Event Description"
         value={description}
         onChange={handleChangeDesc}
+        max-width="463px"
+        height="197px"
         borderColor="black"
       />
       <div>

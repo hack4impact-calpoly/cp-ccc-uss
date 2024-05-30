@@ -121,7 +121,7 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
   }, []);
 
   return (
-    <Box p={4} > 
+    <Box p={4}> 
       <Box>
         {!loading && !error && filteredEntries.length === 0 ? (
           <Text>No volunteers found.</Text>
