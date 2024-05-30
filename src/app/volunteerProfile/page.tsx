@@ -10,12 +10,12 @@ import { IVolunteerRole, IVolunteerRoleTimeslot } from "@database/volunteerRoleS
 import style from "./VolunteerProfile.module.css";
 import { useEffect, useState } from "react";
 import Navbar from "@components/Navbar";
-import { Heading, Button, useDisclosure, Alert, AlertIcon, Box, AlertTitle, AlertDescription, CloseButton } from "@chakra-ui/react";
+import { Heading, Button, useDisclosure, Alert, AlertIcon, Box, AlertTitle, AlertDescription, CloseButton, Avatar } from "@chakra-ui/react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useUser } from "@clerk/clerk-react";
-import { Avatar } from "@mui/material";
 import { Select as ChakraReactSelect, OptionBase } from "chakra-react-select";
 import { Chip, Stack } from "@mui/material";
+import { SignOutButton } from "@components/SignOutButton";
 
 interface SelectOption extends OptionBase {
   value: string;
@@ -116,7 +116,7 @@ function getTimeslots(volunteerId: string, roleDetails: IVolunteerRole): IVolunt
 
 function dateToShiftTime(date: Date): string {
   var pacificTime = new Date(date);
-  pacificTime.setMinutes(pacificTime.getMinutes() + (7 * 60))
+  // pacificTime.setMinutes(pacificTime.getMinutes() + (7 * 60))
   let hours: number = pacificTime.getHours();
   let minutes: number | string = pacificTime.getMinutes();
   const ampm: string = hours >= 12 ? 'PM' : 'AM';
@@ -282,49 +282,51 @@ export default function VolunteerProfile() {
     return <div className={style.loadingError}>Error loading volunteers.</div>;
   return (
     <>
-    <ThemeProvider theme={theme}>
       <div className={style.mainContainer}>
         <Navbar />
         <div className={style.userInfo}>
           <Avatar
             src={user.user?.imageUrl}
-            className={style.avatar}
+            marginRight={3}
+            size="md"
           />
           <h1 className={style.userName}>{user.user?.fullName}</h1>
+          <SignOutButton/>
         </div>
-        <div className={style.headingContainer}>
-          <Heading as="h2" size="xl" className={style.heading}>
-            Events
-          </Heading>
+        <ThemeProvider theme={theme}>
+          <div className={style.headingContainer}>
+            <Heading as="h2" size="xl" className={style.heading}>
+              Events
+            </Heading>
+          </div>
+          <div className={style.yellowBar}></div>{" "}
+          <div className={style.datagridContainer}>
+            <DataGrid
+              initialState={{
+                pagination: {
+                  paginationModel: { pageSize: 25, page: 0 },
+                },
+              }}
+              rows={events}
+              columns={columns}
+              scrollbarSize={10}
+              sortModel={[
+                {
+                  field: "date",
+                  sort: "asc",
+                },
+              ]}
+              getRowHeight={() => 'auto'}
+              sx={{
+                '& .MuiDataGrid-row': {
+                  display: 'flex',
+                  flexDirection: 'row',
+                },
+              }}
+            />
+          </div>
+          </ThemeProvider>
         </div>
-        <div className={style.yellowBar}></div>{" "}
-        <div className={style.datagridContainer}>
-          <DataGrid
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 25, page: 0 },
-              },
-            }}
-            rows={events}
-            columns={columns}
-            scrollbarSize={10}
-            sortModel={[
-              {
-                field: "date",
-                sort: "asc",
-              },
-            ]}
-            getRowHeight={() => 'auto'}
-            sx={{
-              '& .MuiDataGrid-row': {
-                display: 'flex',
-                flexDirection: 'row',
-              },
-            }}
-          />
-        </div>
-      </div>
-    </ThemeProvider>
     <div className={style.questions}>
       <Heading as="h2" size="xl" className={style.heading}>
         Profile Tags

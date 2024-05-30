@@ -32,7 +32,7 @@ import { useUser } from "@clerk/nextjs";
 type EventSignUpProps = {
   prefilledEventId?: string; // optional to prefill modal with event data
   buttonText?: string;
-  isEventPast: boolean;
+  isEventPast?: boolean;
 };
 
 export default function EventSignUp({

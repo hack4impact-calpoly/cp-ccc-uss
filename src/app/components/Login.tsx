@@ -1,13 +1,21 @@
-import { Button } from "@chakra-ui/react";
+import { Avatar, Button } from "@chakra-ui/react";
 import {
     ClerkProvider,
     SignedIn,
     SignedOut,
     SignInButton,
     UserButton,
+    SignIn,
+    SignUp,
+    RedirectToSignUp
   } from "@clerk/nextjs";
-
+import Link from "next/link";
+import { useUser } from "@clerk/clerk-react";
+// import { SignOutButton } from "./SignOutButton";
 export default function Login() {
+
+  const { user } = useUser();
+
     return (
       <>
         <div
@@ -20,8 +28,13 @@ export default function Login() {
           }}
         >
             <SignedIn>
-                {/* Mount the UserButton component */}
-                <UserButton />
+                <Link href={"/volunteerProfile"}>
+                    <Avatar
+                      src={user?.imageUrl}
+                      size="md"
+                    />
+                </Link>
+                {/* <SignOutButton/> */}
             </SignedIn>
             <SignedOut>
                 {/* Signed out users get sign in button */}
