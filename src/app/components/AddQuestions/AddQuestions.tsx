@@ -80,12 +80,6 @@ export default function AddQuestions(props: {
     }
   };
 
-  const handleDeleteQuestion = (questionIndex: number) => {
-    const updatedQuestions = [...props.questions];
-    updatedQuestions.splice(questionIndex, 1);
-    props.setQuestions(updatedQuestions);
-  };
-
   const addQuestion = () => {
     const emptyQuestion: IFormQuestion = {
       question: "",
