@@ -78,6 +78,8 @@ function EditEvent({ event, onClose, eventId, onEventUpdated }: EditEventProps) 
             value={eventName}
             onChange={handleChangeName}
             borderColor="black"
+            marginBottom={5}
+            marginTop={5}
         />
         <Input
             placeholder="Select Date and Time"
@@ -85,6 +87,7 @@ function EditEvent({ event, onClose, eventId, onEventUpdated }: EditEventProps) 
             value={new Date(date).toLocaleDateString("en-CA")}
             onChange={handleChangeDate}
             borderColor="black"
+            marginBottom={5}
         />
         <Textarea
             placeholder="Event Description"
@@ -93,6 +96,7 @@ function EditEvent({ event, onClose, eventId, onEventUpdated }: EditEventProps) 
             width="463px"
             height="197px"
             borderColor="black"
+            marginBottom={5}
         />
         <div className={styles.createEventButton}>
             <Button colorScheme="teal" onClick={handleSubmit}>
