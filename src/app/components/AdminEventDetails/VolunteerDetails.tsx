@@ -146,10 +146,12 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
                           className={style.openTime}
                           ml={1}
                           direction="row">
-                          {role.timeslots.map((timeslot, subIndex) => (
-                            <Text key={subIndex} fontSize="sm">
-                              {parseDate(timeslot.startTime)} - {parseDate(timeslot.endTime)} {"\xa0"}
-                            </Text> 
+                          {role.timeslots
+                            .filter(timeslot => timeslot.volunteers.includes(entry.volunteer._id))
+                            .map((timeslot, subIndex) => (
+                              <Text key={subIndex} fontSize="sm">
+                                {parseDate(timeslot.startTime)} - {parseDate(timeslot.endTime)} {"\xa0"}
+                              </Text> 
                           ))}
                         </Flex>
                       </Flex>
