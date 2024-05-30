@@ -5,7 +5,7 @@ import { IEvent } from '@database/eventSchema';
 import { IVolunteerRole } from '@database/volunteerRoleSchema';
 import { IVolunteerRoleTimeslot } from '@database/volunteerRoleSchema';
 import VolunteerDetails from "./VolunteerDetails";
-import { Button, Icon, IconButton, useToast, useDisclosure, Flex } from '@chakra-ui/react';
+import { Button, Icon, IconButton, useToast, Flex } from '@chakra-ui/react';
 import { LuCalendarDays, LuText, LuUsers, LuBookOpen } from "react-icons/lu";
 import { IoLocationOutline } from "react-icons/io5";
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
