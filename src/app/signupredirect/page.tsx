@@ -25,7 +25,7 @@ export default function SignUpRedirect() {
             }),
           });
           setVolunteerAdded(true);
-          window.location.href = '/'; // redirect to home page
+          window.location.href = '/volunteerProfile'; // redirect to home page
         } catch (err) {
           console.error("Error adding volunteer:", err);
         }
