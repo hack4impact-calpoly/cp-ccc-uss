@@ -283,50 +283,52 @@ export default function VolunteerProfile() {
     return <div className={style.loadingError}>Error loading volunteers.</div>;
   return (
     <>
-    <ThemeProvider theme={theme}>
       <div className={style.mainContainer}>
         <Navbar />
         <div className={style.userInfo}>
+          <ThemeProvider theme={theme}>
           <Avatar
             src={user.user?.imageUrl}
             className={style.avatar}
           />
           <h1 className={style.userName}>{user.user?.fullName}</h1>
+          </ThemeProvider>
           <SignOutButton/>
         </div>
-        <div className={style.headingContainer}>
-          <Heading as="h2" size="xl" className={style.heading}>
-            Events
-          </Heading>
+        <ThemeProvider theme={theme}>
+          <div className={style.headingContainer}>
+            <Heading as="h2" size="xl" className={style.heading}>
+              Events
+            </Heading>
+          </div>
+          <div className={style.yellowBar}></div>{" "}
+          <div className={style.datagridContainer}>
+            <DataGrid
+              initialState={{
+                pagination: {
+                  paginationModel: { pageSize: 25, page: 0 },
+                },
+              }}
+              rows={events}
+              columns={columns}
+              scrollbarSize={10}
+              sortModel={[
+                {
+                  field: "date",
+                  sort: "asc",
+                },
+              ]}
+              getRowHeight={() => 'auto'}
+              sx={{
+                '& .MuiDataGrid-row': {
+                  display: 'flex',
+                  flexDirection: 'row',
+                },
+              }}
+            />
+          </div>
+          </ThemeProvider>
         </div>
-        <div className={style.yellowBar}></div>{" "}
-        <div className={style.datagridContainer}>
-          <DataGrid
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 25, page: 0 },
-              },
-            }}
-            rows={events}
-            columns={columns}
-            scrollbarSize={10}
-            sortModel={[
-              {
-                field: "date",
-                sort: "asc",
-              },
-            ]}
-            getRowHeight={() => 'auto'}
-            sx={{
-              '& .MuiDataGrid-row': {
-                display: 'flex',
-                flexDirection: 'row',
-              },
-            }}
-          />
-        </div>
-      </div>
-    </ThemeProvider>
     <div className={style.questions}>
       <Heading as="h2" size="xl" className={style.heading}>
         Profile Tags
