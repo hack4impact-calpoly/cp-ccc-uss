@@ -62,10 +62,10 @@ export default function Home() {
         >
           <h1
             style={{
-              margin: "20px 20px 20px 20px",
+              padding: "10px",
+              paddingTop: "0px",
               fontSize: "2rem",
               textAlign: "center",
-              marginTop: "-1%",
             }}
           >
             Volunteer Events

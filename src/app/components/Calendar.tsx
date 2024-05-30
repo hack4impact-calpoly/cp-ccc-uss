@@ -106,15 +106,15 @@ const Calendar = ({ admin = false }) => {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                width: "100%",
+                width: "70%",
               }}
             >
               <Link href="/admin/profiles">
-                <Button mt={3} colorScheme="teal">
+                <Button colorScheme="teal">
                   Profile Database
                 </Button>
               </Link>
-              <Button mt={3} ref={btnRef} onClick={onOpen} colorScheme="teal">
+              <Button ref={btnRef} onClick={onOpen} colorScheme="teal">
                 Add Event
               </Button>
             </div>

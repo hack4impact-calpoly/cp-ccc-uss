@@ -1,6 +1,7 @@
 .buttonContainer {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .modal {
@@ -14,8 +15,10 @@
 
 .calendarContainer {
   margin: auto;
+  margin-top: 1%;
   height: 70%;
   width: 70%;
+  padding-bottom: 2%;
 }
 
 .eventBubble {
