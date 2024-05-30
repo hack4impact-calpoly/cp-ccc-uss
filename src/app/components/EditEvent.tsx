@@ -3,9 +3,6 @@ import styles from "./CreateEvent/CreateEvent.module.css";
 import { Input } from "@chakra-ui/react";
 import { Textarea, ModalCloseButton } from "@chakra-ui/react";
 import { Button} from "@chakra-ui/react";
-import { IFormQuestion } from "@database/volunteerFormSchema";
-import { IVolunteerRole } from "@database/volunteerRoleSchema";
-import AddQuestions from "@components/AddQuestions/AddQuestions";
 import { IEvent } from "@database/eventSchema";
 
 interface EditEventProps {
@@ -15,10 +12,6 @@ interface EditEventProps {
   eventId: string;
   onEventUpdated: (updatedEvent: IEvent) => void;
 }
-
-type Props = {
-    _id: string ;
-};
 
 function EditEvent({ event, setEvent, onClose, eventId, onEventUpdated }: EditEventProps) {
   const [eventName, setEventName] = useState(event.name);
