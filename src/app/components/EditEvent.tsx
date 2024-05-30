@@ -60,6 +60,7 @@ function EditEvent({ event, setEvent, onClose, eventId, onEventUpdated }: EditEv
             roles: event.roles, 
             description: description,
             location: event.location,
+            form: event.form,
           }),
         });
 
