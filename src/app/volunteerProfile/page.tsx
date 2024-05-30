@@ -16,6 +16,7 @@ import { useUser } from "@clerk/clerk-react";
 import { Avatar } from "@mui/material";
 import { Select as ChakraReactSelect, OptionBase } from "chakra-react-select";
 import { Chip, Stack } from "@mui/material";
+import { SignOutButton } from "@components/SignOutButton";
 
 interface SelectOption extends OptionBase {
   value: string;
@@ -291,6 +292,7 @@ export default function VolunteerProfile() {
             className={style.avatar}
           />
           <h1 className={style.userName}>{user.user?.fullName}</h1>
+          <SignOutButton/>
         </div>
         <div className={style.headingContainer}>
           <Heading as="h2" size="xl" className={style.heading}>
