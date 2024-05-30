@@ -24,7 +24,10 @@ import {
 import EditEvent from '@components/EditEvent';
 
 type Props = {
-  _id: string ;
+  _id: string;
+  updateEventInList: (updatedEvent: IEvent) => void;
+  removeEventFromList: (deletedEventId: string) => void;
+  onClose: () => void;
 };
 
 // get event by id
@@ -63,7 +66,7 @@ async function getRoles(_id: string) {
 }
 
 // delete event by id
-async function handleDeleteEvent(_id: string, toast: any) {
+async function handleDeleteEvent(_id: string, toast: any, removeEventFromList: (deletedEventId: string) => void, onClose: () => void) {
   const confirmed = window.confirm('Are you sure you want to delete this event?');
 
   if (!confirmed) {
@@ -81,7 +84,6 @@ async function handleDeleteEvent(_id: string, toast: any) {
 
     const data = await res.json();
 
-    console.log(data);
     toast({
       title: 'Event deleted.',
       description: 'The event has been deleted successfully.',
@@ -89,7 +91,8 @@ async function handleDeleteEvent(_id: string, toast: any) {
       duration: 9000,
       isClosable: true,
     });
-    window.location.reload();
+    removeEventFromList(_id);
+    onClose();
   } catch (err: unknown) {
     console.error('Error deleting event:', err);
     toast({
@@ -110,7 +113,7 @@ function parseDate(date: Date) {
   });
 }
 
-export default function AdminEventDetails({ _id }: Props) {
+export default function AdminEventDetails({ _id, updateEventInList, removeEventFromList, onClose}: Props) {
   const [event, setEvent] = useState<IEvent | null>(null);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [error, setError] = useState(false);
@@ -130,6 +133,7 @@ export default function AdminEventDetails({ _id }: Props) {
   const onEventUpdated = (updatedEvent: IEvent) => {
     console.log("Updating event in parent:", updatedEvent);
     setEvent(updatedEvent);
+    updateEventInList(updatedEvent);
   };
 
   //fetch event, then roles for that event
@@ -187,7 +191,7 @@ export default function AdminEventDetails({ _id }: Props) {
             colorScheme='teal'
             aria-label='Delete event'
             icon={<DeleteIcon />}
-            onClick={() => handleDeleteEvent(_id, toast)}
+            onClick={() => handleDeleteEvent(_id, toast, removeEventFromList, onClose)}
             />        
         </div>
         <div className={style.eventHeader}>Event Details: Admin</div>
