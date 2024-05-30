@@ -96,6 +96,19 @@ const Calendar = ({ admin = false }) => {
     );
   };
 
+  const updateEventInList = (updatedEvent: IEvent) => {
+    const updatedEvents = events.map((event) =>
+      event._id === updatedEvent._id ? updatedEvent : event
+    );
+    setEvents(updatedEvents);
+  };
+
+  const removeEventFromList = (deletedEventId: string) => {
+    setEvents((prevEvents) =>
+      prevEvents.filter((event) => event._id !== deletedEventId)
+    );
+  };
+
   return (
     <div className={style.wrapper}>
       <style>{calendarStyles}</style>
@@ -110,9 +123,7 @@ const Calendar = ({ admin = false }) => {
               }}
             >
               <Link href="/admin/profiles">
-                <Button colorScheme="teal">
-                  Profile Database
-                </Button>
+                <Button colorScheme="teal">Profile Database</Button>
               </Link>
               <Button ref={btnRef} onClick={onOpen} colorScheme="teal">
                 Add Event
@@ -168,7 +179,12 @@ const Calendar = ({ admin = false }) => {
         <ModalContent className={style.modal}>
           <ModalBody>
             {admin ? (
-              <AdminEventDetails _id={selectedEventId} />
+              <AdminEventDetails
+                _id={selectedEventId}
+                updateEventInList={updateEventInList}
+                removeEventFromList={removeEventFromList}
+                onClose={handleCloseModal}
+              />
             ) : (
               <UserEventDetails id={selectedEventId} />
             )}

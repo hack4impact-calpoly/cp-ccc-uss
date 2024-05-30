@@ -100,3 +100,10 @@
     padding-right: 20px;
 }
 
+.editAndDelete {
+    display: flex;
+    align-items: right;
+    justify-content: flex-end;
+    gap: 20px;
+}
+

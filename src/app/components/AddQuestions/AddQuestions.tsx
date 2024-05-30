@@ -86,11 +86,21 @@ export default function AddQuestions(props: {
       fieldType: "MULTI_SELECT",
       options: [],
     };
-    props.setQuestions((prevQuestions: any) => [
-      ...prevQuestions,
-      emptyQuestion,
-    ]);
+    props.setQuestions((prevQuestions: IFormQuestion[] | undefined) => {
+      return [...(prevQuestions || []), emptyQuestion];
+    });
   };
+  
+  if (!props.questions || props.questions.length === 0) {
+    return (
+      <Box maxWidth="463px" mx="auto" my={4}>
+        <Button onClick={addQuestion} leftIcon={<PlusCircleIcon />} variant="unstyled">
+          Add Question
+        </Button>
+      </Box>
+    );
+  }
+
 
   return (
     <Box maxWidth="463px" mx="auto">
