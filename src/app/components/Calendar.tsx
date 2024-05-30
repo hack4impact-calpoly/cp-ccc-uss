@@ -20,6 +20,8 @@ import {
 import UserEventDetails from "./UserEventDetails";
 import AdminEventDetails from "./AdminEventDetails/AdminEventDetails";
 import CreateEvent from "./CreateEvent/CreateEvent";
+import { useUser } from '@clerk/nextjs';
+import Link from "next/link";
 
 //Interface to define full calendar event format
 interface FullCalendarEvent {
@@ -45,8 +47,13 @@ const Calendar = ({ admin = false }) => {
     const fetchEvents = async () => {
       try {
         const response = await fetch("/api/event/");
-        const eventsFromDB = await response.json();
-        setEvents(eventsFromDB);
+        if (response.ok) {
+          const eventsFromDB = await response.json();
+          setEvents(eventsFromDB);
+        } else {
+          console.error("Error fetching events. Status:", response.status);
+          setEvents([]);
+        }
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -68,7 +75,7 @@ const Calendar = ({ admin = false }) => {
   // useEffect to convert events to FullCalendar compatible events whenever events array changes
   useEffect(() => {
     const convertEventsToFCFormat = () => {
-      if (events !== null) {
+      if (events.length > 0) {
         const FullCalendarEvents = events.map((event) => ({
           id: event._id,
           title: event.name,
@@ -86,9 +93,17 @@ const Calendar = ({ admin = false }) => {
         <style>{calendarStyles}</style>
         <>
         <div className={style.buttonContainer}>
-          <Button mt={3} ref={btnRef} onClick={onOpen} colorScheme="teal">
-            Add Event
-          </Button>
+          {admin ? (
+            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+            <Link href="/admin/profiles">
+              <Button mt={3} colorScheme="teal">
+                Profile Database
+              </Button>
+            </Link>
+            <Button mt={3} ref={btnRef} onClick={onOpen} colorScheme="teal">
+              Add Event
+            </Button>
+          </div>) : null}
         </div>
         <Modal
           onClose={onClose}
@@ -101,6 +116,7 @@ const Calendar = ({ admin = false }) => {
           <ModalContent>
             <div>
               <ModalCloseButton />
+
               <CreateEvent 
                 events={events} 
                 setEvents={setEvents} 

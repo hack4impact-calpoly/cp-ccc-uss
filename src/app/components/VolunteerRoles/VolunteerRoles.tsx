@@ -84,6 +84,7 @@ export default function AddVolunteerRoles(props: {
     shiftIndex: number,
     field: keyof IVolunteerRoleTimeslot
   ) => {
+    const originalRoles = [...props.roles];
     const updatedRoles = [...props.roles];
     const shift = updatedRoles[roleIndex].timeslots[shiftIndex];
     if (field === "startTime" || field === "endTime") {
@@ -93,22 +94,26 @@ export default function AddVolunteerRoles(props: {
       let existingDate = shift[field];
     
       if (!existingDate) {
-
         existingDate = props.date;
-
       }
-      
   
       existingDate.setHours(hours);
       existingDate.setMinutes(minutes);
       existingDate.setSeconds(0);
-      const timezoneOffset = existingDate.getTimezoneOffset();
-      existingDate.setMinutes(existingDate.getMinutes() - timezoneOffset);
-
-
-      updatedRoles[roleIndex].timeslots[shiftIndex][field] = existingDate;
-    } 
-    props.setRoles(updatedRoles);
+      if (isNaN(existingDate.getTime())) {
+        const now = new Date();
+        now.setHours(now.getHours() - 7);
+        originalRoles[roleIndex].timeslots[shiftIndex][field] = now;
+        props.setRoles(originalRoles);
+        console.error("Invalid date: ", existingDate.getTime());
+        return;
+      } else {
+        const timezoneOffset = existingDate.getTimezoneOffset();
+        existingDate.setMinutes(existingDate.getMinutes() - timezoneOffset);
+        updatedRoles[roleIndex].timeslots[shiftIndex][field] = existingDate;
+        props.setRoles(updatedRoles);
+      }
+    }
   };
 
   const handleDeleteShift = (roleIndex: number, shiftIndex: number) => {

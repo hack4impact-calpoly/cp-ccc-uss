@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 import { IEvent } from '@database/eventSchema';
 import { IVolunteerRole } from '@database/volunteerRoleSchema';
 import { IVolunteerRoleTimeslot } from '@database/volunteerRoleSchema';
-import { Icon } from '@chakra-ui/react'
+import VolunteerDetails from "./VolunteerDetails"
+import { Button, Icon, useDisclosure, Flex } from '@chakra-ui/react'
 import { LuCalendarDays, LuText, LuUsers, LuBookOpen } from "react-icons/lu";
 import { IoLocationOutline } from "react-icons/io5";
-
 
 
 type Props = {
@@ -57,33 +57,12 @@ function parseDate(date: Date) {
   });
 }
 
-function AdminEventDetailsButton() {
-  const handleClick = () => {
-    console.log("Button clicked!");
-  };
-
-  return (
-    <button
-      onClick={handleClick}
-      style={{
-        background: "transparent",
-        border: "none",
-        textDecoration: "underline",
-        color: "#00aa9e",
-        cursor: "pointer",
-        fontFamily: "sans-serif",
-        fontSize: "20px",
-      }}
-    >
-      more details
-    </button>
-  );
-}
-
 export default function AdminEventDetails({ _id }: Props) {
   const [event, setEvent] = useState<IEvent | null>(null);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
   const [error, setError] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
 
   //fetch event, then roles for that event
   useEffect(() => {
@@ -133,20 +112,38 @@ export default function AdminEventDetails({ _id }: Props) {
           <Icon as={LuText}
             className={style.icon}
             sx={{ fontSize: 50 }}/>
-          <div style={{marginTop: "10px", overflow: 'scroll', maxHeight: '400px'}}>
+          <div style={{marginTop: "10px", overflowY: 'auto', maxHeight: '400px'}}>
             <strong>Description:{" "}</strong>
             {" " +event.description}
           </div>
         </div>
         <div className={style.volunteersHeaderContainer}>
-          <div style={{display: "flex", alignItems: "center"}}>
-            <Icon as={LuUsers}
-              className={style.icon}
-              sx={{ fontSize: 50 }}/>
-            <div style={{marginTop: "6px"}}><strong>Volunteers</strong></div>
+          <div style={{display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%"}}>
+            
+            <Flex alignItems="center">
+              <Icon as={LuUsers}
+                className={style.icon}
+                sx={{ fontSize: 50 }}/>
+                <div style={{marginTop: "6px"}}><strong>Volunteers</strong></div>
+            </Flex>
+            <Button
+                      onClick={onOpen}
+                      background="transparent"
+                      border="none"
+                      textDecoration="underline"
+                      color="#00aa9e"
+                      cursor="pointer"
+                      fontFamily="sans-serif"
+                      fontSize="15px"
+                    >
+                      more details
+              </Button>
+
+            
           </div>
-          <div style={{marginTop: "6px"}}><AdminEventDetailsButton /></div>
         </div>
+        <div style={{marginTop: "6px"}}><VolunteerDetails _id={event._id} isOpen={isOpen} onOpen={onOpen} onClose={onClose} /></div>
+
         {/* Later implement all volunteers for an event here */}
         <div className={style.eventRoles}></div>
         <div className={style.openVolunteerSlots}>
