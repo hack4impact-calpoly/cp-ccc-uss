@@ -34,7 +34,7 @@ export default function DisplayVolunteerInformation({ name, roles, responses }: 
     });
   }
   return (
-    <Box>
+    <Box p={4} overflow="auto">
       <Flex direction="row" alignItems="center">
         <Avatar
           src={user?.imageUrl}

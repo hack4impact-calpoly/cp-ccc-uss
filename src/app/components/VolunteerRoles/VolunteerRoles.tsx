@@ -124,7 +124,7 @@ export default function AddVolunteerRoles(props: {
   //need to change how it's displayed so after roles are added, shifts can be added, maybe add drop down to change roles/shifts?
   return (
 
-    <Box maxWidth="463px" mx="auto">
+    <Box maxWidth="463px" mx="auto" className={styles.volunteerroles}>
       <Box>
         <h2 className={styles.role}>Enter Roles</h2>
         <List>

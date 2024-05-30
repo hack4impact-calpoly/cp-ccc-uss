@@ -84,7 +84,7 @@ export default function UserEventDetails({ id }: IParams) {
               <Icon as={LuText}
               className={style.icon}
               sx={{ fontSize: 50 }}/>
-              <div style={{marginTop: "10px", overflowY: 'auto', maxHeight: '400px'}}>
+              <div style={{marginTop: "10px"}}>
                 <strong>Description:</strong>{" " + eventData.description}
               </div>
             </div>
