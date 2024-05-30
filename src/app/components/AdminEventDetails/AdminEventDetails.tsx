@@ -177,7 +177,6 @@ export default function AdminEventDetails({ _id }: Props) {
                   event={event}
                   setEvent={setEvent}
                   onEventUpdated={onEventUpdated}
-                  setRoles={setRoles}
                   onClose={onEditModalClose}
                   eventId={_id}
                 />

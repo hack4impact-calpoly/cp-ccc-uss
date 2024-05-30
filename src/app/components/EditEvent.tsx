@@ -9,9 +9,9 @@ import AddQuestions from "@components/AddQuestions/AddQuestions";
 import { IEvent } from "@database/eventSchema";
 
 interface EditEventProps {
-  event: IEvent[];
-  setEvent: React.Dispatch<React.SetStateAction<IEvent[] | null>>;
-  onOpen: () => void;
+  event: IEvent;
+  setEvent: React.Dispatch<React.SetStateAction<IEvent | null>>;
+  onClose: () => void;
   eventId: string;
   onEventUpdated: (updatedEvent: IEvent) => void;
 }
@@ -24,12 +24,7 @@ function EditEvent({ event, setEvent, onClose, eventId, onEventUpdated }: EditEv
   const [eventName, setEventName] = useState(event.name);
   const [date, setDate] = useState<Date>(new Date(event.date));
   const [description, setDescription] = useState(event.description);
-  const [questions, setQuestions] = useState<IFormQuestion[]>(event.questions);
-  const [roles, setRoles] = useState<IVolunteerRole[]>(event.roles);
-  const [location, setLocation] = useState(event.location);
-  const [error, setError] = useState('');
-
-  const btnRef = React.useRef(null);
+  const [error, setError] = useState("");
 
   const handleChangeName = (e: any) => {
     setEventName(e.target.value);
@@ -62,10 +57,9 @@ function EditEvent({ event, setEvent, onClose, eventId, onEventUpdated }: EditEv
           body: JSON.stringify({
             name: eventName,
             date: date,
-            roles: roles, 
+            roles: event.roles, 
             description: description,
-            questions: questions,
-            location: location,
+            location: event.location,
           }),
         });
 
@@ -108,9 +102,6 @@ function EditEvent({ event, setEvent, onClose, eventId, onEventUpdated }: EditEv
             height="197px"
             borderColor="black"
         />
-        <div>
-            <AddQuestions questions={questions} setQuestions={setQuestions} />
-        </div>
         <div className={styles.createEventButton}>
             <Button colorScheme="teal" onClick={handleSubmit}>
                 Save
