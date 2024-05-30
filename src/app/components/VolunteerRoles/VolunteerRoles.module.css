@@ -1,4 +1,5 @@
 .role{
-    border-bottom: 2px solid black; /* Change the color, thickness, and style as needed */
-
+    border-bottom: 1px solid black; /* Change the color, thickness, and style as needed */
+    padding-bottom: 5px;
+    margin-bottom: 10px;
 }
