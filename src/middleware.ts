@@ -5,6 +5,7 @@ const isProtectedRoute = createRouteMatcher([
   '/api/entry(.*)',
   '/api/role(.*)',
   '/api/form(.*)',
+  '/volunteerProfile',
   '/admin(.*)'
 ])
 
