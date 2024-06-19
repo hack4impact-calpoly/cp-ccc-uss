@@ -66,6 +66,12 @@ const Calendar = ({ admin = false }) => {
   const handleEventClick = (info: EventClickArg) => {
     setSelectedEventId(info.event.id);
     setDetailModalOpen(true);
+  
+    // Close the "more" popover manually
+    const morePopover = document.querySelector('.fc-more-popover');
+    if (morePopover) {
+      (morePopover as HTMLElement).style.display = 'none';
+    }
   };
 
   const handleCloseModal = () => {
@@ -253,18 +259,25 @@ const calendarStyles = `
   font-weight: normal; 
 }
 
-.fc-col-header   {
+.fc-col-header {
   background-color: #ffb94f;
-  border-radius: 1em;
   font-family: Sans-serif;
+  padding: 0;
 }
 
 .fc-col-header-cell {
   border-style: none;
+  border-top: 1px solid #ffb94f; /* Match the header background color */
+  border-bottom: 1px solid #ffb94f; /* Match the header background color */
+  padding: 5px;
+  border-radius: 1em 1em 0 0; /* Top corners rounded */
 }
 
 .fc-day {
-  border-radius: 1em;
+  border-radius: 0 0 1em 1em; /* Bottom corners rounded */
+  border: 1px solid #ddd; /* Ensure all days have borders */
+  border-top: none; /* Remove double border at the top */
+  padding: 5px; /* Adjust padding */
 }
 
 `;
