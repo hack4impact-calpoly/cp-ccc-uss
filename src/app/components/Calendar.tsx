@@ -137,6 +137,7 @@ const Calendar = ({ admin = false }) => {
           isOpen={isOpen}
           scrollBehavior={"inside"}
           size={"xl"}
+          closeOnOverlayClick={false}
         >
           <ModalOverlay />
           <ModalContent>

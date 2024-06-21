@@ -482,7 +482,7 @@ export default function EventSignUp({
       <Button colorScheme="teal" onClick={onOpen} isDisabled={isEventPast}>
         {buttonText || "Event Sign Up"}
       </Button>
-      <Modal isOpen={isOpen} onClose={handleClose} size="xl">
+      <Modal isOpen={isOpen} onClose={handleClose} size="xl" closeOnOverlayClick={false}>
         <ModalOverlay />
         <ModalContent
           className={style.modal}
