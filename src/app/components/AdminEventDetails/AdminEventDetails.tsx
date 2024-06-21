@@ -192,6 +192,7 @@ export default function AdminEventDetails({
             isOpen={isEditModalOpen}
             scrollBehavior={"inside"}
             size={"xl"}
+            closeOnOverlayClick={false}
           >
             <ModalOverlay />
             <ModalContent>
