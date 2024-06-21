@@ -328,12 +328,50 @@ export default function EventSignUp({
       return;
     }
 
-    if (
-      !event ||
-      selectedRoles.length === 0 ||
-      !answers.every((answer) => answer.answer.trim() !== "")
-    ) {
-      setErrorMessage("Please fill out all fields before submitting.");
+    if (!event) {
+      setErrorMessage("Please select an event.");
+      return;
+    }
+
+    if (selectedRoles.length === 0) {
+      setErrorMessage("Please select at least one role.");
+      return;
+    }
+
+    let allShiftsValid = true;
+    for (const role of selectedRoles) {
+      const shiftsForRole = selectedShifts[role._id];
+      if (shiftsForRole && shiftsForRole.length > 0) {
+        if (shiftsForRole.every((shift) => !shift.isSelected)) {
+          allShiftsValid = false;
+          break;
+        }
+      }
+      // If no shifts are present, continue without flagging as an error
+    }
+
+    if (!allShiftsValid) {
+      setErrorMessage(
+        "Please select at least one shift for each role with available shifts."
+      );
+      return;
+    }
+
+    let allAnswersFilled = true;
+    for (const question of questions) {
+      const answer = answers.find((ans) => ans?.question === question.question);
+      if (
+        !answer ||
+        answer.answer.trim() === "" ||
+        (question.fieldType === "MULTI_SELECT" && answer.answer.length === 0)
+      ) {
+        allAnswersFilled = false;
+        break;
+      }
+    }
+
+    if (!allAnswersFilled) {
+      setErrorMessage("Please answer all questions.");
       return;
     }
 
@@ -583,7 +621,7 @@ export default function EventSignUp({
             {upcomingEvents.length > 0 && (
               <Box>
                 {questions.map((question: IFormQuestion, index) => (
-                  <Box key={index} mb={4}>
+                  <Box key={index} mb={2}>
                     <Text as="h4" borderBottom="1px solid black" mb={2}>
                       Question: {question.question}
                     </Text>
@@ -594,7 +632,7 @@ export default function EventSignUp({
             )}
 
             {errorMessage && (
-              <Text color="red.500" mb={1}>
+              <Text color="red.500" mb={2}>
                 {errorMessage}
               </Text>
             )}
