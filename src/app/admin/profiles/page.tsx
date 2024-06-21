@@ -7,6 +7,7 @@ import {
   GridToolbarExport,
   GridToolbarQuickFilter,
   GridRenderCellParams,
+  GridEventListener,
 } from "@mui/x-data-grid";
 import type {} from "@mui/x-data-grid/themeAugmentation";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -16,6 +17,13 @@ import { IVolunteer } from "@database/volunteerSchema";
 import { useEffect, useState } from "react";
 import Navbar from "@components/Navbar";
 import { languageOptions, skillOptions } from "app/volunteerProfile/page";
+import {
+  Modal,
+  useDisclosure,
+  ModalOverlay,
+  ModalContent,
+} from "@chakra-ui/react";
+import AdminProfileView from "@components/AdminProfileView/AdminProfileView";
 
 //get all volunteers
 async function getVolunteers() {
@@ -154,6 +162,8 @@ export default function ProfileDatabase() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [rowHeights, setRowHeights] = useState<{ [key: number]: number }>({});
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedVolunteer, setSelectedVolunteer] = useState("");
 
   const pageTheme = createTheme({
     typography: {
@@ -233,6 +243,17 @@ export default function ProfileDatabase() {
     return rowHeights[rows.id] || 70;
   };
 
+  const handleRowClick: GridEventListener<'rowClick'> = (
+    params, // GridRowParams
+    event, // MuiEvent<React.MouseEvent<HTMLElement>>
+    details, // GridCallbackDetails
+  ) => {
+    setSelectedVolunteer(params.row.name.split('\n')[1]);
+    console.log("selected volunteer: " + selectedVolunteer);
+    onOpen();
+  };
+
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading volunteers.</div>;
 
@@ -259,6 +280,7 @@ export default function ProfileDatabase() {
             getRowHeight={getRowHeight}
             columns={columns}
             getRowClassName={headerRowName}
+            onRowClick={handleRowClick}
             slots={{
               toolbar: CustomToolbar,
             }}
@@ -294,6 +316,12 @@ export default function ProfileDatabase() {
           <div style={{ height: "15px" }}></div>
         </ThemeProvider>
       </div>
+      <Modal isOpen={isOpen} onClose={onClose} >
+        <ModalOverlay />
+        <ModalContent maxW="65%">
+          <AdminProfileView email={selectedVolunteer} />
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
