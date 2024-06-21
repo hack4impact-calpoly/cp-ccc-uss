@@ -21,7 +21,13 @@ interface CreateEventProps {
   setHasChanges: (hasChanged: boolean) => void;
 }
 
-function CreateEvent({ events, setEvents, onOpen, onClose, setHasChanges }: CreateEventProps) {
+function CreateEvent({
+  events,
+  setEvents,
+  onOpen,
+  onClose,
+  setHasChanges,
+}: CreateEventProps) {
   const [eventName, setEventName] = useState("");
   const [date, setDate] = useState<Date>(() => {
     const today = new Date();
@@ -92,20 +98,30 @@ function CreateEvent({ events, setEvents, onOpen, onClose, setHasChanges }: Crea
     }
 
     if (!(date instanceof Date && !isNaN(date.getTime()))) {
-      errors.push("A Valid Event Date");
+      errors.push("A valid Event Date");
     }
 
     if (!description.trim()) {
       errors.push("Event Description");
     }
 
-    if (roles.length === 0) {
-      errors.push("At Least One Volunteer Role");
+    if (roles.length === 0 || roles.some(role => !role.roleName.trim())) {
+      errors.push("At least one role with a valid name.");
     }
 
-    // if (questions.length === 0) {
-    //   errors.push("At Least One Question");
-    // }
+    if (
+      questions.length > 0 &&
+      questions.some(
+        (question) =>
+          !question.question.trim() ||
+          (question.fieldType === "MULTI_SELECT" &&
+            (!question.options ||
+              question.options.length === 0 ||
+              question.options.some((option) => !option.trim())))
+      )
+    ) {
+      errors.push("Non-empty Questions and/or valid Options");
+    }
 
     if (errors.length > 0) {
       setErrorMessage(errors);
@@ -267,8 +283,15 @@ function CreateEvent({ events, setEvents, onOpen, onClose, setHasChanges }: Crea
         borderColor="black"
       />
       <div>
-        <AddVolunteerRoles roles={roles} setRoles={handleRoleChange} date={date} />
-        <AddQuestions questions={questions} setQuestions={handleQuestionChange} />
+        <AddVolunteerRoles
+          roles={roles}
+          setRoles={handleRoleChange}
+          date={date}
+        />
+        <AddQuestions
+          questions={questions}
+          setQuestions={handleQuestionChange}
+        />
       </div>
       {errorMessage.length > 0 && (
         <Box color="red.500" mb={2} ml={5}>
