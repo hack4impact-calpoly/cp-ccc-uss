@@ -58,6 +58,7 @@ export default function EventSignUp({
     [key: string]: boolean;
   }>({});
   const [errorMessage, setErrorMessage] = useState("");
+  const [hasChanged, setHasChanged] = useState(false);
   const user = useUser();
 
   useEffect(() => {
@@ -76,9 +77,18 @@ export default function EventSignUp({
 
   // clear modal info when close modal (resets)
   function handleClose() {
-    handleEventInput("");
-    setDescriptionOpen({});
-    onClose();
+    if (hasChanged) {
+      if (window.confirm("You have unsaved changes. Are you sure you want to leave?")) {
+        handleEventInput("");
+        setDescriptionOpen({});
+        onClose();
+        setHasChanged(false);
+    }
+    } else {
+      handleEventInput("");
+      setDescriptionOpen({});
+      onClose();
+    }
   }
 
   async function fetchEvents() {
@@ -185,6 +195,7 @@ export default function EventSignUp({
   }
 
   async function handleMultiRoleSelect(roleIDs: string[]) {
+    setHasChanged(true);
     const newSelectedRoles = roles.filter((role) => roleIDs.includes(role._id));
     setSelectedRoles(newSelectedRoles);
 
@@ -209,6 +220,7 @@ export default function EventSignUp({
   }
 
   function handleShiftSelect(roleId: string, shiftIndex: number) {
+    setHasChanged(true);
     setSelectedShifts((prevSelectedShifts) => {
       const updatedShifts = {
         ...prevSelectedShifts,
@@ -233,6 +245,7 @@ export default function EventSignUp({
 
   function renderCustomQuestion(question: IFormQuestion, index: number) {
     const handleAnswerChange = (value: string) => {
+      setHasChanged(true);
       const newAnswers = [...answers];
       newAnswers[index] = {
         question: question.question,
@@ -328,12 +341,50 @@ export default function EventSignUp({
       return;
     }
 
-    if (
-      !event ||
-      selectedRoles.length === 0 ||
-      !answers.every((answer) => answer.answer.trim() !== "")
-    ) {
-      setErrorMessage("Please fill out all fields before submitting.");
+    if (!event) {
+      setErrorMessage("Please select an event.");
+      return;
+    }
+
+    if (selectedRoles.length === 0) {
+      setErrorMessage("Please select at least one role.");
+      return;
+    }
+
+    let allShiftsValid = true;
+    for (const role of selectedRoles) {
+      const shiftsForRole = selectedShifts[role._id];
+      if (shiftsForRole && shiftsForRole.length > 0) {
+        if (shiftsForRole.every((shift) => !shift.isSelected)) {
+          allShiftsValid = false;
+          break;
+        }
+      }
+      // If no shifts are present, continue without flagging as an error
+    }
+
+    if (!allShiftsValid) {
+      setErrorMessage(
+        "Please select at least one shift for each role with available shifts."
+      );
+      return;
+    }
+
+    let allAnswersFilled = true;
+    for (const question of questions) {
+      const answer = answers.find((ans) => ans?.question === question.question);
+      if (
+        !answer ||
+        answer.answer.trim() === "" ||
+        (question.fieldType === "MULTI_SELECT" && answer.answer.length === 0)
+      ) {
+        allAnswersFilled = false;
+        break;
+      }
+    }
+
+    if (!allAnswersFilled) {
+      setErrorMessage("Please answer all questions.");
       return;
     }
 
@@ -431,7 +482,9 @@ export default function EventSignUp({
       }
 
       setIsLoading(false);
-      handleClose();
+      handleEventInput("");
+      setDescriptionOpen({});
+      onClose();
       console.log("Submission successful!");
     } catch (err: unknown) {
       console.error("Error:", err);
@@ -444,7 +497,12 @@ export default function EventSignUp({
       <Button colorScheme="teal" onClick={onOpen} isDisabled={isEventPast}>
         {buttonText || "Event Sign Up"}
       </Button>
-      <Modal isOpen={isOpen} onClose={handleClose} size="xl">
+      <Modal
+        isOpen={isOpen}
+        onClose={handleClose}
+        size="xl"
+        closeOnOverlayClick={false}
+      >
         <ModalOverlay />
         <ModalContent
           className={style.modal}
@@ -583,7 +641,7 @@ export default function EventSignUp({
             {upcomingEvents.length > 0 && (
               <Box>
                 {questions.map((question: IFormQuestion, index) => (
-                  <Box key={index} mb={4}>
+                  <Box key={index} mb={2}>
                     <Text as="h4" borderBottom="1px solid black" mb={2}>
                       Question: {question.question}
                     </Text>
@@ -594,7 +652,7 @@ export default function EventSignUp({
             )}
 
             {errorMessage && (
-              <Text color="red.500" mb={1}>
+              <Text color="red.500" mb={2}>
                 {errorMessage}
               </Text>
             )}
