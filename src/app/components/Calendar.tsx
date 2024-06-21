@@ -37,6 +37,7 @@ const Calendar = ({ admin = false }) => {
   >([]);
   const [selectedEventId, setSelectedEventId] = useState("");
   const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [createEventHasChanges, setCreateEventHasChanges] = useState(false);
 
   //for event modal
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -125,14 +126,30 @@ const Calendar = ({ admin = false }) => {
               <Link href="/admin/profiles">
                 <Button colorScheme="teal">Profile Database</Button>
               </Link>
-              <Button ref={btnRef} onClick={onOpen} colorScheme="teal">
+              <Button
+                ref={btnRef}
+                onClick={() => {
+                  onOpen();
+                  setCreateEventHasChanges(false);
+                }}
+                colorScheme="teal"
+              >
                 Add Event
               </Button>
             </div>
           ) : null}
         </div>
         <Modal
-          onClose={onClose}
+          onClose={() => {
+            if (createEventHasChanges) {
+              if (window.confirm("You have unsaved changes. Are you sure you want to leave?")) {
+                onClose();
+                setCreateEventHasChanges(false);
+              }
+            } else {
+              onClose();
+            }
+          }}
           finalFocusRef={btnRef}
           isOpen={isOpen}
           scrollBehavior={"inside"}
@@ -149,6 +166,7 @@ const Calendar = ({ admin = false }) => {
                 setEvents={setEvents}
                 onOpen={onOpen}
                 onClose={onClose}
+                setHasChanges={setCreateEventHasChanges}
               />
             </div>
           </ModalContent>

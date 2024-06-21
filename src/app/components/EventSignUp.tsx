@@ -58,6 +58,7 @@ export default function EventSignUp({
     [key: string]: boolean;
   }>({});
   const [errorMessage, setErrorMessage] = useState("");
+  const [hasChanged, setHasChanged] = useState(false);
   const user = useUser();
 
   useEffect(() => {
@@ -76,9 +77,18 @@ export default function EventSignUp({
 
   // clear modal info when close modal (resets)
   function handleClose() {
-    handleEventInput("");
-    setDescriptionOpen({});
-    onClose();
+    if (hasChanged) {
+      if (window.confirm("You have unsaved changes. Are you sure you want to leave?")) {
+        handleEventInput("");
+        setDescriptionOpen({});
+        onClose();
+        setHasChanged(false);
+    }
+    } else {
+      handleEventInput("");
+      setDescriptionOpen({});
+      onClose();
+    }
   }
 
   async function fetchEvents() {
@@ -185,6 +195,7 @@ export default function EventSignUp({
   }
 
   async function handleMultiRoleSelect(roleIDs: string[]) {
+    setHasChanged(true);
     const newSelectedRoles = roles.filter((role) => roleIDs.includes(role._id));
     setSelectedRoles(newSelectedRoles);
 
@@ -209,6 +220,7 @@ export default function EventSignUp({
   }
 
   function handleShiftSelect(roleId: string, shiftIndex: number) {
+    setHasChanged(true);
     setSelectedShifts((prevSelectedShifts) => {
       const updatedShifts = {
         ...prevSelectedShifts,
@@ -233,6 +245,7 @@ export default function EventSignUp({
 
   function renderCustomQuestion(question: IFormQuestion, index: number) {
     const handleAnswerChange = (value: string) => {
+      setHasChanged(true);
       const newAnswers = [...answers];
       newAnswers[index] = {
         question: question.question,
@@ -469,7 +482,9 @@ export default function EventSignUp({
       }
 
       setIsLoading(false);
-      handleClose();
+      handleEventInput("");
+      setDescriptionOpen({});
+      onClose();
       console.log("Submission successful!");
     } catch (err: unknown) {
       console.error("Error:", err);
@@ -482,7 +497,12 @@ export default function EventSignUp({
       <Button colorScheme="teal" onClick={onOpen} isDisabled={isEventPast}>
         {buttonText || "Event Sign Up"}
       </Button>
-      <Modal isOpen={isOpen} onClose={handleClose} size="xl" closeOnOverlayClick={false}>
+      <Modal
+        isOpen={isOpen}
+        onClose={handleClose}
+        size="xl"
+        closeOnOverlayClick={false}
+      >
         <ModalOverlay />
         <ModalContent
           className={style.modal}

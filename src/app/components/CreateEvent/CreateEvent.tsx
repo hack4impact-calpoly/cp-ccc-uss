@@ -18,9 +18,10 @@ interface CreateEventProps {
   setEvents: React.Dispatch<React.SetStateAction<IEvent[]>>;
   onOpen: () => void;
   onClose: () => void;
+  setHasChanges: (hasChanged: boolean) => void;
 }
 
-function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
+function CreateEvent({ events, setEvents, onOpen, onClose, setHasChanges }: CreateEventProps) {
   const [eventName, setEventName] = useState("");
   const [date, setDate] = useState<Date>(() => {
     const today = new Date();
@@ -38,20 +39,33 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
   const btnRef = React.useRef(null);
 
   const handleChangeName = (e: any) => {
+    setHasChanges(true);
     setEventName(e.target.value);
   };
 
   const handleChangeDesc = (e: any) => {
+    setHasChanges(true);
     setDescription(e.target.value);
   };
 
   const handleChangeDate = (e: any) => {
+    setHasChanges(true);
     const selectedDate = new Date(e.target.value);
 
     const timezoneOffset = selectedDate.getTimezoneOffset();
     selectedDate.setMinutes(timezoneOffset);
 
     setDate(selectedDate);
+  };
+
+  const handleRoleChange = (newRoles: IVolunteerRole[]) => {
+    setRoles(newRoles);
+    setHasChanges(true);
+  };
+
+  const handleQuestionChange = (newQuestions: IFormQuestion[]) => {
+    setQuestions(newQuestions);
+    setHasChanges(true);
   };
 
   const clearInputs = () => {
@@ -253,8 +267,8 @@ function CreateEvent({ events, setEvents, onOpen, onClose }: CreateEventProps) {
         borderColor="black"
       />
       <div>
-        <AddVolunteerRoles roles={roles} setRoles={setRoles} date={date} />
-        <AddQuestions questions={questions} setQuestions={setQuestions} />
+        <AddVolunteerRoles roles={roles} setRoles={handleRoleChange} date={date} />
+        <AddQuestions questions={questions} setQuestions={handleQuestionChange} />
       </div>
       {errorMessage.length > 0 && (
         <Box color="red.500" mb={2} ml={5}>
