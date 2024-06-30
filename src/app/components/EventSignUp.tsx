@@ -35,6 +35,8 @@ type EventSignUpProps = {
   isEventPast?: boolean;
 };
 
+const BASE_URL = process.env.API_BASE_URL;
+
 export default function EventSignUp({
   prefilledEventId,
   buttonText,
@@ -93,7 +95,7 @@ export default function EventSignUp({
 
   async function fetchEvents() {
     try {
-      const response = await fetch(`http://localhost:3000/api/event`);
+      const response = await fetch(`${BASE_URL}/api/event`);
       if (!response.ok) {
         throw new Error(`Failed to fetch events. Status: ${response.status}`);
       }
@@ -134,7 +136,7 @@ export default function EventSignUp({
             selectedEvent.roles.map(async (roleID) => {
               try {
                 const response = await fetch(
-                  `http://localhost:3000/api/role/${roleID}`
+                  `${BASE_URL}/api/role/${roleID}`
                 );
                 if (!response.ok) {
                   console.error(
@@ -178,7 +180,7 @@ export default function EventSignUp({
         return;
       }
       const formID = event?.form;
-      const response = await fetch(`http://localhost:3000/api/form/${formID}`);
+      const response = await fetch(`${BASE_URL}/api/form/${formID}`);
       if (!response.ok) {
         throw new Error(
           `Failed to fetch event form. Status: ${response.status}`
@@ -299,7 +301,7 @@ export default function EventSignUp({
 
   async function getVolunteerIdByEmail(email: string): Promise<string | null> {
     try {
-      const response = await fetch(`http://localhost:3000/api/volunteer`);
+      const response = await fetch(`${BASE_URL}/api/volunteer`);
       if (!response.ok) {
         throw new Error(
           `Failed to fetch volunteer. Status: ${response.status}`
@@ -319,7 +321,7 @@ export default function EventSignUp({
 
   async function getExistingRoles(volunteerId: string) {
     const response = await fetch(
-      `http://localhost:3000/api/volunteer/${volunteerId}`
+      `${BASE_URL}/api/volunteer/${volunteerId}`
     );
     const data = await response.json();
     return data.roles || [];
@@ -327,7 +329,7 @@ export default function EventSignUp({
 
   async function getExistingEntries(volunteerId: string) {
     const response = await fetch(
-      `http://localhost:3000/api/volunteer/${volunteerId}`
+      `${BASE_URL}/api/volunteer/${volunteerId}`
     );
     const data = await response.json();
     return data.entries || [];
@@ -396,7 +398,7 @@ export default function EventSignUp({
 
       setIsLoading(true);
 
-      const entryResp = await fetch("http://localhost:3000/api/entry", {
+      const entryResp = await fetch(`${BASE_URL}/api/entry`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -440,7 +442,7 @@ export default function EventSignUp({
         });
 
         const roleUpdateResponse = await fetch(
-          `http://localhost:3000/api/role/${role._id}`,
+          `${BASE_URL}/api/role/${role._id}`,
           {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
@@ -464,7 +466,7 @@ export default function EventSignUp({
       const existingEntries = await getExistingEntries(volunteerId || "");
 
       const volunteerUpdateResponse = await fetch(
-        `http://localhost:3000/api/volunteer/${volunteerId}`,
+        `${BASE_URL}/api/volunteer/${volunteerId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

@@ -45,6 +45,8 @@ type VolunteerEntry = {
   responses: IFormAnswer[];
 };
 
+const BASE_URL = process.env.API_BASE_URL;
+
 export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props) {
   const [volunteerEntries, setVolunteerEntries] = useState<VolunteerEntry[]>(
     []
@@ -87,7 +89,7 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
   async function fetchEntries() {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/event/${_id}/entry`
+        `${BASE_URL}/api/event/${_id}/entry`
       );
 
       if (!response.ok) {

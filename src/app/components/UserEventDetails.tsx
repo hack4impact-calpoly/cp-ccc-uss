@@ -14,6 +14,8 @@ type IParams = {
   id: string;
 };
 
+const BASE_URL = process.env.API_BASE_URL;
+
 export default function UserEventDetails({ id }: IParams) {
   const [eventData, setEventData] = useState<IEvent | null>(null);
   const [isEventPast, setIsEventPast] = useState<boolean>(false);
@@ -23,7 +25,7 @@ export default function UserEventDetails({ id }: IParams) {
 
   async function fetchEventData() {
     try {
-      const response = await fetch(`http://localhost:3000/api/event/${id}`);
+      const response = await fetch(`${BASE_URL}/api/event/${id}`);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch event. Status: ${response.status}`);

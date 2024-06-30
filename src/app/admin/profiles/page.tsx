@@ -27,10 +27,12 @@ import {
 } from "@chakra-ui/react";
 import AdminProfileView from "@components/AdminProfileView/AdminProfileView";
 
+const BASE_URL = process.env.API_BASE_URL;
+
 //get all volunteers
 async function getVolunteers() {
   try {
-    const res = await fetch(`http://localhost:3000/api/volunteer/`, {
+    const res = await fetch(`${BASE_URL}/api/volunteer/`, {
       cache: "no-store",
     });
 
@@ -46,7 +48,7 @@ async function getVolunteers() {
 
 async function getRole(id: string) {
   try {
-    const res = await fetch(`http://localhost:3000/api/role/${id}`, {
+    const res = await fetch(`${BASE_URL}/api/role/${id}`, {
       cache: "no-store",
     });
 
