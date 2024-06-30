@@ -23,7 +23,7 @@ interface AdminProfileViewProps {
     email: string;
 }
 
-cosnt BASE_URL = process.env.API_BASE_URL;
+const BASE_URL = process.env.API_BASE_URL;
 
 async function getVolunteerID(email: string): Promise<string | null> {
     try {
