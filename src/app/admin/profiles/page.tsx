@@ -234,7 +234,7 @@ export default function ProfileDatabase() {
         if (volunteers[i].tags) {
           rowHeight = Math.max(
             rowHeight,
-            Math.ceil(volunteers[i].tags.length) * 25 + 50
+            Math.ceil(volunteers[i].tags!.length) * 25 + 50
           );
         }
         newHeights[volunteers[i]._id] = rowHeight;
