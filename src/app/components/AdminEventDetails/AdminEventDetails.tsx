@@ -30,12 +30,12 @@ type Props = {
   onClose: () => void;
 };
 
-const BASE_URL = process.env.API_BASE_URL;
+
 
 // get event by id
 async function getEvent(_id: string) {
   try {
-    const res = await fetch(`${BASE_URL}/api/event/${_id}`, {
+    const res = await fetch(`/api/event/${_id}`, {
       cache: "no-store",
     });
 
@@ -52,7 +52,7 @@ async function getEvent(_id: string) {
 // get all roles for specified event
 async function getRoles(_id: string) {
   try {
-    const res = await fetch(`${BASE_URL}/api/event/${_id}/role`, {
+    const res = await fetch(`/api/event/${_id}/role`, {
       //default GET
       cache: "no-store",
     });
@@ -83,7 +83,7 @@ async function handleDeleteEvent(
   }
 
   try {
-    const res = await fetch(`${BASE_URL}/api/event/${_id}`, {
+    const res = await fetch(`/api/event/${_id}`, {
       method: "DELETE",
     });
 

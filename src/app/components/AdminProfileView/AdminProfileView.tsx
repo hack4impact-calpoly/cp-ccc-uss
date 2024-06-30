@@ -23,11 +23,11 @@ interface AdminProfileViewProps {
     email: string;
 }
 
-const BASE_URL = process.env.API_BASE_URL;
+
 
 async function getVolunteerID(email: string): Promise<string | null> {
     try {
-        const res = await fetch(`${BASE_URL}/api/volunteer`, {
+        const res = await fetch(`/api/volunteer`, {
             cache: "no-store",
         });
 
@@ -52,7 +52,7 @@ async function getVolunteerID(email: string): Promise<string | null> {
 async function getVolunteerData(volunteerId: string) {
     try {
         const res = await fetch(
-            `${BASE_URL}/api/volunteer/${volunteerId}`,
+            `/api/volunteer/${volunteerId}`,
             { cache: "no-store" }
         );
         if (!res.ok) {
@@ -67,7 +67,7 @@ async function getVolunteerData(volunteerId: string) {
 
 async function getEntryDetails(entryId: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/entry/${entryId}`, {
+        const res = await fetch(`/api/entry/${entryId}`, {
             cache: "no-store",
         });
 
@@ -83,7 +83,7 @@ async function getEntryDetails(entryId: string) {
 
 async function getEventDetails(eventId: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/event/${eventId}`, {
+        const res = await fetch(`/api/event/${eventId}`, {
             cache: "no-store",
         });
 
@@ -99,7 +99,7 @@ async function getEventDetails(eventId: string) {
 
 async function getRoleDetails(roleId: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/role/${roleId}`, {
+        const res = await fetch(`/api/role/${roleId}`, {
             cache: "no-store",
         });
 
