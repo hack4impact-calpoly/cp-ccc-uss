@@ -16,7 +16,7 @@ import { useUser } from "@clerk/clerk-react";
 import { Select as ChakraReactSelect, OptionBase } from "chakra-react-select";
 import { Chip, Stack } from "@mui/material";
 import { SignOutButton } from "@components/SignOutButton";
-import { languageOptions, skillOptions } from "./TagOptions";
+import { languageOptions, skillOptions } from "@database/TagOptions";
 
 interface SelectOption extends OptionBase {
   value: string;

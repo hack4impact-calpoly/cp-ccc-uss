@@ -16,7 +16,7 @@ import style from "./ProfileDatabase.module.css";
 import { IVolunteer } from "@database/volunteerSchema";
 import { useEffect, useState } from "react";
 import Navbar from "@components/Navbar";
-import { languageOptions, skillOptions } from "app/volunteerProfile/page";
+import { languageOptions, skillOptions } from "@database/TagOptions";
 import {
   Modal,
   useDisclosure,
@@ -42,7 +42,7 @@ async function getVolunteers() {
   }
 }
 
-async function getRole(id) {
+async function getRole(id: string) {
   try {
     const res = await fetch(`http://localhost:3000/api/role/${id}`, {
       cache: "no-store",
