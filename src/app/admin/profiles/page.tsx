@@ -245,7 +245,7 @@ export default function ProfileDatabase() {
   }, [volunteers]);
 
   const getRowHeight = (rows: GridRowHeightParams) => {
-    return rowHeights[rows.id] || 70;
+    return rowHeights[rows.id as number] || 70;
   };
 
   const handleRowClick: GridEventListener<'rowClick'> = (
