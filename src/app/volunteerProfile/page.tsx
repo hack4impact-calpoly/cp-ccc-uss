@@ -16,6 +16,7 @@ import { useUser } from "@clerk/clerk-react";
 import { Select as ChakraReactSelect, OptionBase } from "chakra-react-select";
 import { Chip, Stack } from "@mui/material";
 import { SignOutButton } from "@components/SignOutButton";
+import { languageOptions, skillOptions } from "./TagOptions";
 
 interface SelectOption extends OptionBase {
   value: string;
@@ -148,19 +149,6 @@ const columns: GridColDef[] = [
   { field: "date", headerName: "Date", flex: 1 },
   { field: "description", headerName: "Event Description", flex: 2.5 },
 ];
-
-export const languageOptions = [
-  { value: 'englishFluent', label: 'English fluent' },
-  { value: 'spanishFluent', label: 'Spanish fluent' },
-  { value: 'englishBasic', label: 'English basic' },
-  { value: 'spanishBasic', label: 'Spanish basic' },
-]
-
-export const skillOptions = [
-  { value: 'legalExpertise', label: 'Legal expertise' },
-  { value: 'socialMedia', label: 'Social media experience' },
-  { value: 'accounting', label: 'Accounting experience' },
-]
 
 export default function VolunteerProfile() {
   const user = useUser();
