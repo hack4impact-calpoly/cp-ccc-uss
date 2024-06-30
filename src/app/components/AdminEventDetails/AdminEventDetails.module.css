@@ -1,0 +1,109 @@
+.adminEventDetails {
+    font-family: sans-serif;
+    padding: 25px;
+    overflow: auto;
+    font-size: 20px;
+}
+
+.eventName {
+    color: #00aa9e;
+    font-size: 25px;
+    line-height: normal;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: 500 !important;
+}
+
+.eventHeader {
+    color: black;;
+    font-size: 30px;
+    text-align: center;
+    color: black;
+    font-family: "Open Sans";
+    font-weight: 1000 !important;
+}
+
+.volunteersHeaderContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 30x;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+
+
+.eventDay {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.eventLocation {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.eventDescription {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+    overflow: auto;
+}
+
+.eventRoles {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 50px;
+  }
+
+.eventRole{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.openVolunteerSlots{
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.eventOpenSlots {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 50px;
+}
+
+.signedUp {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.openTime {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.openDetails {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 50px;
+}
+
+.icon {
+    padding-right: 20px;
+}
+
+.editAndDelete {
+    display: flex;
+    align-items: right;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
