@@ -8,6 +8,8 @@ import {
   GridToolbarQuickFilter,
   GridRenderCellParams,
   GridEventListener,
+  GridRowClassNameParams,
+  GridRowHeightParams,
 } from "@mui/x-data-grid";
 import type {} from "@mui/x-data-grid/themeAugmentation";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -138,10 +140,13 @@ const columns: GridColDef[] = [
   },
 ];
 
-const headerRowName = (params, index) => {
-  if (index === 0) return `${style.firstRow}`;
-  else return null;
+const headerRowName = (params: GridRowClassNameParams) => {
+  if (params.id === 0) {
+    return `${style.firstRow}`;
+  }
+  return '';
 };
+
 
 function CustomToolbar() {
   return (
@@ -158,7 +163,7 @@ function CustomToolbar() {
 }
 
 export default function ProfileDatabase() {
-  const [volunteers, setVolunteers] = useState<IVolunteer[] | null>(null);
+  const [volunteers, setVolunteers] = useState<IVolunteer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [rowHeights, setRowHeights] = useState<{ [key: number]: number }>({});
@@ -177,8 +182,8 @@ export default function ProfileDatabase() {
     const setVolunteersData = async () => {
       setLoading(true);
       try {
-        const data = await getVolunteers();
-        const roleTitlesDict = {};
+        const data: IVolunteer[] = await getVolunteers();
+        const roleTitlesDict: { [key: string]: string} = {};
         if (data) {
           for (let i = 0; i < data.length; i++) {
             // To place name over email in same column, make the "name" field of IVolunteer hold both
@@ -215,7 +220,7 @@ export default function ProfileDatabase() {
 
   useEffect(() => {
     const setHeightPerRow = () => {
-      let newHeights: { [key: number]: number } = {};
+      let newHeights: { [key: string]: number } = {};
       if (!volunteers) return;
       for (let i = 0; i < volunteers.length; i++) {
         // set the height of this row based on size of data
@@ -239,7 +244,7 @@ export default function ProfileDatabase() {
     setHeightPerRow();
   }, [volunteers]);
 
-  const getRowHeight = (rows) => {
+  const getRowHeight = (rows: GridRowHeightParams) => {
     return rowHeights[rows.id] || 70;
   };
 
