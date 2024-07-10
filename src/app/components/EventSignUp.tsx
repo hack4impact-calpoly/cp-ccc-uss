@@ -35,7 +35,6 @@ type EventSignUpProps = {
   isEventPast?: boolean;
 };
 
-
 export default function EventSignUp({
   prefilledEventId,
   buttonText,
@@ -60,6 +59,7 @@ export default function EventSignUp({
   }>({});
   const [errorMessage, setErrorMessage] = useState("");
   const [hasChanged, setHasChanged] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
   const user = useUser();
 
   useEffect(() => {
@@ -67,6 +67,30 @@ export default function EventSignUp({
   }, []);
 
   useEffect(() => {
+    // Check if user already has an entry for the selected event
+    const checkUserRegistration = async () => {
+      if (user.isSignedIn && event) {
+        try {
+          const volunteerId = await getVolunteerIdByEmail(user.user?.primaryEmailAddress?.toString() || "");
+          const response = await fetch(`/api/volunteer/${volunteerId}/entries?eventId=${event._id}`);
+    
+          if (!response.ok) {
+            throw new Error(`Failed to fetch entries: ${response.status}`);
+          }
+    
+          const data = await response.json();
+          setIsRegistered(data.length > 0);
+        } catch (error) {
+          console.error("Failed to check registration:", error);
+          setIsRegistered(false);
+        }
+      }
+    };
+
+    if (user.isSignedIn && event) {
+      checkUserRegistration();
+    }
+
     fetchForm();
   }, [event]);
 
@@ -79,12 +103,16 @@ export default function EventSignUp({
   // clear modal info when close modal (resets)
   function handleClose() {
     if (hasChanged) {
-      if (window.confirm("You have unsaved changes. Are you sure you want to leave?")) {
+      if (
+        window.confirm(
+          "You have unsaved changes. Are you sure you want to leave?"
+        )
+      ) {
         handleEventInput("");
         setDescriptionOpen({});
         onClose();
         setHasChanged(false);
-    }
+      }
     } else {
       handleEventInput("");
       setDescriptionOpen({});
@@ -134,9 +162,7 @@ export default function EventSignUp({
           const rolesData = await Promise.all(
             selectedEvent.roles.map(async (roleID) => {
               try {
-                const response = await fetch(
-                  `/api/role/${roleID}`
-                );
+                const response = await fetch(`/api/role/${roleID}`);
                 if (!response.ok) {
                   console.error(
                     `Failed to fetch role ${roleID}. Status: ${response.status}`
@@ -319,17 +345,13 @@ export default function EventSignUp({
   }
 
   async function getExistingRoles(volunteerId: string) {
-    const response = await fetch(
-      `/api/volunteer/${volunteerId}`
-    );
+    const response = await fetch(`/api/volunteer/${volunteerId}`);
     const data = await response.json();
     return data.roles || [];
   }
 
   async function getExistingEntries(volunteerId: string) {
-    const response = await fetch(
-      `/api/volunteer/${volunteerId}`
-    );
+    const response = await fetch(`/api/volunteer/${volunteerId}`);
     const data = await response.json();
     return data.entries || [];
   }
@@ -440,17 +462,14 @@ export default function EventSignUp({
           return timeslot;
         });
 
-        const roleUpdateResponse = await fetch(
-          `/api/role/${role._id}`,
-          {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              fieldToUpdate: "timeslots",
-              value: selectedTimeslots,
-            }),
-          }
-        );
+        const roleUpdateResponse = await fetch(`/api/role/${role._id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fieldToUpdate: "timeslots",
+            value: selectedTimeslots,
+          }),
+        });
 
         if (!roleUpdateResponse.ok) {
           throw new Error(
@@ -550,126 +569,134 @@ export default function EventSignUp({
               </Box>
             )}
 
-            {upcomingEvents.length > 0 && (
+            {isRegistered ? (
+              <Text color="red.500" mb={2}>
+                You are already registered for this event. Please contact us if you need to make changes.
+              </Text>
+            ) : (
               <Box>
-                <ChakraReactSelect
-                  isMulti
-                  name="roles"
-                  value={selectedRoles.map((role) => ({
-                    value: role._id,
-                    label: role.roleName,
-                  }))}
-                  options={roles.map((role) => ({
-                    value: role._id,
-                    label: role.roleName,
-                  }))}
-                  placeholder="Select Roles"
-                  closeMenuOnSelect={true}
-                  onChange={(selectedOptions) =>
-                    handleMultiRoleSelect(
-                      selectedOptions.map((option) => option.value)
-                    )
-                  }
-                  chakraStyles={{
-                    control: (provided, state) => ({
-                      ...provided,
-                      borderColor: "black",
-                      borderRadius: "10px",
-                      marginBottom: "15px",
-                    }),
-                    multiValue: (provided) => ({
-                      ...provided,
-                      backgroundColor: "teal.200",
-                    }),
-                  }}
-                />
-              </Box>
-            )}
-
-            {selectedRoles.map((role) => (
-              <Box key={role._id}>
-                <Text as="h3" borderBottom="1px solid black" mb={2}>
-                  Select Shifts for {role.roleName}
-                  {role.description && role.description.length > 0 && (
-                    <Text
-                      as="span"
-                      ml={2}
-                      color="teal.500"
-                      cursor="pointer"
-                      onClick={() => toggleDescription(role._id)}
-                    >
-                      (
-                      {descriptionOpen[role._id]
-                        ? "Hide Description"
-                        : "Show Description"}
-                      )
-                    </Text>
-                  )}
-                </Text>
-                {role.description && role.description.length > 0 && (
-                  <Collapse in={descriptionOpen[role._id]} animateOpacity>
-                    <Text mb={2}>{role.description}</Text>
-                  </Collapse>
+                {upcomingEvents.length > 0 && (
+                  <Box>
+                    <ChakraReactSelect
+                      isMulti
+                      name="roles"
+                      value={selectedRoles.map((role) => ({
+                        value: role._id,
+                        label: role.roleName,
+                      }))}
+                      options={roles.map((role) => ({
+                        value: role._id,
+                        label: role.roleName,
+                      }))}
+                      placeholder="Select Roles"
+                      closeMenuOnSelect={true}
+                      onChange={(selectedOptions) =>
+                        handleMultiRoleSelect(
+                          selectedOptions.map((option) => option.value)
+                        )
+                      }
+                      chakraStyles={{
+                        control: (provided, state) => ({
+                          ...provided,
+                          borderColor: "black",
+                          borderRadius: "10px",
+                          marginBottom: "15px",
+                        }),
+                        multiValue: (provided) => ({
+                          ...provided,
+                          backgroundColor: "teal.200",
+                        }),
+                      }}
+                    />
+                  </Box>
                 )}
-                <Box mb={4}>
-                  {selectedShifts[role._id]?.map((shiftData, index) => (
-                    <Box key={index}>
-                      <Checkbox
-                        id={`shift-${role._id}-${index}`}
-                        size="lg"
-                        colorScheme="teal"
-                        onChange={() => handleShiftSelect(role._id, index)}
-                        isChecked={shiftData.isSelected}
-                      >
-                        {`Shift ${index + 1}: ${new Date(
-                          shiftData.shift.startTime
-                        ).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })} - ${new Date(
-                          shiftData.shift.endTime
-                        ).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}`}
-                      </Checkbox>
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
-            ))}
 
-            {upcomingEvents.length > 0 && (
-              <Box>
-                {questions.map((question: IFormQuestion, index) => (
-                  <Box key={index} mb={2}>
-                    <Text as="h4" borderBottom="1px solid black" mb={2}>
-                      Question: {question.question}
+                {selectedRoles.map((role) => (
+                  <Box key={role._id}>
+                    <Text as="h3" borderBottom="1px solid black" mb={2}>
+                      Select Shifts for {role.roleName}
+                      {role.description && role.description.length > 0 && (
+                        <Text
+                          as="span"
+                          ml={2}
+                          color="teal.500"
+                          cursor="pointer"
+                          onClick={() => toggleDescription(role._id)}
+                        >
+                          (
+                          {descriptionOpen[role._id]
+                            ? "Hide Description"
+                            : "Show Description"}
+                          )
+                        </Text>
+                      )}
                     </Text>
-                    <Box> {renderCustomQuestion(question, index)} </Box>
+                    {role.description && role.description.length > 0 && (
+                      <Collapse in={descriptionOpen[role._id]} animateOpacity>
+                        <Text mb={2}>{role.description}</Text>
+                      </Collapse>
+                    )}
+                    <Box mb={4}>
+                      {selectedShifts[role._id]?.map((shiftData, index) => (
+                        <Box key={index}>
+                          <Checkbox
+                            id={`shift-${role._id}-${index}`}
+                            size="lg"
+                            colorScheme="teal"
+                            onChange={() => handleShiftSelect(role._id, index)}
+                            isChecked={shiftData.isSelected}
+                          >
+                            {`Shift ${index + 1}: ${new Date(
+                              shiftData.shift.startTime
+                            ).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })} - ${new Date(
+                              shiftData.shift.endTime
+                            ).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}`}
+                          </Checkbox>
+                        </Box>
+                      ))}
+                    </Box>
                   </Box>
                 ))}
+
+                {upcomingEvents.length > 0 && (
+                  <Box>
+                    {questions.map((question: IFormQuestion, index) => (
+                      <Box key={index} mb={2}>
+                        <Text as="h4" borderBottom="1px solid black" mb={2}>
+                          Question: {question.question}
+                        </Text>
+                        <Box> {renderCustomQuestion(question, index)} </Box>
+                      </Box>
+                    ))}
+                  </Box>
+                )}
+
+                {errorMessage && (
+                  <Text color="red.500" mb={2}>
+                    {errorMessage}
+                  </Text>
+                )}
+
+                {upcomingEvents.length > 0 && (
+                  <Button
+                    type="submit"
+                    className={style.submit}
+                    isLoading={isLoading}
+                    colorScheme="teal"
+                    variant="solid"
+                    alignSelf="center"
+                    onClick={() => handleSubmission()}
+                  >
+                    Submit
+                  </Button>
+                )}
               </Box>
-            )}
-
-            {errorMessage && (
-              <Text color="red.500" mb={2}>
-                {errorMessage}
-              </Text>
-            )}
-
-            {upcomingEvents.length > 0 && (
-              <Button
-                type="submit"
-                className={style.submit}
-                isLoading={isLoading}
-                colorScheme="teal"
-                variant="solid"
-                alignSelf="center"
-                onClick={() => handleSubmission()}
-              >
-                Submit
-              </Button>
             )}
           </Box>
         </ModalContent>
