@@ -38,11 +38,9 @@ function CreateEvent({
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState<IFormQuestion[]>([]);
   const [roles, setRoles] = useState<IVolunteerRole[]>([]);
-  const [location, setLocation] = useState("default location");
+  const [location, setLocation] = useState("");
   const [eventId, setEventId] = useState("61d634706a98a61edd42bf45");
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
-
-  const btnRef = React.useRef(null);
 
   const handleChangeName = (e: any) => {
     setHasChanges(true);
@@ -80,7 +78,7 @@ function CreateEvent({
     setDescription("");
     setQuestions([]);
     setRoles([]);
-    setLocation("default location");
+    setLocation("");
   };
 
   const handleSubmit = async () => {
@@ -105,7 +103,7 @@ function CreateEvent({
       errors.push("Event Description");
     }
 
-    if (roles.length === 0 || roles.some(role => !role.roleName.trim())) {
+    if (roles.length === 0 || roles.some((role) => !role.roleName.trim())) {
       errors.push("At least one role with a valid name.");
     }
 
@@ -160,7 +158,7 @@ function CreateEvent({
           date: date,
           roles: [],
           description: description,
-          location: location,
+          location: location ? location : "No Location Set",
           form: formIdTemp,
         }),
       });
@@ -271,6 +269,13 @@ function CreateEvent({
         type="date"
         value={new Date(date).toLocaleDateString("en-CA")}
         onChange={handleChangeDate}
+        borderColor="black"
+      />
+      <Input
+        className={styles.input2}
+        placeholder="Event Location"
+        value={location}
+        onChange={(e) => setLocation(e.target.value)}
         borderColor="black"
       />
       <Textarea
