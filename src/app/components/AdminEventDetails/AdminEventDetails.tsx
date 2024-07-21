@@ -30,8 +30,6 @@ type Props = {
   onClose: () => void;
 };
 
-
-
 // get event by id
 async function getEvent(_id: string) {
   try {
@@ -44,7 +42,7 @@ async function getEvent(_id: string) {
     }
     return res.json();
   } catch (err: unknown) {
-    console.log(`error: ${err}`);
+    console.log(`error: ${err}` );
     return null;
   }
 }

@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
-import type { IEvent } from "../../../database/eventSchema";
 import type {
-  IVolunteerEntry,
   IFormAnswer,
 } from "../../../database/volunteerEntrySchema";
 import type { IVolunteer } from "../../../database/volunteerSchema";
 import type {
   IVolunteerRole,
-  IVolunteerRoleTimeslot,
 } from "../../../database/volunteerRoleSchema";
 import style from "./AdminEventDetails.module.css";
 import {
@@ -28,7 +25,6 @@ import {
   Avatar
 } from "@chakra-ui/react";
 import DisplayVolunteerInformation from "./DisplayVolunteerInformation";
-import { useUser } from "@clerk/nextjs";
 
 type Props = {
   _id: string;
@@ -55,7 +51,6 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
   const [filteredEntries, setFilteredEntries] = useState<VolunteerEntry[]>([]);
   const [loading, setLoading] = useState<Boolean>(true);
   const [error, setError] = useState(null);
-  const { user } = useUser();
 
   function parseDate(date: Date) {
     return new Date(date).toLocaleTimeString("en-US", {
@@ -71,16 +66,7 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
 
     const filteredItems = volunteerEntries.filter(
       (entry) =>
-        entry.volunteer.name.toLowerCase().includes(searchTerm.toLowerCase()) //||
-        // entry.roles.map((role: IVolunteerRole) =>
-        //   role.roleName?.toLowerCase().includes(searchTerm.toLowerCase())
-        // )
-      // ||
-      // entry.responses?.map(
-      //   (resp: IFormAnswer) =>
-      //     resp.question?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      //     resp.answer?.toLowerCase().includes(searchTerm.toLowerCase())
-      // )
+        entry.volunteer.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     setFilteredEntries(filteredItems);
@@ -121,6 +107,17 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
         setLoading(false);
       });
   }, []);
+
+  const handleVolunteerDelete = async () => {
+    const newData = await fetchEntries();
+    if (newData) {
+      setVolunteerEntries(newData);
+      setFilteredEntries(newData);
+    } else {
+      setVolunteerEntries([]);
+      setFilteredEntries([]);
+    }
+  };
 
   return (
     <Box p={4}> 
@@ -190,6 +187,9 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
                         name={entry.volunteer.name}
                         roles={entry.roles}
                         responses={entry.responses}
+                        volunteerId={entry.volunteer._id}
+                        entryId={entry._id}
+                        onDelete={() => handleVolunteerDelete()}
                       />
                     </Box>
                   </ListItem>
