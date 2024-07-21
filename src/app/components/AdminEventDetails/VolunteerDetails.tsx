@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
-import type { IEvent } from "../../../database/eventSchema";
 import type {
-  IVolunteerEntry,
   IFormAnswer,
 } from "../../../database/volunteerEntrySchema";
 import type { IVolunteer } from "../../../database/volunteerSchema";
 import type {
   IVolunteerRole,
-  IVolunteerRoleTimeslot,
 } from "../../../database/volunteerRoleSchema";
 import style from "./AdminEventDetails.module.css";
 import {
@@ -69,16 +66,7 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
 
     const filteredItems = volunteerEntries.filter(
       (entry) =>
-        entry.volunteer.name.toLowerCase().includes(searchTerm.toLowerCase()) //||
-        // entry.roles.map((role: IVolunteerRole) =>
-        //   role.roleName?.toLowerCase().includes(searchTerm.toLowerCase())
-        // )
-      // ||
-      // entry.responses?.map(
-      //   (resp: IFormAnswer) =>
-      //     resp.question?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      //     resp.answer?.toLowerCase().includes(searchTerm.toLowerCase())
-      // )
+        entry.volunteer.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     setFilteredEntries(filteredItems);

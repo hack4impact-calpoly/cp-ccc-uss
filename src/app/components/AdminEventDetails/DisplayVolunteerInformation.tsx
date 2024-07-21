@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import type { IFormAnswer } from "../../../database/volunteerEntrySchema";
 import type {
   IVolunteerRole,
-  IVolunteerRoleTimeslot,
 } from "../../../database/volunteerRoleSchema";
 import style from "./AdminEventDetails.module.css";
 import {
@@ -16,7 +15,6 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
-import { useUser } from "@clerk/nextjs";
 
 type Props = {
   name: string;
