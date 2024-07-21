@@ -28,7 +28,6 @@ import {
   Avatar
 } from "@chakra-ui/react";
 import DisplayVolunteerInformation from "./DisplayVolunteerInformation";
-import { useUser } from "@clerk/nextjs";
 
 type Props = {
   _id: string;
@@ -55,7 +54,6 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
   const [filteredEntries, setFilteredEntries] = useState<VolunteerEntry[]>([]);
   const [loading, setLoading] = useState<Boolean>(true);
   const [error, setError] = useState(null);
-  const { user } = useUser();
 
   function parseDate(date: Date) {
     return new Date(date).toLocaleTimeString("en-US", {
@@ -121,6 +119,17 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
         setLoading(false);
       });
   }, []);
+
+  const handleVolunteerDelete = async () => {
+    const newData = await fetchEntries();
+    if (newData) {
+      setVolunteerEntries(newData);
+      setFilteredEntries(newData);
+    } else {
+      setVolunteerEntries([]);
+      setFilteredEntries([]);
+    }
+  };
 
   return (
     <Box p={4}> 
@@ -190,6 +199,9 @@ export default function VolunteerDetails({ _id, isOpen, onOpen, onClose}: Props)
                         name={entry.volunteer.name}
                         roles={entry.roles}
                         responses={entry.responses}
+                        volunteerId={entry.volunteer._id}
+                        entryId={entry._id}
+                        onDelete={() => handleVolunteerDelete()}
                       />
                     </Box>
                   </ListItem>
