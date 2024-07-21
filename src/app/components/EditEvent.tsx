@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styles from "./CreateEvent/CreateEvent.module.css";
-import { Textarea, ModalCloseButton, Button, Box, Input } from "@chakra-ui/react";
+import {
+  Textarea,
+  ModalCloseButton,
+  Button,
+  Box,
+  Input,
+} from "@chakra-ui/react";
 import { IEvent } from "@database/eventSchema";
 
 interface EditEventProps {
@@ -18,6 +24,7 @@ function EditEvent({
 }: EditEventProps) {
   const [eventName, setEventName] = useState(event.name);
   const [date, setDate] = useState<Date>(new Date(event.date));
+  const [location, setLocation] = useState(event.location);
   const [description, setDescription] = useState(event.description);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
@@ -36,6 +43,10 @@ function EditEvent({
     selectedDate.setMinutes(selectedDate.getMinutes() + timezoneOffset);
 
     setDate(selectedDate);
+  };
+
+  const handleChangeLocation = (e: any) => {
+    setLocation(e.target.value);
   };
 
   const handleSubmit = async () => {
@@ -71,7 +82,7 @@ function EditEvent({
           date: date,
           roles: event.roles,
           description: description,
-          location: event.location,
+          location: location,
           form: event.form,
         }),
       });
@@ -109,6 +120,13 @@ function EditEvent({
         type="date"
         value={new Date(date).toLocaleDateString("en-CA")}
         onChange={handleChangeDate}
+        borderColor="black"
+        marginBottom={5}
+      />
+      <Input
+        placeholder="Event Location"
+        value={location}
+        onChange={handleChangeLocation}
         borderColor="black"
         marginBottom={5}
       />
