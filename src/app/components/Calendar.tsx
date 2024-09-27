@@ -51,7 +51,6 @@ const Calendar = ({ admin = false }) => {
         const response = await fetch("/api/event/");
         if (response.ok) {
           const eventsFromDB = await response.json();
-          console.log("Fetched events from backend:", eventsFromDB);
           setEvents(eventsFromDB);
         } else {
           console.error("Error fetching events. Status:", response.status);
@@ -89,7 +88,6 @@ const Calendar = ({ admin = false }) => {
             end: endDate,
           }
         });
-        console.log("Events after converting to FullCalendar format:", FullCalendarEvents);
         setFullCalendarEvents(FullCalendarEvents);
       }
     };
@@ -98,12 +96,6 @@ const Calendar = ({ admin = false }) => {
   }, [events]);
 
   const eventBubbleContent = (arg: EventContentArg) => {
-    console.log("Event rendered in FullCalendar:", {
-      id: arg.event.id,
-      title: arg.event.title,
-      start: arg.event.start,
-      end: arg.event.end,
-    });
     return (
       <div className={style.eventBubble}>
         <div className={style.eventBubbleContent}>{arg.event.title}</div>
@@ -124,8 +116,6 @@ const Calendar = ({ admin = false }) => {
     );
   };
 
-  console.log("FullCalendar events being passed to the calendar:", fullCalendarEvents);
-  
   return (
     <div className={style.wrapper}>
       <style>{calendarStyles}</style>
