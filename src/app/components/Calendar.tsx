@@ -28,6 +28,7 @@ interface FullCalendarEvent {
   id: string;
   title: string;
   start: Date;
+  end: Date;
 }
 
 const Calendar = ({ admin = false }) => {
@@ -50,6 +51,7 @@ const Calendar = ({ admin = false }) => {
         const response = await fetch("/api/event/");
         if (response.ok) {
           const eventsFromDB = await response.json();
+          console.log("Fetched events from backend:", eventsFromDB);
           setEvents(eventsFromDB);
         } else {
           console.error("Error fetching events. Status:", response.status);
@@ -77,11 +79,17 @@ const Calendar = ({ admin = false }) => {
   useEffect(() => {
     const convertEventsToFCFormat = () => {
       if (events.length > 0) {
-        const FullCalendarEvents = events.map((event) => ({
-          id: event._id,
-          title: event.name,
-          start: event.date, //start is the date field for the full calendar
-        }));
+        const FullCalendarEvents = events.map((event) => {
+          const startDate = new Date(event.date);
+          const endDate = new Date(startDate.getTime() + 60 * 1000);  // Add 1 minute (Force manual end date to avoid spans)
+          return {
+            id: event._id,
+            title: event.name,
+            start: event.date, //start is the date field for the full calendar
+            end: endDate,
+          }
+        });
+        console.log("Events after converting to FullCalendar format:", FullCalendarEvents);
         setFullCalendarEvents(FullCalendarEvents);
       }
     };
@@ -90,6 +98,12 @@ const Calendar = ({ admin = false }) => {
   }, [events]);
 
   const eventBubbleContent = (arg: EventContentArg) => {
+    console.log("Event rendered in FullCalendar:", {
+      id: arg.event.id,
+      title: arg.event.title,
+      start: arg.event.start,
+      end: arg.event.end,
+    });
     return (
       <div className={style.eventBubble}>
         <div className={style.eventBubbleContent}>{arg.event.title}</div>
@@ -110,6 +124,8 @@ const Calendar = ({ admin = false }) => {
     );
   };
 
+  console.log("FullCalendar events being passed to the calendar:", fullCalendarEvents);
+  
   return (
     <div className={style.wrapper}>
       <style>{calendarStyles}</style>
