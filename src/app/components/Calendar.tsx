@@ -28,6 +28,7 @@ interface FullCalendarEvent {
   id: string;
   title: string;
   start: Date;
+  end: Date;
 }
 
 const Calendar = ({ admin = false }) => {
@@ -77,11 +78,16 @@ const Calendar = ({ admin = false }) => {
   useEffect(() => {
     const convertEventsToFCFormat = () => {
       if (events.length > 0) {
-        const FullCalendarEvents = events.map((event) => ({
-          id: event._id,
-          title: event.name,
-          start: event.date, //start is the date field for the full calendar
-        }));
+        const FullCalendarEvents = events.map((event) => {
+          const startDate = new Date(event.date);
+          const endDate = new Date(startDate.getTime() + 60 * 1000);  // Add 1 minute (Force manual end date to avoid spans)
+          return {
+            id: event._id,
+            title: event.name,
+            start: event.date, //start is the date field for the full calendar
+            end: endDate,
+          }
+        });
         setFullCalendarEvents(FullCalendarEvents);
       }
     };

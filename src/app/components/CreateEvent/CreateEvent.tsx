@@ -55,10 +55,8 @@ function CreateEvent({
   const handleChangeDate = (e: any) => {
     setHasChanges(true);
     const selectedDate = new Date(e.target.value);
-
     const timezoneOffset = selectedDate.getTimezoneOffset();
     selectedDate.setMinutes(timezoneOffset);
-
     setDate(selectedDate);
   };
 
